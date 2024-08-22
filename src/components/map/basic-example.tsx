@@ -14,12 +14,20 @@ import {
   type ComponentProps,
   For,
   Show,
+  createEffect,
   createSignal,
   onMount,
   splitProps,
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
-import MapGL, { Marker, type Viewport } from "solid-map-gl";
+import MapGL, {
+  Layer,
+  Marker,
+  Source,
+  useMapContext,
+  type Viewport,
+} from "solid-map-gl";
+import { Button } from "../ui/button";
 
 type Coordinates =
   | { lng: number; lat: number }
@@ -40,7 +48,7 @@ const getLatLon = (coords: Coordinates) => {
 };
 
 const formatCoords = (coords: Coordinates) => {
-  const [latitude, longitude] = getLatLon(coords);
+  const [latitude, longitude] = getLatLon(coords).map(Math.fround);
 
   return {
     lat: latitude < 0 ? `${Math.abs(latitude)}°S` : `${latitude}°N`,
@@ -76,7 +84,7 @@ export type MapProps = ComponentProps<"div">;
 export const ExampleMap = (props: MapProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const [map, setMap] = createStore<MapState>({
+  const [mapState, setMapState] = createStore<MapState>({
     poi: [...placesOfInterest],
     viewport: {
       center: placesOfInterest.find((poi) => poi.key === "usa")?.coords,
@@ -85,8 +93,8 @@ export const ExampleMap = (props: MapProps) => {
   } as const);
 
   const goToPOI = (key: PlaceOfInterestKey) => {
-    const poi = map.poi.find((poi) => poi.key === key);
-    setMap(
+    const poi = mapState.poi.find((poi) => poi.key === key);
+    setMapState(
       "viewport",
       produce((vp) => {
         vp.center = poi?.coords;
@@ -94,15 +102,22 @@ export const ExampleMap = (props: MapProps) => {
     );
   };
 
+  let mapRef!: HTMLDivElement;
   onMount(() => {
     goToPOI("usa");
   });
 
+  createEffect(() => {
+    if (mapRef) {
+      console.log(mapRef);
+    }
+  });
+
   const viewport = () => {
-    return map.viewport;
+    return mapState.viewport;
   };
   const setViewport = (viewport: Viewport) => {
-    setMap("viewport", viewport);
+    setMapState("viewport", viewport);
   };
 
   const [isOpen, setIsOpen] = createSignal(false);
@@ -128,14 +143,43 @@ export const ExampleMap = (props: MapProps) => {
         options={{ style: "http://localhost:4321/api/map.json" }}
         viewport={viewport()}
         onViewportChange={(evt: Viewport) => setViewport(evt)}
+        ref={mapRef}
       >
-        <For each={map.poi}>
+        <TestButton
+          coords={mapState.poi.find((poi) => poi.key === "nassau")?.coords}
+        />
+        <Source
+          source={{
+            type: "geojson",
+            data: "http://localhost:4321/api/counties.geojson",
+            filter: ["all", ["==", "NAME", "Nassau"]],
+          }}
+        >
+          <Layer
+            style={{
+              type: "fill",
+              paint: {
+                color: "#999",
+                "outline-color": "#000",
+              },
+            }}
+          />
+        </Source>
+        <For each={mapState.poi}>
           {(poi) => (
             <Marker
               showPopup={false}
               options={{ color: "#333FFF" }}
               lngLat={poi.coords}
-              onOpen={() => setIsOpen(true)}
+              onOpen={() => {
+                setMapState(
+                  "viewport",
+                  produce((vp) => {
+                    vp.center = poi.coords;
+                  }),
+                );
+                setIsOpen(true);
+              }}
               onClose={() => setIsOpen(false)}
             >
               {poi.name}
@@ -145,6 +189,21 @@ export const ExampleMap = (props: MapProps) => {
       </MapGL>
       <ViewportInfo viewport={viewport()} />
     </div>
+  );
+};
+
+const TestButton = (props: { coords: { lat: string; lon: string } }) => {
+  const [mapContext] = useMapContext();
+
+  return (
+    <Button
+      type="button"
+      onClick={() => {
+        mapContext.map.flyTo({ center: props.coords, zoom: 9 });
+      }}
+    >
+      CLICK HERE
+    </Button>
   );
 };
 
@@ -191,7 +250,7 @@ const ViewportInfo = (props: ViewportInfoProps) => {
       <Show when={props.viewport.zoom}>
         {(zoom) => (
           <>
-            <span>{zoom()}</span>
+            <span>{Math.trunc(zoom())}</span>
             <SearchIcon class="size-4" />
           </>
         )}

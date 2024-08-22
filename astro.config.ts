@@ -20,6 +20,10 @@ export default defineConfig({
     contentCollectionCache: true,
     env: {
       schema: {
+        MAPTILER_API_KEY: envField.string({
+          context: "server",
+          access: "public",
+        }),
         API_URL: envField.string({
           context: "client",
           access: "public",
@@ -29,16 +33,6 @@ export default defineConfig({
           context: "server",
           access: "public",
           default: 4321,
-        }),
-        TURSO_DATABASE_URL: envField.string({
-          context: "server",
-          access: "secret",
-          default: import.meta.env.DEV ? "http://127.0.0.1:8080" : undefined,
-        }),
-        TURSO_AUTH_TOKEN: envField.string({
-          context: "server",
-          access: "secret",
-          default: import.meta.env.DEV ? "" : undefined,
         }),
       },
     },

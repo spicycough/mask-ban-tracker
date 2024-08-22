@@ -22,14 +22,13 @@ const { title, description } = Astro.props;
 ---
 
 <script is:inline>
-  if (typeof localStorage !== 'undefined') {
-    const theme = localStorage.getItem('theme');
-    document.documentElement.classList.add(theme === 'dark' ? 'dark' : 'light');
+  if (typeof localStorage !== "undefined") {
+    const theme = localStorage.getItem("theme");
+    document.documentElement.classList.add(theme === "dark" ? "dark" : "light");
   }
 </script>
 
-<!doctype html>
-<html lang="en" class="h-full">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="index, follow" />
@@ -40,12 +39,10 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <title>{title}</title>
-    <ViewTransitions fallback="swap" />
   </head>
-  <body class="font-sans antialiased h-full">
-    <div id="app" class="flex flex-col h-svh">
-      <Nav class="border-b border-border" />
-      <main class="flex flex-col grow gap-y-6 py-6 lg:max-w-6xl lg:gap-y-12 min-w-full">
+  <body>
+    <div id="app">
+      <main>
         <slot />
       </main>
       <ScreenSize />

@@ -1,5 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
-import solidJs from "@astrojs/solid-js";
+import solid from "@astrojs/solid-js";
 import tailwind from "@astrojs/tailwind";
 import { defineConfig, envField } from "astro/config";
 import { passthroughImageService } from "astro/config";
@@ -8,7 +8,10 @@ export default defineConfig({
   site: "https://astro.build/config", // TODO: update
   output: "server",
   // prefetch: true,
-  integrations: [solidJs(), tailwind({ applyBaseStyles: false })],
+  integrations: [
+    solid({ devtools: true }),
+    tailwind({ applyBaseStyles: false }),
+  ],
   image: { service: passthroughImageService() },
   adapter: cloudflare({
     platformProxy: { enabled: true },

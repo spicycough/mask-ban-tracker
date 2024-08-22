@@ -1,0 +1,54 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import Nav from "@/components/nav.astro";
+import ScreenSize from "@/components/screen-size.astro";
+
+import "@/styles/globals.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+let canonicalURL: URL;
+try {
+  canonicalURL = new URL(Astro.url.pathname, Astro.site);
+} catch (err) {
+  console.error(`Failed to create canonical URL: ${(err as Error).message}`);
+  canonicalURL = Astro.url;
+}
+
+const { title, description } = Astro.props;
+---
+
+<script is:inline>
+  if (typeof localStorage !== 'undefined') {
+    const theme = localStorage.getItem('theme');
+    document.documentElement.classList.add(theme === 'dark' ? 'dark' : 'light');
+  }
+</script>
+
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{title}</title>
+    <ViewTransitions fallback="swap" />
+  </head>
+  <body class="font-sans antialiased h-full">
+    <div id="app" class="flex flex-col h-svh">
+      <Nav class="border-b border-border" />
+      <main class="flex flex-col grow gap-y-6 py-6 lg:max-w-6xl lg:gap-y-12 min-w-full">
+        <slot />
+      </main>
+      <ScreenSize />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Site Status" description='Check health of site'>
+  <p>Health: <span id="health"/></p>
+</Layout>
+
+<script>
+  import { hc } from 'hono/client';
+  import type { App } from '@api';
+
+  console.log(window.location.href)
+  const api = hc<App>("/").api
+
+  const response = await api.health.$get();
+  console.log(response)
+  const json = await response.json();
+
+  console.log(json);
+  const healthStatusText = document.getElementById('health')!;
+  if (json.status) {
+    healthStatusText.textContent = json.status;
+  } else {
+    healthStatusText.textContent = 'Bad'
+  }
+</script>

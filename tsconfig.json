@@ -1,0 +1,31 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "strict": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "types": [
+      "astro/client",
+      "@cloudflare/workers-types"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@api": [
+        "src/pages/api/[...path].ts"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,42 @@
+---
+
+---
+
+<div
+  class:list={[
+    "fixed bottom-5 left-5 z-50 flex gap-x-2 px-2.5 py-1",
+    "items-center align-middle text-center",
+    "bg-black text-white rounded-full font-mono font-light text-xs", 
+    "animate-out duration-400 opacity-100 hover:opacity-0 transition-opacity"
+  ]}
+>
+  <p class="max-sm:block hidden">sm</p>
+  <p class="sm:max-md:block hidden">md</p>
+  <p class="md:max-lg:block hidden">lg</p>
+  <p class="lg:max-xl:block hidden">xl</p>
+  <p class="xl:block hidden font-mono">2xl</p>
+  <div class="h-4 w-px bg-gray-800"></div>
+  <span id="dimensions" class="font-mono">000x000</span>
+</div>
+
+<script is:inline>
+  function updateDimensions() {
+    const dimensions = document.getElementById("dimensions");
+    if (!dimensions) {
+      console.error("Span element not found");
+      return;
+    }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Update the span's text with the current dimensions
+    dimensions.textContent = `${width}x${height}`;
+  }
+
+  // Attach the function to the window resize event
+  window.addEventListener("resize", updateDimensions);
+
+  // Update dimensions immediately on script load
+  updateDimensions();
+</script>

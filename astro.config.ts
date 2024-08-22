@@ -16,6 +16,16 @@ export default defineConfig({
   adapter: cloudflare({
     platformProxy: { enabled: true },
   }),
+  vite: {
+    build: {
+      commonjsOptions: { transformMixedEsModules: true },
+    },
+    resolve: {
+      alias: {
+        "mapbox-gl": "maplibre-gl",
+      },
+    },
+  },
   experimental: {
     contentCollectionCache: true,
     env: {

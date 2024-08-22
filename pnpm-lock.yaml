@@ -26,6 +26,9 @@ importers:
       '@astropub/icons':
         specifier: ^0.2.0
         version: 0.2.0(astro@4.14.4(@types/node@22.5.0)(rollup@4.21.0)(typescript@5.5.4))
+      '@corvu/drawer':
+        specifier: ^0.2.2
+        version: 0.2.2(solid-js@1.8.21)
       '@hono/valibot-validator':
         specifier: ^0.3.0
         version: 0.3.0(hono@4.5.7)(valibot@0.38.0(typescript@5.5.4))
@@ -485,8 +488,23 @@ packages:
   '@cloudflare/workers-types@4.20240712.0':
     resolution: {integrity: sha512-C+C0ZnkRrxR2tPkZKAXwBsWEse7bWaA7iMbaG6IKaxaPTo/5ilx7Ei3BkI2izxmOJMsC05VS1eFUf95urXzhmw==, tarball: https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20240712.0.tgz}
 
+  '@corvu/dialog@0.2.3':
+    resolution: {integrity: sha512-1p1lG2Pdu7CtDYw0FP+gdU0Db4zsB2ljOP7UxszZIQpvVvnrAYhNPfu/8IpscB38c0hZCodEnv5hR0NaEEA/Ag==, tarball: https://registry.npmjs.org/@corvu/dialog/-/dialog-0.2.3.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
+  '@corvu/drawer@0.2.2':
+    resolution: {integrity: sha512-gj0dGnAc5fxoOe1E55uo8LPrHFxR+MaStn3UB8I1ZbtlJeeLDTK40uCc/Ee9xVxYpYNpUDX6ICGr3i23bsZyOA==, tarball: https://registry.npmjs.org/@corvu/drawer/-/drawer-0.2.2.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
   '@corvu/utils@0.3.2':
     resolution: {integrity: sha512-ZWlyWEE8qV9+CB9OAyo2bTrZGXQN9ZeM+JfYv89zoR+lRACKTDuoOZEdiyL8Uc7U5dUSH1uTqKhTTnaHWb+wZA==, tarball: https://registry.npmjs.org/@corvu/utils/-/utils-0.3.2.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
+  '@corvu/utils@0.4.1':
+    resolution: {integrity: sha512-swd/2DUJiXTo9PM5GVbBv3jNlEOwmKWvVOJG2l8Cwu1cokoXknKrDkBSZRz+yf0rFXdbhWhRQMWDPMPwuBnWNg==, tarball: https://registry.npmjs.org/@corvu/utils/-/utils-0.4.1.tgz}
     peerDependencies:
       solid-js: ^1.8
 
@@ -1228,11 +1246,17 @@ packages:
   '@floating-ui/core@1.6.4':
     resolution: {integrity: sha512-a4IowK4QkXl4SCWTGUR0INAfEOX3wtsYw3rKK5InQEHMGObkR8Xk44qYQD9P4r6HHw0iIfK6GUKECmY8sTkqRA==, tarball: https://registry.npmjs.org/@floating-ui/core/-/core-1.6.4.tgz}
 
+  '@floating-ui/dom@1.6.10':
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==, tarball: https://registry.npmjs.org/@floating-ui/dom/-/dom-1.6.10.tgz}
+
   '@floating-ui/dom@1.6.7':
     resolution: {integrity: sha512-wmVfPG5o2xnKDU4jx/m4w5qva9FWHcnZ8BvzEe90D/RpwsJaTAVYPEPdQ8sbr/N8zZTAHlZUTQdqg8ZUbzHmng==, tarball: https://registry.npmjs.org/@floating-ui/dom/-/dom-1.6.7.tgz}
 
   '@floating-ui/utils@0.2.4':
     resolution: {integrity: sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==, tarball: https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.4.tgz}
+
+  '@floating-ui/utils@0.2.7':
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==, tarball: https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.7.tgz}
 
   '@hono/valibot-validator@0.3.0':
     resolution: {integrity: sha512-EcGJKzLt11SK4K11yKHrhI93ECtKeSHAnnENHw5tCL0ZhyDIx96avc3Ua8/ri4fwVvRPuOzFQ2OBRsVvwZuqeQ==, tarball: https://registry.npmjs.org/@hono/valibot-validator/-/valibot-validator-0.3.0.tgz}
@@ -1681,6 +1705,11 @@ packages:
 
   '@solid-primitives/media@2.2.9':
     resolution: {integrity: sha512-QUmU62D4/d9YWx/4Dvr/UZasIkIpqNXz7wosA5GLmesRW9XlPa3G5M6uOmTw73SByHNTCw0D6x8bSdtvvLgzvQ==, tarball: https://registry.npmjs.org/@solid-primitives/media/-/media-2.2.9.tgz}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/memo@1.3.9':
+    resolution: {integrity: sha512-OIlGcsEPXr6U23fDaSEm8iqezWDT4SNSjLTekWQVOu4qHostnMPlqU8xo1Jf0I7OgRuqA0wTMQ5cu0bYjeR/ZQ==, tarball: https://registry.npmjs.org/@solid-primitives/memo/-/memo-1.3.9.tgz}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -2728,12 +2757,10 @@ packages:
 
   libsql@0.3.19:
     resolution: {integrity: sha512-Aj5cQ5uk/6fHdmeW0TiXK42FqUlwx7ytmMLPSaUQPin5HKKKuUPD62MAbN4OEweGBBI7q1BekoEN4gPUEL6MZA==, tarball: https://registry.npmjs.org/libsql/-/libsql-0.3.19.tgz}
-    cpu: [x64, arm64, wasm32]
     os: [darwin, linux, win32]
 
   libsql@0.4.1:
     resolution: {integrity: sha512-qZlR9Yu1zMBeLChzkE/cKfoKV3Esp9cn9Vx5Zirn4AVhDWPcjYhKwbtJcMuHehgk3mH+fJr9qW+3vesBWbQpBg==, tarball: https://registry.npmjs.org/libsql/-/libsql-0.4.1.tgz}
-    cpu: [x64, arm64, wasm32]
     os: [darwin, linux, win32]
 
   lilconfig@2.1.0:
@@ -3479,6 +3506,16 @@ packages:
       vite:
         optional: true
 
+  solid-dismissible@0.1.1:
+    resolution: {integrity: sha512-9kcKBJIMdS+586cA1g63HYWxKh3h89leeNHbPZ1csYjuni+NvPBtNr11l0iEX2AKKEt6FHk6qNhc/gjoYAW1pA==, tarball: https://registry.npmjs.org/solid-dismissible/-/solid-dismissible-0.1.1.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
+  solid-focus-trap@0.1.7:
+    resolution: {integrity: sha512-NSJiIkL+WTWGgca+OKQA9rV3bD51lT23iLn1Z+Ap1Qk3rJBxQ8SoEAQ0FvXoQThtyXFKAK1ibcVBBMMEcu6YMw==, tarball: https://registry.npmjs.org/solid-focus-trap/-/solid-focus-trap-0.1.7.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
   solid-js@1.8.21:
     resolution: {integrity: sha512-FHUGdoo7GVa1BTpGh/4UtwIISde0vSXoqNB6KFpHiTgkIY959tmCJ7NYQAWDfScBfnpoMGZR8lFz0DiwW/gFlw==, tarball: https://registry.npmjs.org/solid-js/-/solid-js-1.8.21.tgz}
 
@@ -3500,6 +3537,11 @@ packages:
     peerDependencies:
       solid-js: ^1.8
 
+  solid-presence@0.1.8:
+    resolution: {integrity: sha512-pWGtXUFWYYUZNbg5YpG5vkQJyOtzn2KXhxYaMx/4I+lylTLYkITOLevaCwMRN+liCVk0pqB6EayLWojNqBFECA==, tarball: https://registry.npmjs.org/solid-presence/-/solid-presence-0.1.8.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
   solid-prevent-scroll@0.1.9:
     resolution: {integrity: sha512-KuZG4K8ZN48EeopB9NKquxxL3sX8JzYuRtMZ4jXLQd1ggqtTklahEUhXFFQs1kxWmyKyK068Nq4iN0jk5fgD1Q==, tarball: https://registry.npmjs.org/solid-prevent-scroll/-/solid-prevent-scroll-0.1.9.tgz}
     peerDependencies:
@@ -3509,6 +3551,11 @@ packages:
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==, tarball: https://registry.npmjs.org/solid-refresh/-/solid-refresh-0.6.3.tgz}
     peerDependencies:
       solid-js: ^1.3
+
+  solid-transition-size@0.1.4:
+    resolution: {integrity: sha512-ocHVnbfy23CgfaH4cEUR/AFg0Y3CEL8Oh3n9Qv8OHFJgPh+zkmERKZQfi/xH5XvxDCizg8VjPrVUhiHB1Gza8g==, tarball: https://registry.npmjs.org/solid-transition-size/-/solid-transition-size-0.1.4.tgz}
+    peerDependencies:
+      solid-js: ^1.8
 
   sort-asc@0.2.0:
     resolution: {integrity: sha512-umMGhjPeHAI6YjABoSTrFp2zaBtXBej1a0yKkuMUyjjqu6FJsTF+JYwCswWDg+zJfk/5npWUUbd33HH/WLzpaA==, tarball: https://registry.npmjs.org/sort-asc/-/sort-asc-0.2.0.tgz}
@@ -4538,9 +4585,31 @@ snapshots:
 
   '@cloudflare/workers-types@4.20240712.0': {}
 
+  '@corvu/dialog@0.2.3(solid-js@1.8.21)':
+    dependencies:
+      '@corvu/utils': 0.4.1(solid-js@1.8.21)
+      solid-dismissible: 0.1.1(solid-js@1.8.21)
+      solid-focus-trap: 0.1.7(solid-js@1.8.21)
+      solid-js: 1.8.21
+      solid-presence: 0.1.8(solid-js@1.8.21)
+      solid-prevent-scroll: 0.1.9(solid-js@1.8.21)
+
+  '@corvu/drawer@0.2.2(solid-js@1.8.21)':
+    dependencies:
+      '@corvu/dialog': 0.2.3(solid-js@1.8.21)
+      '@corvu/utils': 0.3.2(solid-js@1.8.21)
+      '@solid-primitives/memo': 1.3.9(solid-js@1.8.21)
+      solid-js: 1.8.21
+      solid-transition-size: 0.1.4(solid-js@1.8.21)
+
   '@corvu/utils@0.3.2(solid-js@1.8.21)':
     dependencies:
       '@floating-ui/dom': 1.6.7
+      solid-js: 1.8.21
+
+  '@corvu/utils@0.4.1(solid-js@1.8.21)':
+    dependencies:
+      '@floating-ui/dom': 1.6.10
       solid-js: 1.8.21
 
   '@cspotcode/source-map-support@0.8.1':
@@ -4945,12 +5014,19 @@ snapshots:
     dependencies:
       '@floating-ui/utils': 0.2.4
 
+  '@floating-ui/dom@1.6.10':
+    dependencies:
+      '@floating-ui/core': 1.6.4
+      '@floating-ui/utils': 0.2.7
+
   '@floating-ui/dom@1.6.7':
     dependencies:
       '@floating-ui/core': 1.6.4
       '@floating-ui/utils': 0.2.4
 
   '@floating-ui/utils@0.2.4': {}
+
+  '@floating-ui/utils@0.2.7': {}
 
   '@hono/valibot-validator@0.3.0(hono@4.5.7)(valibot@0.38.0(typescript@5.5.4))':
     dependencies:
@@ -5363,6 +5439,12 @@ snapshots:
       '@solid-primitives/event-listener': 2.3.3(solid-js@1.8.21)
       '@solid-primitives/rootless': 1.4.5(solid-js@1.8.21)
       '@solid-primitives/static-store': 0.0.8(solid-js@1.8.21)
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.21)
+      solid-js: 1.8.21
+
+  '@solid-primitives/memo@1.3.9(solid-js@1.8.21)':
+    dependencies:
+      '@solid-primitives/scheduled': 1.4.3(solid-js@1.8.21)
       '@solid-primitives/utils': 6.2.3(solid-js@1.8.21)
       solid-js: 1.8.21
 
@@ -7488,6 +7570,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  solid-dismissible@0.1.1(solid-js@1.8.21):
+    dependencies:
+      '@corvu/utils': 0.4.1(solid-js@1.8.21)
+      solid-js: 1.8.21
+
+  solid-focus-trap@0.1.7(solid-js@1.8.21):
+    dependencies:
+      '@corvu/utils': 0.3.2(solid-js@1.8.21)
+      solid-js: 1.8.21
+
   solid-js@1.8.21:
     dependencies:
       csstype: 3.1.3
@@ -7504,6 +7596,11 @@ snapshots:
       '@corvu/utils': 0.3.2(solid-js@1.8.21)
       solid-js: 1.8.21
 
+  solid-presence@0.1.8(solid-js@1.8.21):
+    dependencies:
+      '@corvu/utils': 0.4.1(solid-js@1.8.21)
+      solid-js: 1.8.21
+
   solid-prevent-scroll@0.1.9(solid-js@1.8.21):
     dependencies:
       '@corvu/utils': 0.3.2(solid-js@1.8.21)
@@ -7517,6 +7614,11 @@ snapshots:
       solid-js: 1.8.21
     transitivePeerDependencies:
       - supports-color
+
+  solid-transition-size@0.1.4(solid-js@1.8.21):
+    dependencies:
+      '@corvu/utils': 0.3.2(solid-js@1.8.21)
+      solid-js: 1.8.21
 
   sort-asc@0.2.0: {}
 

@@ -5,7 +5,7 @@ import {
   type ComponentProps,
   For,
   createContext,
-  createMemo,
+  createSignal,
   splitProps,
   useContext,
 } from "solid-js";
@@ -37,7 +37,7 @@ const createMapStore = () => {
     viewport: {
       center: usa.coords,
       zoom: usa.zoom,
-    },
+    } as Viewport,
   } as const);
 };
 
@@ -47,11 +47,17 @@ const makeMapContext = () => {
   const [mapContext] = useSolidMapContext();
 
   const [store, setStore] = createMapStore();
+  const usa = usePlaceOfInterest("usa");
+  const [viewport, setViewport] = createSignal<Viewport>({
+    center: usa.coords,
+    zoom: usa.zoom,
+  } as Viewport);
 
-  const viewport = createMemo(() => store.viewport);
-  const setViewport = (viewport: Viewport) => {
-    setStore("viewport", viewport);
-  };
+  // const viewport = createMemo(() => store.viewport);
+  //
+  // const setViewport = (viewport: Viewport) => {
+  //   setStore("viewport", viewport);
+  // };
 
   return {
     ref: mapRef,
@@ -73,7 +79,7 @@ export const MapProvider = (props: MapProviderProps) => {
   const mapContext = makeMapContext();
 
   return (
-    <MapContext.Provider value={{ ...mapContext }}>
+    <MapContext.Provider value={mapContext}>
       {props.children}
     </MapContext.Provider>
   );
@@ -89,36 +95,25 @@ export const useMap = () => {
 
 interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
-export const CustomMapRoot = (props: CustomMapProps) => {
+export const CustomMap = (props: CustomMapProps) => {
   const [, rest] = splitProps(props, ["class", "options"]);
 
-  const mapContext = makeMapContext();
+  const customMap = useMap();
 
   return (
-    <MapProvider>
-      <SolidMapGL
-        mapLib={maplibre}
-        viewport={mapContext.viewport()}
-        onViewportChange={(evt: Viewport) => mapContext.setViewport(evt)}
-        ref={mapContext.ref}
-        class={cn("h-dvh", props.class)}
-        options={{
-          style: "http://localhost:4321/api/map.json",
-          ...props.options,
-        }}
-        {...rest}
-      >
-        {props.children}
-      </SolidMapGL>
-    </MapProvider>
-  );
-};
-
-export const CustomMap = (props: CustomMapProps) => {
-  const { store } = useMap();
-
-  return (
-    <>
+    <SolidMapGL
+      mapLib={maplibre}
+      viewport={customMap.viewport()}
+      onViewportChange={(viewport: Viewport) => customMap.setViewport(viewport)}
+      ref={customMap.ref}
+      transitionType="flyTo"
+      class={cn("h-dvh w-full", props.class)}
+      options={{
+        style: "http://localhost:4321/api/map.json",
+        ...props.options,
+      }}
+      {...rest}
+    >
       <Source
         source={{
           type: "geojson",
@@ -136,7 +131,7 @@ export const CustomMap = (props: CustomMapProps) => {
           }}
         />
       </Source>
-      <For each={store.poi}>
+      <For each={customMap.store.poi}>
         {(poi) => (
           <Marker
             showPopup={false}
@@ -147,6 +142,6 @@ export const CustomMap = (props: CustomMapProps) => {
           </Marker>
         )}
       </For>
-    </>
+    </SolidMapGL>
   );
 };

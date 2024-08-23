@@ -1,8 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { ExampleMap } from "@/features/map/components/basic-example";
+import { MapPage } from "@/features/map/page";
 ---
 
 <Layout title="Welcome to Astro." description="Test">
-  <ExampleMap client:only="solid-js" />
+  <div class="flex flex-row">
+    <MapPage client:only="solid-js" />
+  </div>
 </Layout>

@@ -1,4 +1,4 @@
-import { useMap } from "@/features/map/create-map-context";
+import { useMapContext } from "@/features/map/create-map-context";
 import { formatCoords } from "@/features/map/utils";
 import { cn } from "@/lib/utils";
 import { CompassIcon, SearchIcon } from "lucide-solid";
@@ -10,7 +10,7 @@ export type ViewportInfoProps = ComponentProps<"div"> & {};
 export const ViewportInfo = (props: ViewportInfoProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const customMap = useMap();
+  const mapContext = useMapContext();
 
   return (
     <div
@@ -23,7 +23,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
       )}
       {...rest}
     >
-      <Show when={customMap.viewport().center}>
+      <Show when={mapContext.viewport().center}>
         {(center) => (
           <>
             <span>{formatCoords(center()).latitude}</span>
@@ -32,7 +32,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
         )}
       </Show>
 
-      <Show when={customMap.viewport().center}>
+      <Show when={mapContext.viewport().center}>
         {(center) => (
           <>
             <span>{formatCoords(center()).longitude}</span>
@@ -45,7 +45,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
       {/*   <div class="h-4 w-px bg-gray-800" /> */}
       {/* </Show> */}
 
-      <Show when={customMap.viewport().zoom}>
+      <Show when={mapContext.viewport().zoom}>
         {(zoom) => (
           <>
             <span>{Math.trunc(zoom())}</span>

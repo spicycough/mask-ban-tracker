@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useMap } from "@/features/map/create-map-context";
+import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
 import { ArrowLeftToLineIcon, ArrowRightToLineIcon } from "lucide-solid";
 import { type ParentProps, Show, createEffect, splitProps } from "solid-js";
@@ -13,7 +13,7 @@ export interface SidebarProps extends ParentProps {
 export const Sidebar = (props: SidebarProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const map = useMap();
+  const map = useMapContext();
 
   createEffect(() => {
     if (map.viewport().inTransit) {

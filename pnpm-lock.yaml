@@ -29,6 +29,9 @@ importers:
       '@corvu/drawer':
         specifier: ^0.2.2
         version: 0.2.2(solid-js@1.8.21)
+      '@corvu/resizable':
+        specifier: ^0.2.3
+        version: 0.2.3(solid-js@1.8.21)
       '@hono/valibot-validator':
         specifier: ^0.3.0
         version: 0.3.0(hono@4.5.7)(valibot@0.38.0(typescript@5.5.4))
@@ -59,6 +62,9 @@ importers:
       mapbox-gl:
         specifier: npm:empty-npm-package@^1.0.0
         version: empty-npm-package@1.0.0
+      mapbox-gl-rain-layer:
+        specifier: ^0.6.0
+        version: 0.6.0(empty-npm-package@1.0.0)
       maplibre-gl:
         specifier: ^4.5.2
         version: 4.5.2
@@ -495,6 +501,11 @@ packages:
 
   '@corvu/drawer@0.2.2':
     resolution: {integrity: sha512-gj0dGnAc5fxoOe1E55uo8LPrHFxR+MaStn3UB8I1ZbtlJeeLDTK40uCc/Ee9xVxYpYNpUDX6ICGr3i23bsZyOA==, tarball: https://registry.npmjs.org/@corvu/drawer/-/drawer-0.2.2.tgz}
+    peerDependencies:
+      solid-js: ^1.8
+
+  '@corvu/resizable@0.2.3':
+    resolution: {integrity: sha512-UwpObxqKlx1mc3G496Daz9NjK25Gx1V5fB8zIGazbq5tJs7aU8RjPW4png5OoNpMyxV7GQWjQtVc59zaAEVAJg==, tarball: https://registry.npmjs.org/@corvu/resizable/-/resizable-0.2.3.tgz}
     peerDependencies:
       solid-js: ^1.8
 
@@ -2812,6 +2823,11 @@ packages:
   magic-string@0.30.11:
     resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==, tarball: https://registry.npmjs.org/magic-string/-/magic-string-0.30.11.tgz}
 
+  mapbox-gl-rain-layer@0.6.0:
+    resolution: {integrity: sha512-Var6ig5bhXck67xWoDhm3foB/LF+qRyYE6G2ouU1Nn6CrOkq4xhzHlCtqsWeDlEKH4VMFhy32eCJKDRI2sb+Nw==, tarball: https://registry.npmjs.org/mapbox-gl-rain-layer/-/mapbox-gl-rain-layer-0.6.0.tgz}
+    peerDependencies:
+      mapbox-gl: '>=0.54.0'
+
   maplibre-gl@4.5.2:
     resolution: {integrity: sha512-vlWL9EY2bSGg5FAt0mKPfYqlfX15uLW5D3kKv4Xjn54nIVn01MKdfUJMAVIr+8fXVqfSX6c095Iy5XnV+T76kQ==, tarball: https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.5.2.tgz}
     engines: {node: '>=16.14.0', npm: '>=8.1.0'}
@@ -3678,6 +3694,9 @@ packages:
 
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==, tarball: https://registry.npmjs.org/thenify/-/thenify-3.3.1.tgz}
+
+  three@0.151.3:
+    resolution: {integrity: sha512-+vbuqxFy8kzLeO5MgpBHUvP/EAiecaDwDuOPPDe6SbrZr96kccF0ktLngXc7xA7bzyd3N0t2f6mw3Z9y6JCojQ==, tarball: https://registry.npmjs.org/three/-/three-0.151.3.tgz}
 
   tiny-glob@0.2.9:
     resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==, tarball: https://registry.npmjs.org/tiny-glob/-/tiny-glob-0.2.9.tgz}
@@ -4601,6 +4620,11 @@ snapshots:
       '@solid-primitives/memo': 1.3.9(solid-js@1.8.21)
       solid-js: 1.8.21
       solid-transition-size: 0.1.4(solid-js@1.8.21)
+
+  '@corvu/resizable@0.2.3(solid-js@1.8.21)':
+    dependencies:
+      '@corvu/utils': 0.4.1(solid-js@1.8.21)
+      solid-js: 1.8.21
 
   '@corvu/utils@0.3.2(solid-js@1.8.21)':
     dependencies:
@@ -6654,6 +6678,11 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  mapbox-gl-rain-layer@0.6.0(empty-npm-package@1.0.0):
+    dependencies:
+      mapbox-gl: empty-npm-package@1.0.0
+      three: 0.151.3
+
   maplibre-gl@4.5.2:
     dependencies:
       '@mapbox/geojson-rewind': 0.5.2
@@ -7762,6 +7791,8 @@ snapshots:
   thenify@3.3.1:
     dependencies:
       any-promise: 1.3.0
+
+  three@0.151.3: {}
 
   tiny-glob@0.2.9:
     dependencies:

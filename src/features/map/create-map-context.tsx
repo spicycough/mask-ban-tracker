@@ -1,13 +1,10 @@
 import { cn } from "@/lib/utils";
 import * as maplibre from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { MapPinIcon, PinIcon } from "lucide-solid";
 import {
   type ComponentProps,
   For,
   createContext,
-  createEffect,
-  createMemo,
   createSignal,
   onMount,
   splitProps,

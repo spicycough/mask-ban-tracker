@@ -1,13 +1,5 @@
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerLabel,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
-import { CompassIcon, MoreHorizontalIcon, SearchIcon } from "lucide-solid";
+import { CompassIcon, SearchIcon } from "lucide-solid";
 import * as maplibre from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
@@ -28,6 +20,7 @@ import MapGL, {
   type Viewport,
 } from "solid-map-gl";
 import { Button } from "../ui/button";
+import { Sidebar } from "./sidebar";
 
 type Coordinates =
   | { lng: number; lat: number }
@@ -120,90 +113,63 @@ export const ExampleMap = (props: MapProps) => {
     setMapState("viewport", viewport);
   };
 
-  const [isOpen, setIsOpen] = createSignal(false);
+  const [isOpen, setIsOpen] = createSignal(true);
 
   return (
-    <div class={cn("", props.class)} {...rest}>
-      <Drawer open={isOpen()} onOpenChange={setIsOpen}>
-        <DrawerTrigger>
-          <MoreHorizontalIcon class="size-6" />
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerLabel>Are you sure absolutely sure?</DrawerLabel>
-            <DrawerDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DrawerDescription>
-          </DrawerHeader>
-        </DrawerContent>
-      </Drawer>
-      <MapGL
-        mapLib={maplibre}
-        options={{ style: "http://localhost:4321/api/map.json" }}
-        viewport={viewport()}
-        onViewportChange={(evt: Viewport) => setViewport(evt)}
-        ref={mapRef}
-      >
-        <TestButton
-          coords={mapState.poi.find((poi) => poi.key === "nassau")?.coords}
-        />
-        <Source
-          source={{
-            type: "geojson",
-            data: "http://localhost:4321/api/counties.geojson",
-            filter: ["all", ["==", "NAME", "Nassau"]],
+    <>
+      <Sidebar>
+        <MapGL
+          mapLib={maplibre}
+          options={{ style: "http://localhost:4321/api/map.json" }}
+          viewport={viewport()}
+          onViewportChange={(evt: Viewport) => setViewport(evt)}
+          ref={mapRef}
+          style={{
+            height: "100vh",
           }}
         >
-          <Layer
-            style={{
-              type: "fill",
-              paint: {
-                color: "#999",
-                "outline-color": "#000",
-              },
+          <Source
+            source={{
+              type: "geojson",
+              data: "http://localhost:4321/api/counties.geojson",
+              filter: ["all", ["==", "NAME", "Nassau"]],
             }}
-          />
-        </Source>
-        <For each={mapState.poi}>
-          {(poi) => (
-            <Marker
-              showPopup={false}
-              options={{ color: "#333FFF" }}
-              lngLat={poi.coords}
-              onOpen={() => {
-                setMapState(
-                  "viewport",
-                  produce((vp) => {
-                    vp.center = poi.coords;
-                  }),
-                );
-                setIsOpen(true);
+          >
+            <Layer
+              style={{
+                type: "fill",
+                paint: {
+                  color: "#999",
+                  "outline-color": "#000",
+                },
               }}
-              onClose={() => setIsOpen(false)}
-            >
-              {poi.name}
-            </Marker>
-          )}
-        </For>
-      </MapGL>
+            />
+          </Source>
+          <For each={mapState.poi}>
+            {(poi) => (
+              <Marker
+                showPopup={false}
+                options={{ color: "#333FFF" }}
+                lngLat={poi.coords}
+                onOpen={() => {
+                  setMapState(
+                    "viewport",
+                    produce((vp) => {
+                      vp.center = poi.coords;
+                    }),
+                  );
+                  setIsOpen(true);
+                }}
+                onClose={() => setIsOpen(false)}
+              >
+                {poi.name}
+              </Marker>
+            )}
+          </For>
+        </MapGL>
+      </Sidebar>
       <ViewportInfo viewport={viewport()} />
-    </div>
-  );
-};
-
-const TestButton = (props: { coords: { lat: string; lon: string } }) => {
-  const [mapContext] = useMapContext();
-
-  return (
-    <Button
-      type="button"
-      onClick={() => {
-        mapContext.map.flyTo({ center: props.coords, zoom: 9 });
-      }}
-    >
-      CLICK HERE
-    </Button>
+    </>
   );
 };
 

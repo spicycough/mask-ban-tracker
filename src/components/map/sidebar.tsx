@@ -1,17 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { usePlaceOfInterest } from "@/features/map/constants";
 import { useMap } from "@/features/map/create-map-context";
-import type { MaybeAccessor } from "@/lib/solid";
 import { cn } from "@/lib/utils";
 import { ArrowLeftToLineIcon, ArrowRightToLineIcon } from "lucide-solid";
-import {
-  type Accessor,
-  type ParentProps,
-  Show,
-  createEffect,
-  splitProps,
-} from "solid-js";
-import { reconcile } from "solid-js/store";
+import { type ParentProps, Show, createEffect, splitProps } from "solid-js";
 
 export interface SidebarProps extends ParentProps {
   class?: string;
@@ -23,8 +14,6 @@ export const Sidebar = (props: SidebarProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
   const map = useMap();
-
-  const nassau = usePlaceOfInterest("nassau");
 
   createEffect(() => {
     if (map.viewport().inTransit) {
@@ -59,9 +48,7 @@ export const Sidebar = (props: SidebarProps) => {
           variant="outline"
           onClick={() => {
             console.log("Clicked");
-            map.setViewport({
-              center: nassau.coords,
-              zoom: nassau.zoom,
+            map.flyTo("nassau", {
               pitch: 225,
             });
           }}

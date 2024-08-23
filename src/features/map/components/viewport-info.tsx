@@ -10,7 +10,7 @@ export type ViewportInfoProps = ComponentProps<"div"> & {};
 export const ViewportInfo = (props: ViewportInfoProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const mapContext = useMapContext();
+  const { viewport } = useMapContext();
 
   return (
     <div
@@ -23,7 +23,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
       )}
       {...rest}
     >
-      <Show when={mapContext.viewport().center}>
+      <Show when={viewport().center}>
         {(center) => (
           <>
             <span>{formatCoords(center()).latitude}</span>
@@ -32,7 +32,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
         )}
       </Show>
 
-      <Show when={mapContext.viewport().center}>
+      <Show when={viewport().center}>
         {(center) => (
           <>
             <span>{formatCoords(center()).longitude}</span>
@@ -45,7 +45,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
       {/*   <div class="h-4 w-px bg-gray-800" /> */}
       {/* </Show> */}
 
-      <Show when={mapContext.viewport().zoom}>
+      <Show when={viewport().zoom}>
         {(zoom) => (
           <>
             <span>{Math.trunc(zoom())}</span>

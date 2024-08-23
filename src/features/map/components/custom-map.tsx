@@ -1,21 +1,22 @@
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
-import "maplibre-gl/dist/maplibre-gl.css";
-import { type ComponentProps, For, onMount, splitProps } from "solid-js";
 import {
-  Layer,
-  Marker,
-  default as SolidMapGL,
-  Source,
-  type Viewport,
-} from "solid-map-gl";
+  type ComponentProps,
+  For,
+  getOwner,
+  onMount,
+  splitProps,
+} from "solid-js";
+import { Layer, Marker, default as SolidMapGL, Source } from "solid-map-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 
 interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
 export function CustomMap(props: CustomMapProps) {
   const [, rest] = splitProps(props, ["class", "options"]);
 
-  const mapContext = useMapContext();
+  const { viewport, setViewport, store, ...mapContext } = useMapContext();
 
   // TODO: hide the map controls
   onMount(() => {
@@ -28,11 +29,13 @@ export function CustomMap(props: CustomMapProps) {
     console.log("no ctrl");
   });
 
+  const owner = getOwner();
+
   return (
     <SolidMapGL
       class={cn("h-dvh w-full", props.class)}
-      viewport={mapContext.viewport()}
-      onViewportChange={(evt: Viewport) => mapContext.setViewport(evt)}
+      viewport={viewport()}
+      onViewportChange={setViewport}
       {...mapContext.props}
       {...rest}
     >
@@ -55,7 +58,7 @@ export function CustomMap(props: CustomMapProps) {
           }}
         />
       </Source>
-      <For each={mapContext.store.poi}>
+      <For each={store.poi}>
         {(poi) => (
           <Marker
             showPopup={false}

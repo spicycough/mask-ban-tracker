@@ -2,7 +2,14 @@ import { Button } from "@/components/ui/button";
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
 import { ArrowLeftToLineIcon, ArrowRightToLineIcon } from "lucide-solid";
-import { type ParentProps, Show, createEffect, splitProps } from "solid-js";
+import {
+  type ParentProps,
+  Show,
+  createEffect,
+  getOwner,
+  runWithOwner,
+  splitProps,
+} from "solid-js";
 
 export interface SidebarProps extends ParentProps {
   class?: string;
@@ -13,26 +20,20 @@ export interface SidebarProps extends ParentProps {
 export const Sidebar = (props: SidebarProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const map = useMapContext();
-
-  createEffect(() => {
-    if (map.viewport().inTransit) {
-      console.log("in transit");
-    }
-  });
+  const { viewport, flyTo } = useMapContext();
 
   return (
     <div
       class={cn(
-        "container flex flex-col items-center gap-10 py-16",
+        "container relative flex flex-col items-center gap-10 py-16",
         props.class,
       )}
       {...rest}
     >
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
-        class="absolute top-1 right-1"
+        class="absolute top-1 right-2"
         onClick={() => props.setIsCollapsed?.(!props.isCollapsed)}
       >
         <Show
@@ -48,14 +49,14 @@ export const Sidebar = (props: SidebarProps) => {
           variant="outline"
           onClick={() => {
             console.log("Clicked");
-            map.flyTo("nassau", {
+            flyTo("nassau", {
               pitch: 225,
             });
           }}
         >
           Nassau County
         </Button>
-        <Show when={!map.viewport().inTransit}>
+        <Show when={!viewport().inTransit}>
           <p>We've landed in Nassau</p>
         </Show>
       </div>

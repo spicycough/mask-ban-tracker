@@ -20,6 +20,7 @@ export default defineConfig({
     build: {
       commonjsOptions: { transformMixedEsModules: true },
     },
+    optimizeDeps: { include: ["mapbox-gl"] },
     resolve: {
       alias: {
         "mapbox-gl": "maplibre-gl",

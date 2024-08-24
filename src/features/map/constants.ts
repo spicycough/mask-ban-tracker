@@ -13,6 +13,11 @@ export const placesOfInterest = [
   },
 ] as const;
 
+export const StateFP = {
+  NC: 37,
+  NY: 12,
+};
+
 export type PlaceOfInterest = (typeof placesOfInterest)[number];
 
 export type PlaceOfInterestKey = PlaceOfInterest["key"];

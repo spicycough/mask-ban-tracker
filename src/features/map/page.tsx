@@ -20,10 +20,7 @@ export const MapPage = () => {
       <Sidebar
         isCollapsed={isCollapsed()}
         setIsCollapsed={setIsCollapsed}
-        class={cn(
-          "z-10 bg-background",
-          isCollapsed() ? "w-[200px]" : "w-[396px]",
-        )}
+        class={cn("z-10 bg-card", isCollapsed() ? "w-[200px]" : "w-[396px]")}
       />
       <CustomMap />
       <ViewportInfo />

@@ -67,6 +67,9 @@ export const makeMapContext = (initalState?: MapState) => {
         throw new Error(`Couldn't find ${placeOfInterest}`);
       }
       setViewport({ center: poi.coords, zoom: poi.zoom, ...options });
+      setTimeout(() => {
+        setStore("currentLocation", placeOfInterest);
+      }, 250);
     };
 
     return {

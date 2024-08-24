@@ -5,7 +5,7 @@ export type Coordinates = {
   longitude: number;
 };
 
-const normalizeCoords = (coords: LatLngLike): Coordinates => {
+const normalizeCoords = (coords: LatLngLike) => {
   let lat: number;
   let lon: number;
   if (Array.isArray(coords)) {
@@ -19,24 +19,32 @@ const normalizeCoords = (coords: LatLngLike): Coordinates => {
   return {
     latitude: lat,
     longitude: lon,
-  };
+  } as Coordinates;
 };
 
 export const formatCoords = (coords: LatLngLike) => {
   const { latitude, longitude } = normalizeCoords(coords);
+  if (!latitude || !longitude) {
+    return {
+      latitude: "?",
+      longitude: "?",
+    };
+  }
+
+  console.log(`type of latitude: ${typeof latitude}`);
 
   let lat: string;
   if (latitude < 0) {
-    lat = `${Math.fround(Math.abs(latitude))}°S`;
+    lat = `${Math.abs(latitude).toFixed(2)}°S`;
   } else {
-    lat = `${Math.fround(latitude)}°N`;
+    lat = `${latitude.toFixed(2)}°N`;
   }
 
   let lon: string;
   if (longitude < 0) {
-    lon = `${Math.fround(Math.abs(longitude))}°W`;
+    lon = `${Math.abs(longitude).toFixed(2)}°W`;
   } else {
-    lon = `${Math.fround(longitude)}°E`;
+    lon = `${longitude.toFixed(2)}°E`;
   }
 
   return {

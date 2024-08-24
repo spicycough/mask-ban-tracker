@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
-import { ArrowLeftToLineIcon, ArrowRightToLineIcon } from "lucide-solid";
+import {
+  ArrowLeftToLineIcon,
+  ArrowRightToLineIcon,
+  NavigationIcon,
+} from "lucide-solid";
 import {
   type ParentProps,
   Show,
@@ -25,7 +29,7 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <div
       class={cn(
-        "container relative flex flex-col items-center gap-10 py-16",
+        "container relative flex flex-col items-center gap-10 py-16 shadow-gray-300 shadow-lg",
         props.class,
       )}
       {...rest}
@@ -44,21 +48,53 @@ export const Sidebar = (props: SidebarProps) => {
         </Show>
       </Button>
       <h1 class="font-semibold text-2xl">Mask Bans</h1>
-      <div class="grid">
-        <Button
-          variant="outline"
-          onClick={() => {
-            console.log("Clicked");
-            flyTo("nassau", {
-              pitch: 225,
-            });
-          }}
-        >
+      <div class="flex w-full flex-col gap-2">
+        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
           Nassau County
-        </Button>
-        <Show when={!viewport().inTransit}>
-          <p>We've landed in Nassau</p>
-        </Show>
+          <Button
+            variant="ghost"
+            class="outline-none"
+            onClick={() => {
+              console.log("Clicked");
+              flyTo("nassau", {
+                pitch: 225,
+                zoom: 11,
+              });
+            }}
+          >
+            <NavigationIcon class="size-4 fill-primary" />
+          </Button>
+        </span>
+        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
+          Los Angeles County
+          <Button
+            variant="ghost"
+            class="outline-none"
+            onClick={() => {
+              console.log("Clicked");
+              flyTo("nassau", {
+                pitch: 225,
+              });
+            }}
+          >
+            <NavigationIcon class="size-4 fill-primary" />
+          </Button>
+        </span>
+        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
+          North Carolina
+          <Button
+            variant="ghost"
+            class="outline-none"
+            onClick={() => {
+              console.log("Clicked");
+              flyTo("nassau", {
+                pitch: 225,
+              });
+            }}
+          >
+            <NavigationIcon class="size-4 fill-primary" />
+          </Button>
+        </span>
       </div>
     </div>
   );

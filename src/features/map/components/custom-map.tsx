@@ -3,13 +3,21 @@ import { cn } from "@/lib/utils";
 import {
   type ComponentProps,
   For,
-  getOwner,
+  Show,
+  createMemo,
   onMount,
   splitProps,
 } from "solid-js";
-import { Layer, Marker, default as SolidMapGL, Source } from "solid-map-gl";
+import {
+  Camera,
+  Layer,
+  Marker,
+  default as SolidMapGL,
+  Source,
+} from "solid-map-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { HudCard } from "./hud-card";
 
 interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
@@ -17,19 +25,9 @@ export function CustomMap(props: CustomMapProps) {
   const [, rest] = splitProps(props, ["class", "options"]);
 
   const { viewport, setViewport, store, ...mapContext } = useMapContext();
-
-  // TODO: hide the map controls
-  onMount(() => {
-    const ctrl = document.querySelector("div.maplibregl-ctrl-bottom-right");
-
-    if (ctrl) {
-      ctrl.setAttribute("style", "display: none");
-      return;
-    }
-    console.log("no ctrl");
+  const shouldRotate = createMemo(() => {
+    return !!store.currentLocation && !store.viewport.inTransit;
   });
-
-  const owner = getOwner();
 
   return (
     <SolidMapGL
@@ -44,26 +42,45 @@ export function CustomMap(props: CustomMapProps) {
         source={{
           type: "geojson",
           data: "http://localhost:4321/api/counties.geojson",
-          // filter: ["all", ["==", "NAME", "Nassau"]],
         }}
       >
         <Layer
           visible
           sourceId="counties"
+          filter={[
+            "any",
+            ["==", "NAME", "Nassau"],
+            ["==", "NAME", "Los Angeles"],
+          ]}
           style={{
             type: "line",
             paint: {
-              color: "#e399ee",
+              color: "#FF3C3F",
+            },
+          }}
+        />
+        <Layer
+          visible
+          sourceId="counties"
+          filter={[
+            "any",
+            ["==", "NAME", "Nassau"],
+            ["==", "NAME", "Los Angeles"],
+          ]}
+          style={{
+            type: "fill",
+            paint: {
+              color: "#B03C3F",
             },
           }}
         />
       </Source>
-      <For each={store.poi}>
+      <For each={store.poi.filter((poi) => poi.key !== "usa")}>
         {(poi) => (
           <Marker
             showPopup={false}
             options={{
-              color: "#333FFF",
+              color: "text-red-400",
               // element: <MapPinIcon class="size-10 text-red-800" />,
             }}
             lngLat={poi.coords}
@@ -75,6 +92,20 @@ export function CustomMap(props: CustomMapProps) {
           </Marker>
         )}
       </For>
+      <div class="absolute top-10 right-10">
+        <HudCard />
+      </div>
     </SolidMapGL>
   );
 }
+
+// // TODO: hide the map controls
+// onMount(() => {
+//   const ctrl = document.querySelector("div.maplibregl-ctrl-bottom-right");
+//
+//   if (ctrl) {
+//     ctrl.setAttribute("style", "display: none");
+//     return;
+//   }
+//   console.log("no ctrl");
+// });

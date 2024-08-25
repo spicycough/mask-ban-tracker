@@ -12,3 +12,9 @@ export const users = sqliteTable(
     emailUnqIdx: uniqueIndex("email_unq_idx").on(table.email),
   }),
 );
+
+export const locations = sqliteTable("locations", {
+  id: text("id").primaryKey().$defaultFn(nanoid),
+  name: text("name").notNull(),
+  status: text("status").notNull(),
+});

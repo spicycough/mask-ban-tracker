@@ -1,10 +1,8 @@
-import { Separator } from "@/components/ui/separator";
 import { useMapContext } from "@/features/map/create-map-context";
-import { formatCoords } from "@/features/map/utils";
 import { cn } from "@/lib/utils";
 import { CompassIcon, SearchIcon } from "lucide-solid";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { type ComponentProps, Show, splitProps } from "solid-js";
+import { type ComponentProps, Show, createMemo, splitProps } from "solid-js";
 
 export type ViewportInfoProps = ComponentProps<"div"> & {};
 
@@ -26,10 +24,11 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
     >
       <Show when={viewport().center}>
         {(center) => {
-          const coords = () =>
-            Object.entries(center()).map(([key, value]) => {
+          const coords = createMemo(() =>
+            Object.entries(center()).map(([_, value]) => {
               return Number.parseFloat(value as string).toFixed(2);
-            });
+            }),
+          );
           return (
             <>
               <CompassIcon class="size-4" />

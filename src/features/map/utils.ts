@@ -1,11 +1,11 @@
-import type { LatLngLike } from "./types";
+import type { ILngLatLike as LngLatLike } from "maplibre-gl";
 
 export type Coordinates = {
   latitude: number;
   longitude: number;
 };
 
-const normalizeCoords = (coords: LatLngLike) => {
+const normalizeCoords = (coords: LngLatLike) => {
   let lat: number;
   let lon: number;
   if (Array.isArray(coords)) {
@@ -22,7 +22,7 @@ const normalizeCoords = (coords: LatLngLike) => {
   } as Coordinates;
 };
 
-export const formatCoords = (coords: LatLngLike) => {
+export const formatCoords = (coords: LngLatLike) => {
   const { latitude, longitude } = normalizeCoords(coords);
   if (!latitude || !longitude) {
     return {

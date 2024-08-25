@@ -1,11 +1,9 @@
-import * as maplibre from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   createContext,
-  createEffect,
   createMemo,
   createRoot,
-  on,
+  onMount,
   useContext,
 } from "solid-js";
 import { createStore, produce, reconcile } from "solid-js/store";
@@ -16,36 +14,26 @@ import {
 import {
   type PlaceOfInterest,
   type PlaceOfInterestKey,
-  placesOfInterest,
-  usePlaceOfInterest,
+  selectPlaceOfInterest,
 } from "./constants";
 
 export type MapState = {
   viewport: Viewport;
-  poi: PlaceOfInterest[];
-  map: ReturnType<typeof useSolidMapContext>[0]["map"];
   currentLocation: PlaceOfInterestKey | null;
   initialLocation: PlaceOfInterest;
 };
 
-export const makeMapContext = (initalState?: MapState) => {
+export const makeMapContext = (initialState?: MapState) => {
   return createRoot(() => {
     let mapRef!: HTMLDivElement;
 
-    const [solidMapContext] = useSolidMapContext();
-
-    const usa = usePlaceOfInterest("usa");
+    const usa = selectPlaceOfInterest({ key: "usa" });
 
     const [store, setStore] = createStore<MapState>({
-      poi: [...placesOfInterest],
-      viewport: {
-        center: usa.coords,
-        zoom: usa.zoom,
-      } as Viewport,
-      map: solidMapContext.map,
-      currentLocation: null,
+      viewport: initialState?.viewport || usa.viewport,
       initialLocation: usa,
-      ...initalState,
+      currentLocation: null,
+      ...initialState,
     } as const);
 
     const viewport = createMemo(() => store.viewport);
@@ -61,28 +49,38 @@ export const makeMapContext = (initalState?: MapState) => {
       );
     };
 
-    const flyTo = (placeOfInterest: PlaceOfInterestKey, options?: Viewport) => {
-      const poi = usePlaceOfInterest(placeOfInterest);
+    const resetViewport = () => {
+      setViewport(store.initialLocation.viewport);
+    };
+
+    const flyTo = (key: PlaceOfInterestKey, options?: Viewport) => {
+      const poi = selectPlaceOfInterest({ key: key });
       if (!poi) {
-        throw new Error(`Couldn't find ${placeOfInterest}`);
+        throw new Error(`Couldn't find ${key}`);
       }
-      setViewport({ center: poi.coords, zoom: poi.zoom, ...options });
+
+      setViewport({ ...poi, ...options });
+
       setTimeout(() => {
-        setStore("currentLocation", placeOfInterest);
+        setStore("currentLocation", key);
       }, 250);
     };
 
+    onMount(() => {
+      const [solidMapContext] = useSolidMapContext();
+      setStore(reconcile(solidMapContext.map));
+      resetViewport();
+    });
+
     return {
+      ref: mapRef,
       store: store,
       setStore: setStore,
       viewport: viewport,
       setViewport: setViewport,
       flyTo: flyTo,
-      // reset: () => setViewport(store.initialLocation),
+      resetViewport: resetViewport,
       props: {
-        ref: mapRef,
-        map: solidMapContext.map,
-        maplibre: maplibre,
         transitionType: "flyTo",
         options: {
           style: "http://localhost:4321/api/map.json",

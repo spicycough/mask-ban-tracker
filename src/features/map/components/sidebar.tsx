@@ -6,14 +6,7 @@ import {
   ArrowRightToLineIcon,
   NavigationIcon,
 } from "lucide-solid";
-import {
-  type ParentProps,
-  Show,
-  createEffect,
-  getOwner,
-  runWithOwner,
-  splitProps,
-} from "solid-js";
+import { For, type ParentProps, Show, splitProps } from "solid-js";
 
 export interface SidebarProps extends ParentProps {
   class?: string;
@@ -24,7 +17,7 @@ export interface SidebarProps extends ParentProps {
 export const Sidebar = (props: SidebarProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const { viewport, flyTo } = useMapContext();
+  const { viewport, flyTo, store } = useMapContext();
 
   return (
     <div
@@ -49,52 +42,25 @@ export const Sidebar = (props: SidebarProps) => {
       </Button>
       <h1 class="font-semibold text-2xl">Mask Bans</h1>
       <div class="flex w-full flex-col gap-2">
-        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
-          Nassau County
-          <Button
-            variant="ghost"
-            class="outline-none"
-            onClick={() => {
-              console.log("Clicked");
-              flyTo("nassau", {
-                pitch: 225,
-                zoom: 11,
-              });
-            }}
-          >
-            <NavigationIcon class="size-4 fill-primary" />
-          </Button>
-        </span>
-        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
-          Los Angeles County
-          <Button
-            variant="ghost"
-            class="outline-none"
-            onClick={() => {
-              console.log("Clicked");
-              flyTo("nassau", {
-                pitch: 225,
-              });
-            }}
-          >
-            <NavigationIcon class="size-4 fill-primary" />
-          </Button>
-        </span>
-        <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
-          North Carolina
-          <Button
-            variant="ghost"
-            class="outline-none"
-            onClick={() => {
-              console.log("Clicked");
-              flyTo("nassau", {
-                pitch: 225,
-              });
-            }}
-          >
-            <NavigationIcon class="size-4 fill-primary" />
-          </Button>
-        </span>
+        <For each={store.poi}>
+          {(poi) => (
+            <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
+              {poi.name}
+              <Button
+                variant="ghost"
+                class="outline-none"
+                onClick={() => {
+                  flyTo(poi.key, {
+                    pitch: 225,
+                    zoom: 11,
+                  });
+                }}
+              >
+                <NavigationIcon class="size-4 fill-primary" />
+              </Button>
+            </span>
+          )}
+        </For>
       </div>
     </div>
   );

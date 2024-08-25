@@ -1,39 +1,29 @@
+import * as maplibre from "maplibre-gl";
+
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
-import {
-  type ComponentProps,
-  For,
-  Show,
-  createMemo,
-  onMount,
-  splitProps,
-} from "solid-js";
-import {
-  Camera,
-  Layer,
-  Marker,
-  default as SolidMapGL,
-  Source,
-} from "solid-map-gl";
+import { For, splitProps } from "solid-js";
+import { Layer, Marker, default as SolidMapGL, Source } from "solid-map-gl";
+import { HudCard } from "./hud-card";
+import { CustomMapLayer } from "./map-layer";
+
+import type { ComponentProps } from "solid-js";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { HudCard } from "./hud-card";
 
-interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
+export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
 export function CustomMap(props: CustomMapProps) {
   const [, rest] = splitProps(props, ["class", "options"]);
 
   const { viewport, setViewport, store, ...mapContext } = useMapContext();
-  const shouldRotate = createMemo(() => {
-    return !!store.currentLocation && !store.viewport.inTransit;
-  });
 
   return (
     <SolidMapGL
       class={cn("h-dvh w-full", props.class)}
       viewport={viewport()}
       onViewportChange={setViewport}
+      mapLib={maplibre}
       {...mapContext.props}
       {...rest}
     >
@@ -83,7 +73,7 @@ export function CustomMap(props: CustomMapProps) {
               color: "text-red-400",
               // element: <MapPinIcon class="size-10 text-red-800" />,
             }}
-            lngLat={poi.coords}
+            lngLat={poi.viewport.center}
             // on:click={(evt: MouseEvent) => {
             //   console.log("CLICKED WOOHOO", evt);
             // }}

@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "lucide-solid";
 import { type ComponentProps, Show, splitProps } from "solid-js";
-import { usePlaceOfInterest } from "../constants";
+import { selectPlaceOfInterest } from "../constants";
 import { useMapContext } from "../create-map-context";
 
 export interface HudCardProps extends ComponentProps<typeof Card> {
@@ -26,7 +26,7 @@ export const HudCard = (props: HudCardProps) => {
   return (
     <Show when={store.currentLocation}>
       {(location) => {
-        const poi = usePlaceOfInterest(location());
+        const poi = selectPlaceOfInterest({ key: location() });
 
         return (
           <Card

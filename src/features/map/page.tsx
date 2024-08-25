@@ -16,7 +16,7 @@ export const MapPage = () => {
   const [isCollapsed, setIsCollapsed] = createSignal(false);
 
   return (
-    <MapContext.Provider value={{ ...mapContext }}>
+    <MapContext.Provider value={mapContext}>
       <Sidebar
         isCollapsed={isCollapsed()}
         setIsCollapsed={setIsCollapsed}

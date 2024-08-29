@@ -1,12 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
+import { SearchIcon } from "lucide-solid";
+import { For, type ParentProps, splitProps } from "solid-js";
 import {
-  ArrowLeftToLineIcon,
-  ArrowRightToLineIcon,
-  NavigationIcon,
-} from "lucide-solid";
-import { For, type ParentProps, Show, splitProps } from "solid-js";
+  type PlaceOfInterest,
+  type PlaceOfInterestKey,
+  selectPlaceOfInterest,
+} from "../constants";
 
 export interface SidebarProps extends ParentProps {
   class?: string;
@@ -17,51 +19,69 @@ export interface SidebarProps extends ParentProps {
 export const Sidebar = (props: SidebarProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const { viewport, flyTo, store } = useMapContext();
+  const { flyTo, store } = useMapContext();
+  const pois = selectPlaceOfInterest();
 
   return (
-    <div
-      class={cn(
-        "container relative flex flex-col items-center gap-10 py-16 shadow-gray-300 shadow-lg",
-        props.class,
-      )}
-      {...rest}
-    >
-      <Button
-        variant="ghost"
-        size="icon"
-        class="absolute top-1 right-2"
-        onClick={() => props.setIsCollapsed?.(!props.isCollapsed)}
-      >
-        <Show
-          when={props.isCollapsed}
-          fallback={<ArrowLeftToLineIcon class="size-4" />}
-        >
-          <ArrowRightToLineIcon class="size-4" />
-        </Show>
-      </Button>
-      <h1 class="font-semibold text-2xl">Mask Bans</h1>
-      <div class="flex w-full flex-col gap-2">
-        <For each={store.poi}>
-          {(poi) => (
-            <span class="flex w-full flex-row items-center justify-between rounded-lg bg-secondary p-2 font-semibold text-lg">
-              {poi.name}
-              <Button
-                variant="ghost"
-                class="outline-none"
-                onClick={() => {
-                  flyTo(poi.key, {
-                    pitch: 225,
-                    zoom: 11,
-                  });
-                }}
-              >
-                <NavigationIcon class="size-4 fill-primary" />
-              </Button>
-            </span>
+    <div class="w-1/3 overflow-auto border-r bg-white p-4 dark:bg-gray-700">
+      <h1 class="mb-4 font-bold text-2xl">Mask Bans</h1>
+      <div class="relative mb-4">
+        <SearchIcon class="absolute top-2.5 left-3 h-4 w-4 text-gray-400" />
+        <Input placeholder="Search Locations" class="pl-10" />
+      </div>
+      <div class="space-y-4">
+        <For each={Object.entries(pois)}>
+          {([key, poi]) => (
+            <SidebarEntry
+              poi={poi}
+              isSelected={store.currentLocation === key}
+              onClick={() => {
+                flyTo(key as PlaceOfInterestKey, {
+                  pitch: 225,
+                  zoom: 11,
+                });
+              }}
+            />
           )}
         </For>
       </div>
     </div>
+  );
+};
+
+interface SidebarEntryProps extends ParentProps {
+  class?: string;
+  poi: PlaceOfInterest;
+  isSelected?: boolean;
+  onClick?: () => void;
+}
+
+export const SidebarEntry = (props: SidebarEntryProps) => {
+  return (
+    <button
+      type="button"
+      class={cn("w-full rounded-lg p-4", {
+        "border-2 border-muted": !props.isSelected,
+        "bg-gray-300 text-muted ring ring-sky-700": props.isSelected,
+      })}
+      onClick={props.onClick}
+    >
+      <div class="mb-2 flex items-center justify-between">
+        <span class="font-semibold">{props.poi.name}</span>
+        <Badge variant={props.isSelected ? "secondary" : "default"}>
+          {props.poi.meta.banStatus}
+        </Badge>
+      </div>
+      <div class="space-y-2">
+        <div class="flex items-center">
+          <div class="mr-2 h-2 w-2 rounded-full bg-current" />
+          <span class="text-sm">{props.poi.meta.banStatus}</span>
+        </div>
+        <div class="flex items-center">
+          <div class="mr-2 h-2 w-2 rounded-full bg-current" />
+          <span class="text-sm">{props.poi.meta.banStatus}</span>
+        </div>
+      </div>
+    </button>
   );
 };

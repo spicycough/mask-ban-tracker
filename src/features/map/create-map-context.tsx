@@ -20,18 +20,21 @@ import {
 export type MapState = {
   viewport: Viewport;
   currentLocation: PlaceOfInterestKey | null;
-  initialLocation: PlaceOfInterest;
 };
 
 export const makeMapContext = (initialState?: MapState) => {
   return createRoot(() => {
     let mapRef!: HTMLDivElement;
 
-    const usa = selectPlaceOfInterest({ key: "usa" });
+    const initialViewport =
+      initialState?.viewport ||
+      ({
+        center: { lat: 37.0902, lon: -95.7129 },
+        zoom: 4,
+      } satisfies Viewport);
 
     const [store, setStore] = createStore<MapState>({
-      viewport: initialState?.viewport || usa.viewport,
-      initialLocation: usa,
+      viewport: initialState?.viewport || initialViewport,
       currentLocation: null,
       ...initialState,
     } as const);
@@ -50,16 +53,16 @@ export const makeMapContext = (initialState?: MapState) => {
     };
 
     const resetViewport = () => {
-      setViewport(store.initialLocation.viewport);
+      setViewport(initialViewport);
     };
 
     const flyTo = (key: PlaceOfInterestKey, options?: Viewport) => {
-      const poi = selectPlaceOfInterest({ key: key });
+      const poi = selectPlaceOfInterest(key);
       if (!poi) {
         throw new Error(`Couldn't find ${key}`);
       }
 
-      setViewport({ ...poi, ...options });
+      setViewport({ ...poi.viewport, ...options });
 
       setTimeout(() => {
         setStore("currentLocation", key);

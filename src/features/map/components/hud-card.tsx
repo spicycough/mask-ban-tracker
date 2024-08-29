@@ -26,7 +26,7 @@ export const HudCard = (props: HudCardProps) => {
   return (
     <Show when={store.currentLocation}>
       {(location) => {
-        const poi = selectPlaceOfInterest({ key: location() });
+        const poi = selectPlaceOfInterest(location());
 
         return (
           <Card

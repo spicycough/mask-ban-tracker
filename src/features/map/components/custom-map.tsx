@@ -10,6 +10,7 @@ import { CustomMapLayer } from "./map-layer";
 import type { ComponentProps } from "solid-js";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { selectPlaceOfInterest } from "../constants";
 
 export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
@@ -17,10 +18,13 @@ export function CustomMap(props: CustomMapProps) {
   const [, rest] = splitProps(props, ["class", "options"]);
 
   const { viewport, setViewport, store, ...mapContext } = useMapContext();
+  const pois = Object.entries(selectPlaceOfInterest())
+    .filter(([_, poi]) => poi.name !== "USA")
+    .map(([key, poi]) => ({ ...poi, key }));
 
   return (
     <SolidMapGL
-      class={cn("h-dvh w-full", props.class)}
+      class={cn("", props.class)}
       viewport={viewport()}
       onViewportChange={setViewport}
       mapLib={maplibre}
@@ -65,7 +69,7 @@ export function CustomMap(props: CustomMapProps) {
           }}
         />
       </Source>
-      <For each={store.poi.filter((poi) => poi.key !== "usa")}>
+      <For each={pois}>
         {(poi) => (
           <Marker
             showPopup={false}

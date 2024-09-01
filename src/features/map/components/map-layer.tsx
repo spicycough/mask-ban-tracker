@@ -1,6 +1,6 @@
-import type { ComponentProps } from "solid-js";
+import { type ComponentProps, Show, splitProps } from "solid-js";
 import { Layer } from "solid-map-gl";
-import { BanStatus, type PlaceOfInterest } from "../constants";
+import { BanStatus, type PlaceOfInterest } from "../place-of-interest";
 
 interface BannedLayerProps extends ComponentProps<typeof Layer> {
   status: BanStatus;
@@ -29,17 +29,31 @@ const getColor = (status: BanStatus): HexColor => {
 };
 
 export const CustomMapLayer = (props: BannedLayerProps) => {
+  const [local, rest] = splitProps(props, ["status", "poi", "style"]);
+
+  if (local.poi.layer.sourceId === undefined) {
+    console.warn(
+      "Attempting to render a CustomMapLayer with a poi that has no layer.sourceId",
+    );
+  }
+
   return (
-    <Layer
-      visible
-      sourceId={props.poi.layer.sourceId ?? undefined}
-      filter={["all", props.poi.layer.filter]}
-      style={{
-        type: "fill",
-        paint: {
-          color: getColor(props.status),
-        },
-      }}
-    />
+    <Show when={local.poi.layer.sourceId}>
+      {(sourceId) => (
+        <Layer
+          visible
+          sourceId={sourceId()}
+          filter={["all", local.poi.layer.filter]}
+          style={{
+            type: "fill",
+            paint: {
+              color: getColor(local.status),
+            },
+            ...local.style,
+          }}
+          {...rest}
+        />
+      )}
+    </Show>
   );
 };

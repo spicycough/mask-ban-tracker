@@ -11,8 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "lucide-solid";
 import { type ComponentProps, Show, splitProps } from "solid-js";
-import { selectPlaceOfInterest } from "../constants";
 import { useMapContext } from "../create-map-context";
+import { selectPlaceOfInterest } from "../place-of-interest";
 
 export interface HudCardProps extends ComponentProps<typeof Card> {
   class?: string;

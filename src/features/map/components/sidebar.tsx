@@ -1,3 +1,4 @@
+import { navigate } from "astro:transitions/client";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useMapContext } from "@/features/map/create-map-context";
@@ -8,7 +9,7 @@ import {
   type PlaceOfInterest,
   type PlaceOfInterestKey,
   selectPlaceOfInterest,
-} from "../constants";
+} from "../place-of-interest";
 
 export interface SidebarProps extends ParentProps {
   class?: string;
@@ -36,6 +37,7 @@ export const Sidebar = (props: SidebarProps) => {
               poi={poi}
               isSelected={store.currentLocation === key}
               onClick={() => {
+                window.history.replaceState(null, "", `/${key}`);
                 flyTo(key as PlaceOfInterestKey, {
                   pitch: 225,
                   zoom: 11,

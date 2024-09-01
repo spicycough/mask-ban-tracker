@@ -10,7 +10,7 @@ import { CustomMapLayer } from "./map-layer";
 import type { ComponentProps } from "solid-js";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { selectPlaceOfInterest } from "../constants";
+import { selectPlaceOfInterest } from "../place-of-interest";
 
 export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
@@ -38,35 +38,9 @@ export function CustomMap(props: CustomMapProps) {
           data: "http://localhost:4321/api/counties.geojson",
         }}
       >
-        <Layer
-          visible
-          sourceId="counties"
-          filter={[
-            "any",
-            ["==", "NAME", "Nassau"],
-            ["==", "NAME", "Los Angeles"],
-          ]}
-          style={{
-            type: "line",
-            paint: {
-              color: "#FF3C3F",
-            },
-          }}
-        />
-        <Layer
-          visible
-          sourceId="counties"
-          filter={[
-            "any",
-            ["==", "NAME", "Nassau"],
-            ["==", "NAME", "Los Angeles"],
-          ]}
-          style={{
-            type: "fill",
-            paint: {
-              color: "#B03C3F",
-            },
-          }}
+        <CustomMapLayer
+          poi={pois.filter((poi) => poi.key === "nassau")[0]}
+          status="banned"
         />
       </Source>
       <For each={pois}>

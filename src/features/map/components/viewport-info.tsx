@@ -7,7 +7,7 @@ import { type ComponentProps, Show, createMemo, splitProps } from "solid-js";
 export type ViewportInfoProps = ComponentProps<"div"> & {};
 
 export const ViewportInfo = (props: ViewportInfoProps) => {
-  const [, rest] = splitProps(props, ["class"]);
+  const [local, rest] = splitProps(props, ["class"]);
 
   const { viewport } = useMapContext();
 
@@ -18,7 +18,7 @@ export const ViewportInfo = (props: ViewportInfoProps) => {
         "rounded-full bg-black text-right font-light font-mono text-white text-xs",
         "animate-out opacity-100 transition-opacity duration-400 hover:opacity-0",
         "grid grid-flow-col",
-        props.class,
+        local.class,
       )}
       {...rest}
     >

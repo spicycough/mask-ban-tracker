@@ -17,15 +17,13 @@ export default defineConfig({
     platformProxy: { enabled: true },
   }),
   vite: {
-    build: {
-      commonjsOptions: { transformMixedEsModules: true },
-    },
     optimizeDeps: { include: ["mapbox-gl"] },
-    resolve: {
-      alias: {
-        "mapbox-gl": "maplibre-gl",
-      },
-    },
+    // optimizeDeps: { include: ["mapbox-gl"] },
+    // resolve: {
+    //   alias: {
+    //     "mapbox-gl": "maplibre-gl",
+    //   },
+    // },
   },
   experimental: {
     contentCollectionCache: true,

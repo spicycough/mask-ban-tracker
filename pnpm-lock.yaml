@@ -41,9 +41,6 @@ importers:
       '@libsql/client':
         specifier: ^0.9.0
         version: 0.9.0
-      '@types/mapbox-gl':
-        specifier: ^3.4.0
-        version: 3.4.0
       astro:
         specifier: ^4.14.5
         version: 4.14.5(@types/node@22.5.0)(rollup@4.21.0)(typescript@5.5.4)
@@ -55,7 +52,7 @@ importers:
         version: 0.7.0
       drizzle-orm:
         specifier: ^0.33.0
-        version: 0.33.0(@cloudflare/workers-types@4.20240712.0)(@libsql/client@0.9.0)
+        version: 0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0)
       hono:
         specifier: ^4.5.9
         version: 4.5.9
@@ -65,12 +62,9 @@ importers:
       mapbox-gl:
         specifier: ^3.6.0
         version: 3.6.0
-      mapbox-gl-rain-layer:
-        specifier: ^0.6.0
-        version: 0.6.0(mapbox-gl@3.6.0)
       maplibre-gl:
-        specifier: ^4.5.2
-        version: 4.5.2
+        specifier: ^4.6.0
+        version: 4.6.0
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
@@ -94,11 +88,14 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       '@cloudflare/workers-types':
-        specifier: ^4.20240512.0
-        version: 4.20240712.0
+        specifier: ^4.20240821.1
+        version: 4.20240821.1
       '@kobalte/tailwindcss':
         specifier: ^0.9.0
         version: 0.9.0(tailwindcss@3.4.10)
+      '@types/mapbox-gl':
+        specifier: ^3.1.0
+        version: 3.4.0
       '@types/node':
         specifier: ^22.5.0
         version: 22.5.0
@@ -124,11 +121,11 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.10)
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.5.4
         version: 5.5.4
       wrangler:
         specifier: ^3.72.2
-        version: 3.72.2(@cloudflare/workers-types@4.20240712.0)
+        version: 3.72.2(@cloudflare/workers-types@4.20240821.1)
 
 packages:
 
@@ -494,8 +491,8 @@ packages:
     resolution: {integrity: sha512-cqtLW1QiBC/ABaZIhAdyGCsnHHY6pAb6hsVUZg82Co2gQtf/faxRYV1FgpCwUYroTdk6A66xUMSTmFqreKCJow==, tarball: https://registry.npmjs.org/@cloudflare/workers-shared/-/workers-shared-0.3.0.tgz}
     engines: {node: '>=16.7.0'}
 
-  '@cloudflare/workers-types@4.20240712.0':
-    resolution: {integrity: sha512-C+C0ZnkRrxR2tPkZKAXwBsWEse7bWaA7iMbaG6IKaxaPTo/5ilx7Ei3BkI2izxmOJMsC05VS1eFUf95urXzhmw==, tarball: https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20240712.0.tgz}
+  '@cloudflare/workers-types@4.20240821.1':
+    resolution: {integrity: sha512-icAkbnAqgVl6ef9lgLTom8na+kj2RBw2ViPAQ586hbdj0xZcnrjK7P46Eu08OU9D/lNDgN2sKU/sxhe2iK/gIg==, tarball: https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20240821.1.tgz}
 
   '@corvu/dialog@0.2.3':
     resolution: {integrity: sha512-1p1lG2Pdu7CtDYw0FP+gdU0Db4zsB2ljOP7UxszZIQpvVvnrAYhNPfu/8IpscB38c0hZCodEnv5hR0NaEEA/Ag==, tarball: https://registry.npmjs.org/@corvu/dialog/-/dialog-0.2.3.tgz}
@@ -2551,9 +2548,9 @@ packages:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==, tarball: https://registry.npmjs.org/glob/-/glob-10.4.5.tgz}
     hasBin: true
 
-  global-prefix@3.0.0:
-    resolution: {integrity: sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==, tarball: https://registry.npmjs.org/global-prefix/-/global-prefix-3.0.0.tgz}
-    engines: {node: '>=6'}
+  global-prefix@4.0.0:
+    resolution: {integrity: sha512-w0Uf9Y9/nyHinEk5vMJKRie+wa4kR5hmDbEhGGds/kG1PwGLLHKRoNMeJOyCQjjBkANlnScqgzcFwGHgmgLkVA==, tarball: https://registry.npmjs.org/global-prefix/-/global-prefix-4.0.0.tgz}
+    engines: {node: '>=16'}
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==, tarball: https://registry.npmjs.org/globals/-/globals-11.12.0.tgz}
@@ -2639,8 +2636,9 @@ packages:
   import-meta-resolve@4.1.0:
     resolution: {integrity: sha512-I6fiaX09Xivtk+THaMfAwnA3MVA5Big1WHF1Dfx9hFuvNIWpXnorlkzhcQf6ehrqQiiZECRt1poOAkPmer3ruw==, tarball: https://registry.npmjs.org/import-meta-resolve/-/import-meta-resolve-4.1.0.tgz}
 
-  ini@1.3.8:
-    resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==, tarball: https://registry.npmjs.org/ini/-/ini-1.3.8.tgz}
+  ini@4.1.3:
+    resolution: {integrity: sha512-X7rqawQBvfdjS10YU1y1YVreA3SsLrW9dX2CewP2EbBJM4ypVNLDkO5y04gejPwKIY9lR+7r9gn3rFPt/kmWFg==, tarball: https://registry.npmjs.org/ini/-/ini-4.1.3.tgz}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
   is-arrayish@0.3.2:
     resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==, tarball: https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.2.tgz}
@@ -2721,6 +2719,10 @@ packages:
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==, tarball: https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz}
+
+  isexe@3.1.1:
+    resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==, tarball: https://registry.npmjs.org/isexe/-/isexe-3.1.1.tgz}
+    engines: {node: '>=16'}
 
   isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==, tarball: https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz}
@@ -2841,16 +2843,11 @@ packages:
   magic-string@0.30.11:
     resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==, tarball: https://registry.npmjs.org/magic-string/-/magic-string-0.30.11.tgz}
 
-  mapbox-gl-rain-layer@0.6.0:
-    resolution: {integrity: sha512-Var6ig5bhXck67xWoDhm3foB/LF+qRyYE6G2ouU1Nn6CrOkq4xhzHlCtqsWeDlEKH4VMFhy32eCJKDRI2sb+Nw==, tarball: https://registry.npmjs.org/mapbox-gl-rain-layer/-/mapbox-gl-rain-layer-0.6.0.tgz}
-    peerDependencies:
-      mapbox-gl: '>=0.54.0'
-
   mapbox-gl@3.6.0:
     resolution: {integrity: sha512-xjYHHIJDh6haYcKY+/9jh1eywwYfIOWCgT5Fowj4JriZexx/oOtg2S7BQDMZtpFyg9IN4VLCysmUWxY0pFNRWA==, tarball: https://registry.npmjs.org/mapbox-gl/-/mapbox-gl-3.6.0.tgz}
 
-  maplibre-gl@4.5.2:
-    resolution: {integrity: sha512-vlWL9EY2bSGg5FAt0mKPfYqlfX15uLW5D3kKv4Xjn54nIVn01MKdfUJMAVIr+8fXVqfSX6c095Iy5XnV+T76kQ==, tarball: https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.5.2.tgz}
+  maplibre-gl@4.6.0:
+    resolution: {integrity: sha512-zobZK+fE+XM+7K81fk5pSBYWZlTGjGT0P96y2fR4DV2ry35ZBfAd0uWNatll69EgYeE+uOhN1MvEk+z1PCuyOQ==, tarball: https://registry.npmjs.org/maplibre-gl/-/maplibre-gl-4.6.0.tgz}
     engines: {node: '>=16.14.0', npm: '>=8.1.0'}
 
   markdown-table@3.0.3:
@@ -3720,9 +3717,6 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==, tarball: https://registry.npmjs.org/thenify/-/thenify-3.3.1.tgz}
 
-  three@0.151.3:
-    resolution: {integrity: sha512-+vbuqxFy8kzLeO5MgpBHUvP/EAiecaDwDuOPPDe6SbrZr96kccF0ktLngXc7xA7bzyd3N0t2f6mw3Z9y6JCojQ==, tarball: https://registry.npmjs.org/three/-/three-0.151.3.tgz}
-
   tiny-glob@0.2.9:
     resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==, tarball: https://registry.npmjs.org/tiny-glob/-/tiny-glob-0.2.9.tgz}
 
@@ -4045,13 +4039,14 @@ packages:
     resolution: {integrity: sha512-ysVYmw6+ZBhx3+ZkcPwRuJi38ZOTLJJ33PSHaitLxSKUMsh0LkKd0nC69zZCwt5D+AYUcMK2hhw4yWny20vSGg==, tarball: https://registry.npmjs.org/which-pm/-/which-pm-3.0.0.tgz}
     engines: {node: '>=18.12'}
 
-  which@1.3.1:
-    resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==, tarball: https://registry.npmjs.org/which/-/which-1.3.1.tgz}
-    hasBin: true
-
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==, tarball: https://registry.npmjs.org/which/-/which-2.0.2.tgz}
     engines: {node: '>= 8'}
+    hasBin: true
+
+  which@4.0.0:
+    resolution: {integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==, tarball: https://registry.npmjs.org/which/-/which-4.0.0.tgz}
+    engines: {node: ^16.13.0 || >=18.0.0}
     hasBin: true
 
   widest-line@4.0.1:
@@ -4183,7 +4178,7 @@ snapshots:
     dependencies:
       '@astrojs/internal-helpers': 0.4.1
       '@astrojs/underscore-redirects': 0.3.4
-      '@cloudflare/workers-types': 4.20240712.0
+      '@cloudflare/workers-types': 4.20240821.1
       '@inox-tools/astro-when': 0.2.1(astro@4.14.5(@types/node@22.5.0)(rollup@4.21.0)(typescript@5.5.4))
       astro: 4.14.5(@types/node@22.5.0)(rollup@4.21.0)(typescript@5.5.4)
       esbuild: 0.22.0
@@ -4191,7 +4186,7 @@ snapshots:
       magic-string: 0.30.10
       miniflare: 3.20240701.0
       tiny-glob: 0.2.9
-      wrangler: 3.72.2(@cloudflare/workers-types@4.20240712.0)
+      wrangler: 3.72.2(@cloudflare/workers-types@4.20240821.1)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -4630,7 +4625,7 @@ snapshots:
 
   '@cloudflare/workers-shared@0.3.0': {}
 
-  '@cloudflare/workers-types@4.20240712.0': {}
+  '@cloudflare/workers-types@4.20240821.1': {}
 
   '@corvu/dialog@0.2.3(solid-js@1.8.21)':
     dependencies:
@@ -6096,9 +6091,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.33.0(@cloudflare/workers-types@4.20240712.0)(@libsql/client@0.9.0):
+  drizzle-orm@0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0):
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20240712.0
+      '@cloudflare/workers-types': 4.20240821.1
       '@libsql/client': 0.9.0
 
   dset@3.1.3: {}
@@ -6410,11 +6405,11 @@ snapshots:
       package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
 
-  global-prefix@3.0.0:
+  global-prefix@4.0.0:
     dependencies:
-      ini: 1.3.8
+      ini: 4.1.3
       kind-of: 6.0.3
-      which: 1.3.1
+      which: 4.0.0
 
   globals@11.12.0: {}
 
@@ -6543,7 +6538,7 @@ snapshots:
 
   import-meta-resolve@4.1.0: {}
 
-  ini@1.3.8: {}
+  ini@4.1.3: {}
 
   is-arrayish@0.3.2:
     optional: true
@@ -6599,6 +6594,8 @@ snapshots:
       is-inside-container: 1.0.0
 
   isexe@2.0.0: {}
+
+  isexe@3.1.1: {}
 
   isobject@3.0.1: {}
 
@@ -6718,11 +6715,6 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  mapbox-gl-rain-layer@0.6.0(mapbox-gl@3.6.0):
-    dependencies:
-      mapbox-gl: 3.6.0
-      three: 0.151.3
-
   mapbox-gl@3.6.0:
     dependencies:
       '@mapbox/jsonlint-lines-primitives': 2.0.2
@@ -6753,7 +6745,7 @@ snapshots:
       tweakpane: 4.0.4
       vt-pbf: 3.1.3
 
-  maplibre-gl@4.5.2:
+  maplibre-gl@4.6.0:
     dependencies:
       '@mapbox/geojson-rewind': 0.5.2
       '@mapbox/jsonlint-lines-primitives': 2.0.2
@@ -6772,7 +6764,7 @@ snapshots:
       earcut: 3.0.0
       geojson-vt: 4.0.2
       gl-matrix: 3.4.3
-      global-prefix: 3.0.0
+      global-prefix: 4.0.0
       kdbush: 4.0.2
       murmurhash-js: 1.0.0
       pbf: 3.3.0
@@ -7864,8 +7856,6 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
-  three@0.151.3: {}
-
   tiny-glob@0.2.9:
     dependencies:
       globalyzer: 0.1.0
@@ -8177,13 +8167,13 @@ snapshots:
     dependencies:
       load-yaml-file: 0.2.0
 
-  which@1.3.1:
-    dependencies:
-      isexe: 2.0.0
-
   which@2.0.2:
     dependencies:
       isexe: 2.0.0
+
+  which@4.0.0:
+    dependencies:
+      isexe: 3.1.1
 
   widest-line@4.0.1:
     dependencies:
@@ -8205,7 +8195,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20240821.1
       '@cloudflare/workerd-windows-64': 1.20240821.1
 
-  wrangler@3.72.2(@cloudflare/workers-types@4.20240712.0):
+  wrangler@3.72.2(@cloudflare/workers-types@4.20240821.1):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@cloudflare/workers-shared': 0.3.0
@@ -8226,7 +8216,7 @@ snapshots:
       workerd: 1.20240821.1
       xxhash-wasm: 1.0.2
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20240712.0
+      '@cloudflare/workers-types': 4.20240821.1
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil

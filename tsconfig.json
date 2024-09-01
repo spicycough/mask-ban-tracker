@@ -2,13 +2,11 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "strict": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
     "baseUrl": ".",
     "types": [
       "astro/client",
       "@cloudflare/workers-types",
-      "mapbox-gl"
+      "@types/mapbox-gl"
     ],
     "paths": {
       "@/*": [

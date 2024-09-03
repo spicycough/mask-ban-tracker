@@ -1,4 +1,4 @@
-import { trpcClient } from "@/lib/trpc";
+import { hc } from "@/lib/hono";
 import {
   type Accessor,
   type FlowComponent,
@@ -23,11 +23,11 @@ export type AuthContextValue = {
    * ```
    * export async function data(pageContext: PageContext) {
    *    const { request, response } = pageContext;
-   *    const trpcClient = initTRPCSSRClient(
+   *    const trpcClient = createHonoClientSSR(
    *        request.header(),
    *        response.headers
    *    );
-   *    const result = await trpcClient.currentUser.query();
+   *    const result = await hc.currentUser.query();
    *
    *    return {
    *      user: result.user
@@ -88,7 +88,7 @@ export const AuthContextProvider: FlowComponent = (props) => {
   }
 
   async function login(username: string, password: string) {
-    const result = await trpcClient.auth.login.mutate({
+    const result = await hc.auth.login.mutate({
       username: username,
       password: password,
     });
@@ -102,7 +102,7 @@ export const AuthContextProvider: FlowComponent = (props) => {
   }
 
   async function logout() {
-    const result = await trpcClient.auth.logout.query();
+    const result = await hc.auth.logout.query();
     if (result.success) {
       setUser(null);
       return { success: true };
@@ -120,7 +120,7 @@ export const AuthContextProvider: FlowComponent = (props) => {
     }
 
     setLoading(true);
-    const result = await trpcClient.auth.currentUser.query();
+    const result = await hc.auth.currentUser.query();
     if (result.user) {
       setUser(result.user);
       setLoading(false);

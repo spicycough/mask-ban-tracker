@@ -14,9 +14,6 @@ importers:
       '@corvu/resizable':
         specifier: ^0.2.3
         version: 0.2.3(solid-js@1.8.21)
-      '@hono/trpc-server':
-        specifier: ^0.3.2
-        version: 0.3.2(@trpc/server@11.0.0-rc.490)(hono@4.5.9)
       '@hono/valibot-validator':
         specifier: ^0.3.0
         version: 0.3.0(hono@4.5.9)(valibot@0.39.0(typescript@5.5.4))
@@ -35,12 +32,6 @@ importers:
       '@tanstack/solid-query-devtools':
         specifier: ^5.53.2
         version: 5.53.2(@tanstack/solid-query@5.53.2(solid-js@1.8.21))(solid-js@1.8.21)
-      '@trpc/client':
-        specifier: 11.0.0-rc.490
-        version: 11.0.0-rc.490(@trpc/server@11.0.0-rc.490)
-      '@trpc/server':
-        specifier: 11.0.0-rc.490
-        version: 11.0.0-rc.490
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -1180,13 +1171,6 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@hono/trpc-server@0.3.2':
-    resolution: {integrity: sha512-dTKDrSldjBn0hi9FjHOGdiHgMCWPoW5NaBUTQRNLyVL9JcJJu9oiwTFoIscPFxc9CF2rAeA8aRGHoFJK+A8cLw==, tarball: https://registry.npmjs.org/@hono/trpc-server/-/trpc-server-0.3.2.tgz}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@trpc/server': ^10.10.0 || >11.0.0-rc
-      hono: '>=4.*'
-
   '@hono/valibot-validator@0.3.0':
     resolution: {integrity: sha512-EcGJKzLt11SK4K11yKHrhI93ECtKeSHAnnENHw5tCL0ZhyDIx96avc3Ua8/ri4fwVvRPuOzFQ2OBRsVvwZuqeQ==, tarball: https://registry.npmjs.org/@hono/valibot-validator/-/valibot-validator-0.3.0.tgz}
     peerDependencies:
@@ -1602,14 +1586,6 @@ packages:
     resolution: {integrity: sha512-NQ+a5zklsbEaM0OeoJt6vpU4LGdTz4ChkCmWm7/9jij6pTRbTzitnTO3hNAn5/t8c9uVolh6ahjlghgOSGyE5A==, tarball: https://registry.npmjs.org/@tanstack/solid-query/-/solid-query-5.53.2.tgz}
     peerDependencies:
       solid-js: ^1.6.0
-
-  '@trpc/client@11.0.0-rc.490':
-    resolution: {integrity: sha512-rfAzHF27osuP36JWGzq9TgXMnNc5kk1oAIoMafVHkCu3XlEZH3Ym2BpucHBWp/b5JYrtvzM91jskzvE0yO3mYw==, tarball: https://registry.npmjs.org/@trpc/client/-/client-11.0.0-rc.490.tgz}
-    peerDependencies:
-      '@trpc/server': 11.0.0-rc.490+b6a851870
-
-  '@trpc/server@11.0.0-rc.490':
-    resolution: {integrity: sha512-JkKLvA0QIErqslsgU6uFvpv9xtxe78C59zqUdZFmUI0V9pIAJlxmODV4I9hTDcX8P+B30rP3z+q2+bPozN2MaQ==, tarball: https://registry.npmjs.org/@trpc/server/-/server-11.0.0-rc.490.tgz}
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==, tarball: https://registry.npmjs.org/@trysound/sax/-/sax-0.2.0.tgz}
@@ -3783,11 +3759,6 @@ snapshots:
     dependencies:
       hono: 4.5.9
 
-  '@hono/trpc-server@0.3.2(@trpc/server@11.0.0-rc.490)(hono@4.5.9)':
-    dependencies:
-      '@trpc/server': 11.0.0-rc.490
-      hono: 4.5.9
-
   '@hono/valibot-validator@0.3.0(hono@4.5.9)(valibot@0.39.0(typescript@5.5.4))':
     dependencies:
       hono: 4.5.9
@@ -4201,12 +4172,6 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.53.2
       solid-js: 1.8.21
-
-  '@trpc/client@11.0.0-rc.490(@trpc/server@11.0.0-rc.490)':
-    dependencies:
-      '@trpc/server': 11.0.0-rc.490
-
-  '@trpc/server@11.0.0-rc.490': {}
 
   '@trysound/sax@0.2.0': {}
 

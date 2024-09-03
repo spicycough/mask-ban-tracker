@@ -20,7 +20,6 @@
     "formatWithErrors": true,
     "indentStyle": "space",
     "include": [
-      "*.astro",
       "*.ts",
       "*.tsx"
     ],
@@ -39,9 +38,6 @@
       "enabled": true,
       "indentStyle": "space"
     },
-    "globals": [
-      "Astro"
-    ],
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
     }

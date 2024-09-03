@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import type { PlaceOfInterest } from "@/features/map/place-of-interest";
+import type { Location } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-solid";
 import { type ComponentProps, type ParentProps, splitProps } from "solid-js";
@@ -32,7 +32,7 @@ export const LocationList = (props: LocationListProps) => {
 
 interface LocationListItemProps extends ParentProps {
   class?: string;
-  poi: PlaceOfInterest;
+  location: Location;
   isSelected?: boolean;
   onClick?: () => void;
 }
@@ -48,20 +48,10 @@ export const LocationListItem = (props: LocationListItemProps) => {
       onClick={props.onClick}
     >
       <div class="mb-2 flex items-center justify-between">
-        <span class="font-semibold">{props.poi.name}</span>
+        <span class="font-semibold">{props.location.name}</span>
         <Badge variant={props.isSelected ? "secondary" : "default"}>
-          {props.poi.meta.banStatus}
+          {props.location.status}
         </Badge>
-      </div>
-      <div class="space-y-2">
-        <div class="flex items-center">
-          <div class="mr-2 h-2 w-2 rounded-full bg-current" />
-          <span class="text-sm">{props.poi.meta.banStatus}</span>
-        </div>
-        <div class="flex items-center">
-          <div class="mr-2 h-2 w-2 rounded-full bg-current" />
-          <span class="text-sm">{props.poi.meta.banStatus}</span>
-        </div>
       </div>
     </button>
   );

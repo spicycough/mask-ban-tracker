@@ -1,10 +1,18 @@
 import { Hono } from "hono";
-
+import { csrf } from "hono/csrf";
 import { renderPage } from "vike/server";
-// How to serve Vike (SSR middleware) via a Hono server.
-// https://github.com/phonzammi/vike-hono-example/blob/main/server/index.ts
 import { privateConfig } from "../config.private";
-import { apiRouter } from "./api";
+import { mapRouter } from "./routers";
+
+/**
+ * API router. Includes all routes from `@/server/api/*`
+ * */
+export const apiRouter = new Hono()
+  .basePath("/api")
+  .use(csrf())
+  .route("/map", mapRouter);
+
+export type ApiRouter = typeof apiRouter;
 
 /**
  * Base router
@@ -17,7 +25,7 @@ app.get("/up", async (c) => {
 });
 
 // For the Backend APIs
-app.route("/api", apiRouter);
+app.route("/", apiRouter);
 
 // For the Frontend + SSR
 app.get("*", async (c, next) => {

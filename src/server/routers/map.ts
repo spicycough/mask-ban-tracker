@@ -1,4 +1,3 @@
-import { privateConfig } from "@/config.private";
 import { Hono } from "hono";
 import * as v from "valibot";
 

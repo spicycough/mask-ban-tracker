@@ -1,7 +1,7 @@
 import { privateConfig } from "@/config.private";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import * as schemas from "./schemas";
+import * as schema from "./schema";
 
 export const createDrizzleClient = () => {
   const turso = createClient({
@@ -9,7 +9,7 @@ export const createDrizzleClient = () => {
     authToken: privateConfig.DATABASE_AUTH_TOKEN,
   });
 
-  return drizzle(turso, { schema: schemas });
+  return drizzle(turso, { schema });
 };
 
 export const db = createDrizzleClient();

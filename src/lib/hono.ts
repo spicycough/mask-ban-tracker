@@ -1,4 +1,4 @@
-import type { ApiRouter } from "@/server/api";
+import type { ApiRouter } from "@/server/app";
 import { type ClientRequestOptions, hc as honoClient } from "hono/client";
 
 /**

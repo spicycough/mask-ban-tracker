@@ -1,7 +1,3 @@
-/// ===========================================================================
-// Extend the PageContext in Vike here.
-// ===========================================================================
-
 import type { HonoRequest } from "hono";
 
 // Extend the PageContext in Vike.

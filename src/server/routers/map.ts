@@ -1,8 +1,11 @@
+import type { Location, LocationId } from "@/db/schemas/location";
+import { vValidator } from "@hono/valibot-validator";
 import { Hono } from "hono";
 import * as v from "valibot";
 
 import tiles from "@/assets/geo/style-positron.json";
 import counties from "@/assets/geo/us-counties.json";
+import locations from "@/db/schemas/location";
 
 const GeoJsonSchema = v.object({
   type: v.enum({ FEATURE_COLLECTION: "FeatureCollection" }),
@@ -36,7 +39,7 @@ const GeoJsonSchema = v.object({
 
 export type GeoJson = v.InferOutput<typeof GeoJsonSchema>;
 
-export const mapRouter = new Hono()
+const mapRouter = new Hono()
   .basePath("/")
   .get("/tiles", (c) => {
     const replaceParam = (str: string, value: string): string => {
@@ -65,58 +68,28 @@ export const mapRouter = new Hono()
     }
     return c.json(countyResult.output);
   })
+  .get("/locations", async (c) => {
+    const result: Location[] = await locations.all();
+    return c.json(result, 200);
+  })
+  .post(
+    "/locations",
+    vValidator("json", locations.schema.insert, async (res, c) => {
+      if (!res.success) {
+        return c.json(res.issues, 400);
+      }
+      const result: LocationId = await locations.create(res.output);
+      return c.json({ id: result }, 201);
+    }),
+  )
   .get("/locations/:id", async (c) => {
-    const locations = {
-      nassau: {
-        name: "Nassau County",
-        layer: {
-          sourceId: "counties",
-          filter: ["==", "NAME", "Nassau"],
-        },
-        viewport: {
-          center: { lat: 40.73, lon: -73.59 },
-          zoom: 11,
-        },
-      },
-      losangeles: {
-        name: "Los Angeles County",
-        layer: {
-          sourceId: "counties",
-          filter: ["==", "NAME", "Nassau"],
-        },
-        viewport: {
-          center: { lat: 40.73, lon: -73.59 },
-          zoom: 11,
-        },
-      },
-      northcarolina: {
-        name: "North Carolina",
-        layer: {
-          sourceId: undefined,
-          filter: ["==", "NAME", "Nassau"],
-        },
-        viewport: {
-          center: { lat: 40.73, lon: -73.59 },
-          zoom: 7,
-        },
-      },
-      ohio: {
-        name: "Ohio",
-        viewport: {
-          center: { lat: 40.73, lon: -73.59 },
-          zoom: 7,
-        },
-        layer: {
-          sourceId: undefined,
-          filter: ["==", "NAME", "Nassau"],
-        },
-      },
-    } as const;
-
-    const id = c.req.param("id") as keyof typeof locations;
-    if (id) {
-      return c.json({ locations: locations[id] });
+    const ids: LocationId[] = c.req.param("id")?.split(",");
+    if (!ids) {
+      return c.json({ error: "No IDs found" }, 400);
     }
 
-    return c.json(locations);
+    const result: Location[] = await locations.findByIds(ids);
+    return c.json(result, 200);
   });
+
+export { mapRouter };

@@ -8,7 +8,7 @@ import { mapRouter } from "./routers";
  * API router. Includes all routes from `@/server/api/*`
  * */
 export const apiRouter = new Hono()
-  .basePath("/api")
+  .basePath("/")
   .use(csrf())
   .route("/map", mapRouter);
 
@@ -25,7 +25,7 @@ app.get("/up", async (c) => {
 });
 
 // For the Backend APIs
-app.route("/", apiRouter);
+app.route("/api", apiRouter);
 
 // For the Frontend + SSR
 app.get("*", async (c, next) => {

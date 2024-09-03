@@ -12,7 +12,9 @@
       }
     },
     "ignore": [
-      "node_modules"
+      "node_modules",
+      // TODO: remove when https://github.com/drizzle-team/drizzle-orm/pull/2860 is merged
+      "drizzle-valibot-patch.ts"
     ]
   },
   "formatter": {

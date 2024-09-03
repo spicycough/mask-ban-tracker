@@ -38,6 +38,9 @@ importers:
       drizzle-orm:
         specifier: ^0.33.0
         version: 0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0)(react@18.3.1)
+      drizzle-valibot:
+        specifier: ^0.2.0
+        version: 0.2.0(drizzle-orm@0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0)(react@18.3.1))(valibot@0.39.0(typescript@5.5.4))
       hono:
         specifier: ^4.5.9
         version: 4.5.9
@@ -1993,6 +1996,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-valibot@0.2.0:
+    resolution: {integrity: sha512-+JTZZN52fFv20kGTXI1KGpysdCiedaTDpWQ6lqnxX2DD5U5tJfGPB2ROjHFjbLzK4XiH98MOhKZf174orBQAew==, tarball: https://registry.npmjs.org/drizzle-valibot/-/drizzle-valibot-0.2.0.tgz}
+    peerDependencies:
+      drizzle-orm: '>=0.23.13'
+      valibot: '>=0.20'
 
   earcut@3.0.0:
     resolution: {integrity: sha512-41Fs7Q/PLq1SDbqjsgcY7GA42T0jvaCNGXgGtsNdvg+Yv8eIu06bxv4/PoREkZ9nMDNwnUSG9OFB9+yv8eKhDg==, tarball: https://registry.npmjs.org/earcut/-/earcut-3.0.0.tgz}
@@ -4491,6 +4500,11 @@ snapshots:
       '@cloudflare/workers-types': 4.20240821.1
       '@libsql/client': 0.9.0
       react: 18.3.1
+
+  drizzle-valibot@0.2.0(drizzle-orm@0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0)(react@18.3.1))(valibot@0.39.0(typescript@5.5.4)):
+    dependencies:
+      drizzle-orm: 0.33.0(@cloudflare/workers-types@4.20240821.1)(@libsql/client@0.9.0)(react@18.3.1)
+      valibot: 0.39.0(typescript@5.5.4)
 
   earcut@3.0.0: {}
 

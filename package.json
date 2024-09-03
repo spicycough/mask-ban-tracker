@@ -29,6 +29,7 @@
     "@tanstack/solid-query-devtools": "^5.53.2",
     "class-variance-authority": "^0.7.0",
     "drizzle-orm": "^0.33.0",
+    "drizzle-valibot": "^0.2.0",
     "hono": "^4.5.9",
     "lucide-solid": "^0.429.0",
     "mapbox-gl": "^3.6.0",

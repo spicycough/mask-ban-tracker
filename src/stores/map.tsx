@@ -1,4 +1,4 @@
-import { hc } from "@/lib/hono";
+import type { Location } from "@/db/schema";
 import {
   type FlowComponent,
   createContext,
@@ -6,7 +6,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import { createStore, produce, reconcile } from "solid-js/store";
+import { createStore, reconcile } from "solid-js/store";
 import {
   type Viewport,
   useMapContext as useSolidMapContext,
@@ -14,20 +14,14 @@ import {
 
 export type MapState = {
   viewport: Viewport;
-  currentLocation: LocationKey | null;
+  currentLocation: Location | null;
 };
 
 const buildMapContext = (initialState?: MapState) => {
-  let ref!: HTMLDivElement;
-
-  const defaultViewport = {
+  const initialViewport = {
     zoom: 4,
     center: { lat: 37.0902, lon: -95.7129 },
-  };
-
-  const initialViewport = {
     ...initialState?.viewport,
-    ...defaultViewport,
   };
 
   const [state, setState] = createStore({
@@ -35,38 +29,26 @@ const buildMapContext = (initialState?: MapState) => {
       zoom: 4,
       center: { lat: 37.0902, lon: -95.7129 },
     },
-    currentLocation: null as LocationKey | null,
+    currentLocation: null as Location | null,
   });
 
-  const viewport = createMemo(() => state.viewport);
+  const viewport = createMemo(() => {
+    return state.viewport;
+  });
 
   const setViewport = (vp: Viewport) => {
-    setState(
-      produce((map) => {
-        map.viewport = {
-          ...map.viewport,
-          ...vp,
-        };
-      }),
-    );
+    return setState("viewport", vp);
+  };
+
+  const flyTo = (vp: Viewport) => {
+    return setViewport(vp);
   };
 
   const resetViewport = () => {
-    return setViewport(initialViewport);
-  };
-
-  const flyViewport = (key: LocationKey, options?: Viewport) => {
-    const location = hc.map.locations[":id"].$get(key);
-    if (!location) {
-      throw new Error(`Couldn't find ${key}`);
-    }
-
-    setViewport({ ...location.viewport, ...options });
-    setTimeout(() => setState("currentLocation", key), 250);
+    return flyTo(initialViewport);
   };
 
   return {
-    ref,
     // Store
     state,
     setState,
@@ -74,6 +56,7 @@ const buildMapContext = (initialState?: MapState) => {
     viewport,
     setViewport,
     // Viewport methods
+    flyTo,
     resetViewport,
   };
 };

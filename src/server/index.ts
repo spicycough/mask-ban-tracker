@@ -1,10 +1,14 @@
 import { Hono } from "hono";
 
-import { appRouter } from "@/server/app";
-import { privateConfig } from "@config/private";
-import { serveStatic } from "hono/bun";
 import { renderPage } from "vike/server";
+// How to serve Vike (SSR middleware) via a Hono server.
+// https://github.com/phonzammi/vike-hono-example/blob/main/server/index.ts
+import { privateConfig } from "../config.private";
+import { apiRouter } from "./api";
 
+/**
+ * Base router
+ **/
 const app = new Hono();
 
 // Health checks
@@ -13,16 +17,7 @@ app.get("/up", async (c) => {
 });
 
 // For the Backend APIs
-app.route("/api/*", appRouter);
-
-if (privateConfig.NODE_ENV === "production") {
-  app.use(
-    "/*",
-    serveStatic({
-      root: "./dist/client/",
-    }),
-  );
-}
+app.route("/api", apiRouter);
 
 // For the Frontend + SSR
 app.get("*", async (c, next) => {
@@ -47,19 +42,24 @@ app.get("*", async (c, next) => {
 
 // Returning errors.
 app.onError((_, c) => {
-  return c.json(
-    {
-      error: {
-        message: c.error?.message ?? "Something went wrong.",
-      },
-    },
-    500,
-  );
+  const message = c.error?.message ?? "Something went wrong.";
+  return c.json({ error: { message } }, 500);
 });
 
 console.log(`Running at http://localhost:${privateConfig.PORT}`);
+
+export type App = typeof app;
 
 export default {
   port: privateConfig.PORT,
   fetch: app.fetch,
 };
+
+// if (privateConfig.NODE_ENV === "production") {
+//   app.use(
+//     "/*",
+//     serveStatic({
+//       root: "./dist/client/",
+//     }),
+//   );
+// }

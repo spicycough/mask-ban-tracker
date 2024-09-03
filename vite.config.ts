@@ -1,9 +1,12 @@
 // Hono
 import devServer from "@hono/vite-dev-server";
+import adapter from "@hono/vite-dev-server/cloudflare";
 
+import { pages } from "vike-cloudflare";
 // Vike
 import vikeSolid from "vike-solid/vite";
 import vike from "vike/plugin";
+import solidSvg from "vite-plugin-solid-svg"; // Custom Icons (SVG)
 
 // Vite
 import { dirname, resolve } from "node:path";
@@ -16,7 +19,8 @@ const root = resolve(__dirname, ".");
 export default defineConfig({
   plugins: [
     devServer({
-      entry: "server.ts",
+      entry: "src/server/index.ts",
+      adapter,
 
       exclude: [
         /^\/@.+$/,
@@ -32,10 +36,24 @@ export default defineConfig({
     }),
     vike({}),
     vikeSolid(),
+    solidSvg(),
+
+    pages({
+      server: {
+        kind: "hono",
+        entry: "src/server/index.ts",
+      },
+    }),
   ],
+  server: {
+    port: 3000,
+  },
+  preview: {
+    port: 3000,
+  },
   resolve: {
     alias: {
-      "@": resolve(root),
+      "@": resolve(root, "src"),
     },
   },
   optimizeDeps: { include: ["mapbox-gl"] },

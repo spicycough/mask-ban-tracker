@@ -20,21 +20,13 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
-      ],
-      "@api": [
-        "src/pages/api/[...path].ts"
-      ],
-      "@config/private": [
-        "config.private.ts"
-      ],
-      "@config/public": [
-        "config.public.ts"
+        "src/*"
       ]
     },
     "types": [
       "@cloudflare/workers-types",
       "@types/mapbox-gl",
+      "vike-cloudflare/types",
       "vike-solid/client",
       "vite/client"
     ],

@@ -14,5 +14,3 @@ export const createDrizzleClient = () => {
 
 export const db = createDrizzleClient();
 export type Database = ReturnType<typeof createDrizzleClient>;
-
-export default {};

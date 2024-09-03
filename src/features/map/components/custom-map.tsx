@@ -3,14 +3,14 @@ import * as maplibre from "maplibre-gl";
 import { useMapContext } from "@/features/map/create-map-context";
 import { cn } from "@/lib/utils";
 import { For, splitProps } from "solid-js";
-import { Layer, Marker, default as SolidMapGL, Source } from "solid-map-gl";
+import { Marker, default as SolidMapGL, Source } from "solid-map-gl";
+import { selectPlaceOfInterest } from "../place-of-interest";
 import { HudCard } from "./hud-card";
 import { CustomMapLayer } from "./map-layer";
 
 import type { ComponentProps } from "solid-js";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { selectPlaceOfInterest } from "../place-of-interest";
 
 export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 

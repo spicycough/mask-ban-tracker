@@ -12,7 +12,7 @@ import {
 } from "lucide-solid";
 import type { MapOptions as MapProps } from "mapbox-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { type ComponentProps, createSignal } from "solid-js";
+import type { ComponentProps } from "solid-js";
 import { CustomMap, Sidebar, ViewportInfo } from "./components";
 
 export interface MapPageProps extends ComponentProps<"div"> {
@@ -22,8 +22,6 @@ export interface MapPageProps extends ComponentProps<"div"> {
 
 export const MapPage = () => {
   const mapContext = makeMapContext();
-
-  const [isCollapsed, setIsCollapsed] = createSignal(false);
 
   return (
     <MapContext.Provider value={mapContext}>

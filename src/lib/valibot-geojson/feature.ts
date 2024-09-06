@@ -1,18 +1,14 @@
 import * as v from "valibot";
-import { SchemaWithBoundingBox } from "./base.js";
-import { geometry } from "./geometry.js";
-import { json } from "./json";
+import { SchemaWithBoundingBox } from "./base";
+import { GeometrySchema } from "./geometry";
+import { JsonSchema } from "./json";
 
-const FeatureSchema = v.object({
+export const FeatureSchema = v.object({
   ...SchemaWithBoundingBox.entries,
   type: v.literal("Feature"),
-  geometry: v.nullable(geometry()),
+  geometry: v.nullable(GeometrySchema),
   id: v.optional(v.union([v.string(), v.number()])),
-  properties: v.nullable(json()),
+  properties: v.nullable(JsonSchema),
 });
 
 export type GeoJsonFeature = v.InferOutput<typeof FeatureSchema>;
-
-export function feature() {
-  return FeatureSchema;
-}

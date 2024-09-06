@@ -1,15 +1,11 @@
 import * as v from "valibot";
-import { SchemaWithBoundingBox } from "./base.js";
-import { point } from "./point.js";
+import { SchemaWithBoundingBox } from "./base";
+import { PointSchema } from "./point";
 
-const MultiPointSchema = v.object({
+export const MultiPointSchema = v.object({
   ...SchemaWithBoundingBox.entries,
   type: v.literal("MultiPoint"),
-  coordinates: v.array(point().entries.coordinates),
+  coordinates: v.array(PointSchema.entries.coordinates),
 });
 
 export type GeoJsonMultiPoint = v.InferOutput<typeof MultiPointSchema>;
-
-export function multiPoint() {
-  return MultiPointSchema;
-}

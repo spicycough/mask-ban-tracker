@@ -1,15 +1,11 @@
 import * as v from "valibot";
-import { SchemaWithBoundingBox } from "./base.js";
-import { coordinate } from "./coordinate.js";
+import { SchemaWithBoundingBox } from "./base";
+import { CoordinateSchema } from "./coordinate";
 
-const PolygonSchema = v.object({
+export const PolygonSchema = v.object({
   ...SchemaWithBoundingBox.entries,
   type: v.literal("Polygon"),
-  coordinates: v.array(v.array(coordinate())),
+  coordinates: v.array(v.array(CoordinateSchema)),
 });
 
 export type GeoJsonPolygon = v.InferOutput<typeof PolygonSchema>;
-
-export function polygon() {
-  return PolygonSchema;
-}

@@ -1,41 +1,41 @@
-import { type GeoJsonBoundingBox, boundingBox } from "./bounding-box.js";
-import { type GeoJsonCoordinate, coordinate } from "./coordinate.js";
+import { BoundingBoxSchema, type GeoJsonBoundingBox } from "./bounding-box";
+import { CoordinateSchema, type GeoJsonCoordinate } from "./coordinate";
+import { FeatureSchema, type GeoJsonFeature } from "./feature";
 import {
+  FeatureCollectionSchema,
   type GeoJsonFeatureCollection,
-  featureCollection,
-} from "./feature-collection.js";
-import { type GeoJsonFeature, feature } from "./feature.js";
-import { type GeoJson, geojson } from "./geojson.js";
-import { type GeoJsonGeometry, geometryCollection } from "./geometry.js";
-import { type GeoJsonLineString, lineString } from "./line-string.js";
+} from "./feature-collection";
+import { type GeoJson, GeoJsonSchema } from "./geojson";
+import {
+  type GeoJsonGeometry,
+  GeometryCollectionSchema,
+  GeometrySchema,
+} from "./geometry";
+import { type GeoJsonLineString, LineStringSchema } from "./line-string";
 import {
   type GeoJsonMultiLineString,
-  multiLineString,
-} from "./multi-line-string.js";
-import { type GeoJsonMultiPoint, multiPoint } from "./multi-point.js";
-import { type GeoJsonMultiPolygon, multiPolygon } from "./multi-polygon.js";
-import { type GeoJsonPoint, point } from "./point.js";
-import { type GeoJsonPolygon, polygon } from "./polygon.js";
+  MultiLineStringSchema,
+} from "./multi-line-string";
+import { type GeoJsonMultiPoint, MultiPointSchema } from "./multi-point";
+import { type GeoJsonMultiPolygon, MultiPolygonSchema } from "./multi-polygon";
+import { type GeoJsonPoint, PointSchema } from "./point";
+import { type GeoJsonPolygon, PolygonSchema } from "./polygon";
 
-const module = (() => {
-  function impl() {
-    return geojson();
-  }
-  impl.boundingBox = boundingBox;
-  impl.feature = feature;
-  impl.featureCollection = featureCollection;
-  impl.geometryCollection = geometryCollection;
-  impl.lineString = lineString;
-  impl.multiLineString = multiLineString;
-  impl.multiPoint = multiPoint;
-  impl.multiPolygon = multiPolygon;
-  impl.point = point;
-  impl.polygon = polygon;
-  impl.coordinate = coordinate;
-  return impl;
-})();
-
-export { module as geojson };
+export {
+  BoundingBoxSchema as GeoJsonBoundingBoxSchema,
+  FeatureSchema as GeoJsonFeatureSchema,
+  FeatureCollectionSchema as GeoJsonFeatureCollectionSchema,
+  GeometrySchema as GeoJsonGeometrySchema,
+  GeometryCollectionSchema as GeoJsonGeometryCollectionSchema,
+  GeoJsonSchema,
+  LineStringSchema as GeoJsonLineStringSchema,
+  MultiLineStringSchema as GeoJsonMultiLineStringSchema,
+  MultiPointSchema as GeoJsonMultiPointSchema,
+  MultiPolygonSchema as GeoJsonMultiPolygonSchema,
+  PointSchema as GeoJsonPointSchema,
+  PolygonSchema as GeoJsonPolygonSchema,
+  CoordinateSchema as GeoJsonCoordinateSchema,
+};
 export type {
   GeoJsonBoundingBox,
   GeoJsonFeature,

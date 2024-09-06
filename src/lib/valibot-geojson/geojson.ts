@@ -1,12 +1,12 @@
 import * as v from "valibot";
-import { featureCollection } from "./feature-collection.js";
-import { feature } from "./feature.js";
-import { geometry } from "./geometry.js";
+import { FeatureSchema } from "./feature";
+import { FeatureCollectionSchema } from "./feature-collection";
+import { GeometrySchema } from "./geometry";
 
-const GeoJsonSchema = v.union([geometry(), feature(), featureCollection()]);
+export const GeoJsonSchema = v.union([
+  GeometrySchema,
+  FeatureSchema,
+  FeatureCollectionSchema,
+]);
 
 export type GeoJson = v.InferOutput<typeof GeoJsonSchema>;
-
-export function geojson() {
-  return GeoJsonSchema;
-}

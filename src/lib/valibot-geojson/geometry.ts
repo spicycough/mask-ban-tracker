@@ -1,17 +1,17 @@
 import * as v from "valibot";
-import { SchemaWithBoundingBox } from "./base.js";
-import { lineString } from "./line-string.js";
-import { multiLineString } from "./multi-line-string.js";
-import { multiPoint } from "./multi-point.js";
-import { multiPolygon } from "./multi-polygon.js";
-import { point } from "./point.js";
-import { polygon } from "./polygon.js";
+import { SchemaWithBoundingBox } from "./base";
+import { LineStringSchema } from "./line-string";
+import { MultiLineStringSchema } from "./multi-line-string";
+import { MultiPointSchema } from "./multi-point";
+import { MultiPolygonSchema } from "./multi-polygon";
+import { PointSchema } from "./point";
+import { PolygonSchema } from "./polygon";
 
-const GeometryCollectionSchema: v.GenericSchema<GeoJsonGeometryCollection> =
+export const GeometryCollectionSchema: v.GenericSchema<GeoJsonGeometryCollection> =
   v.object({
     ...SchemaWithBoundingBox.entries,
     type: v.literal("GeometryCollection"),
-    geometries: v.lazy(() => v.array(geometry())),
+    geometries: v.lazy(() => v.array(GeometrySchema)),
   });
 
 /**
@@ -26,22 +26,14 @@ export type GeoJsonGeometryCollection = v.InferOutput<
   geometries: Array<v.InferOutput<typeof GeometrySchema>>;
 };
 
-export function geometryCollection() {
-  return GeometryCollectionSchema;
-}
-
-const GeometrySchema = v.union([
-  lineString(),
-  multiLineString(),
-  multiPoint(),
-  multiPolygon(),
-  point(),
-  polygon(),
-  geometryCollection(),
+export const GeometrySchema = v.union([
+  LineStringSchema,
+  MultiLineStringSchema,
+  MultiPointSchema,
+  MultiPolygonSchema,
+  PointSchema,
+  PolygonSchema,
+  GeometryCollectionSchema,
 ]);
 
 export type GeoJsonGeometry = v.InferOutput<typeof GeometrySchema>;
-
-export function geometry() {
-  return GeometrySchema;
-}

@@ -1,15 +1,11 @@
 import * as v from "valibot";
-import { SchemaWithBoundingBox } from "./base.js";
-import { coordinate } from "./coordinate.js";
+import { SchemaWithBoundingBox } from "./base";
+import { CoordinateSchema } from "./coordinate";
 
-const PointSchema = v.object({
+export const PointSchema = v.object({
   ...SchemaWithBoundingBox.entries,
   type: v.literal("Point"),
-  coordinates: coordinate(),
+  coordinates: CoordinateSchema,
 });
 
 export type GeoJsonPoint = v.InferOutput<typeof PointSchema>;
-
-export function point() {
-  return PointSchema;
-}

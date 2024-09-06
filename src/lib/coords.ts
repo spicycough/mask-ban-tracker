@@ -2,6 +2,8 @@ import type { ILngLatLike as LngLatLike } from "maplibre-gl";
 import type { Viewport } from "solid-map-gl";
 import * as v from "valibot";
 
+const DEFAULT_ZOOM = 5;
+
 export type Coordinates = {
   latitude: number;
   longitude: number;
@@ -47,13 +49,16 @@ const parseSearchParams = (
     const latitude = params.get("lat") ?? initialViewport.center.lat;
     const longitude = params.get("lon") ?? initialViewport.center.lon;
     return {
-      zoom: typeof zoom === "string" ? Number.parseInt(zoom) : zoom,
-      latitude:
-        typeof latitude === "string" ? Number.parseFloat(latitude) : latitude,
-      longitude:
-        typeof longitude === "string"
-          ? Number.parseFloat(longitude)
-          : longitude,
+      zoom:
+        typeof zoom === "string" ? Number.parseInt(zoom) : zoom ?? DEFAULT_ZOOM,
+      center: {
+        latitude:
+          typeof latitude === "string" ? Number.parseFloat(latitude) : latitude,
+        longitude:
+          typeof longitude === "string"
+            ? Number.parseFloat(longitude)
+            : longitude,
+      },
     };
   }
   const SearchParamsSchema = createSearchParamsSchema(initialViewport);
@@ -63,8 +68,10 @@ const parseSearchParams = (
   }
   return {
     zoom: parsed.output.zoom,
-    latitude: parsed.output.lat,
-    longitude: parsed.output.lon,
+    center: {
+      latitude: parsed.output.lat,
+      longitude: parsed.output.lon,
+    },
   };
 };
 
@@ -93,8 +100,6 @@ export const formatCoords = (coords: LngLatLike) => {
       longitude: "?",
     };
   }
-
-  console.log(`type of latitude: ${typeof latitude}`);
 
   let lat: string;
   if (latitude < 0) {

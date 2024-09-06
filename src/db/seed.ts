@@ -44,6 +44,9 @@ const CountiesSchema = v.object({
 });
 
 const seedCountiesData = async () => {
+  if (!countiesData) {
+    throw new Error("Counties data not found.");
+  }
   const res = v.safeParse(CountiesSchema, countiesData, { abortEarly: true });
   if (!res.success) {
     const flatIssues = v.flatten(res.issues);
@@ -122,12 +125,17 @@ const seedCountiesData = async () => {
   });
 };
 
-const StatesSchema = v.strictObject({
-  code: v.pipe(v.string(), v.length(2)),
-  name: v.pipe(v.string(), v.length(2)),
-});
+const StatesSchema = v.pipe(
+  v.record(v.pipe(v.string(), v.length(2)), v.pipe(v.string(), v.length(2))),
+  v.transform((data) => {
+    return Object.entries(data).map(([code, name]) => ({ code, name }));
+  }),
+);
 
 const seedStatesData = async () => {
+  if (!statesData) {
+    throw new Error("States data not found.");
+  }
   const res = v.safeParse(StatesSchema, statesData, {
     abortEarly: true,
   });

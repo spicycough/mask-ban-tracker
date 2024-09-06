@@ -11,6 +11,7 @@
     "sourceMap": true,
     "module": "ESNext",
     "noEmit": true,
+    "verbatimModuleSyntax": true,
     "moduleResolution": "Bundler",
     "target": "ES2022",
     "lib": [

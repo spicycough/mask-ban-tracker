@@ -11,6 +11,7 @@ import { mapRouter } from "./routers";
 export const apiRouter = new Hono()
   .basePath("/")
   .use(csrf())
+  .get("/health", async (c) => c.json({ status: "ok" }))
   .route("/map", mapRouter);
 
 export type ApiRouter = typeof apiRouter;
@@ -59,7 +60,7 @@ app.onError((err, c) => {
   return c.json({ error: { message } }, 500);
 });
 
-console.log(`Running at http://localhost:${privateConfig.PORT}`);
+console.log(`App running at http://localhost:${privateConfig.PORT}`);
 
 export type App = typeof app;
 
@@ -67,12 +68,3 @@ export default {
   port: privateConfig.PORT,
   fetch: app.fetch,
 };
-
-// if (privateConfig.NODE_ENV === "production") {
-//   app.use(
-//     "/*",
-//     serveStatic({
-//       root: "./dist/client/",
-//     }),
-//   );
-// }

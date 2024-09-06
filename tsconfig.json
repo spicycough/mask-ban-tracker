@@ -21,6 +21,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@static/*": [
+        "public/static/*"
       ]
     },
     "types": [
@@ -33,6 +36,10 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
+  "include": [
+    "src",
+    "public/static"
+  ],
   "exclude": [
     "dist"
   ]

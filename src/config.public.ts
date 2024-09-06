@@ -1,4 +1,4 @@
-import { parseEnv } from "@/lib/env";
+// import { parseEnv } from "@/lib/env";
 import * as v from "valibot";
 
 /** Only place public configurations here. */
@@ -9,6 +9,13 @@ const PublicConfigSchema = v.strictObject({
 
 export type PublicConfig = v.InferOutput<typeof PublicConfigSchema>;
 
+export const publicConfig = {
+  /** Port of the app (in dev). */
+  PUBLIC_ENV__BASE_URL: (import.meta.env.PUBLIC_ENV__BASE_URL ||
+    process.env.PUBLIC_ENV__BASE_URL ||
+    "http://localhost:3000") as string,
+} as const;
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv extends PublicConfig {}
@@ -16,9 +23,10 @@ declare global {
   interface ImportMetaEnv extends PublicConfig {}
 }
 
-export const publicConfig = parseEnv(
-  PublicConfigSchema,
-  import.meta.env || process.env,
-);
+// const publicConfig = parseEnv(
+//   PublicConfigSchema,
+//   import.meta.env || process.env,
+// );
+//
 
 export default {};

@@ -46,6 +46,8 @@ export const privateConfig = {
   /** Development or Production. */
   NODE_ENV: ((import.meta.env.NODE_ENV || process.env.NODE_ENV) ??
     "development") as "development" | "production",
+  /** Run in debug mode. */
+  DEBUG: (import.meta.env.DEBUG || process.env.DEBUG) as boolean,
   /** MapTiler API Key. */
   MAPTILER_API_KEY: (import.meta.env.MAPTILER_API_KEY ||
     process.env.MAPTILER_API_KEY) as string,

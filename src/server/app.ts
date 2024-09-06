@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { serveStatic } from "hono/cloudflare-pages";
 import { csrf } from "hono/csrf";
 import { renderPage } from "vike/server";
 import { privateConfig } from "../config.private";
@@ -27,6 +28,9 @@ app.get("/up", async (c) => {
 // For the Backend APIs
 app.route("/api", apiRouter);
 
+// For static files
+app.use("/public/*", serveStatic());
+
 // For the Frontend + SSR
 app.get("*", async (c, next) => {
   const pageContextInit = {
@@ -49,8 +53,9 @@ app.get("*", async (c, next) => {
 });
 
 // Returning errors.
-app.onError((_, c) => {
-  const message = c.error?.message ?? "Something went wrong.";
+app.onError((err, c) => {
+  console.error(err.message);
+  const message = c.error?.message ?? err.message ?? "Something went wrong.";
   return c.json({ error: { message } }, 500);
 });
 

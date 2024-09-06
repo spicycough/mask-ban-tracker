@@ -1,72 +1,49 @@
-import type { Location, LocationId } from "@/db/schemas/location";
+import { privateConfig } from "@/config.private";
+import { publicConfig } from "@/config.public";
+import locations from "@/db/schemas/location";
 import { vValidator } from "@hono/valibot-validator";
 import { Hono } from "hono";
-import * as v from "valibot";
 
-import tiles from "@/assets/geo/style-positron.json";
-import counties from "@/assets/geo/us-counties.json";
-import locations from "@/db/schemas/location";
-
-const GeoJsonSchema = v.object({
-  type: v.enum({ FEATURE_COLLECTION: "FeatureCollection" }),
-  name: v.string(),
-  crs: v.object({
-    type: v.string(),
-    properties: v.object({
-      name: v.string(),
-    }),
-  }),
-  features: v.array(
-    v.object({
-      type: v.enum({ FEATURE: "feature" }),
-      properties: v.object({
-        stateFp: v.pipe(v.string(), v.length(2)),
-        countyFp: v.pipe(v.string(), v.length(5)),
-        countyName: v.string(),
-        geoId: v.pipe(v.string(), v.length(12)),
-        name: v.string(),
-        lsad: v.pipe(v.string(), v.length(3)),
-        aland: v.number(),
-        awater: v.number(),
-      }),
-      geometry: v.object({
-        type: v.enum({ POLYGON: "Polygon" }),
-        coordinates: v.array(v.array(v.pipe(v.array(v.number()), v.length(2)))),
-      }),
-    }),
-  ),
-});
-
-export type GeoJson = v.InferOutput<typeof GeoJsonSchema>;
+import { NewLocationSchema, type NewMapTile } from "@/db/schema";
+import type { Location, LocationId } from "@/db/schema";
 
 const mapRouter = new Hono()
   .basePath("/")
-  .get("/tiles", (c) => {
-    const replaceParam = (str: string, value: string): string => {
-      return str.replace(/(\?key=)undefined/, `$1${value}`);
-    };
-
-    const apiKey = "5AgZoK60ooHV3yYMQMFs";
+  .get("/tiles", async (c) => {
+    // Ensure API key is loaded
+    const apiKey = privateConfig.MAPTILER_API_KEY;
     if (!apiKey) {
+      console.error("No API key found");
       return c.json({ error: "No API key found" }, 400);
     }
 
-    console.log(`SOURCE URL: ${tiles.sources.openmaptiles.url}`);
-    const rawSourceUrl = decodeURI(tiles.sources.openmaptiles.url);
-    tiles.sources.openmaptiles.url = replaceParam(rawSourceUrl, apiKey);
-
-    console.log(`GLYPH URL: ${tiles.glyphs}`);
-    const rawGlyphUrl = decodeURI(tiles.glyphs);
-    tiles.glyphs = replaceParam(rawGlyphUrl, apiKey);
-
-    return c.json(tiles);
-  })
-  .get("/counties", async (c) => {
-    const countyResult = await v.safeParseAsync(GeoJsonSchema, counties);
-    if (!countyResult.success) {
-      return c.json(countyResult.issues, 400);
+    // Fetch static file with api key placeholder
+    const url = new URL(
+      `${publicConfig.PUBLIC_ENV__BASE_URL}/static/style-positron.json`,
+    );
+    const resp = await fetch(url);
+    if (!resp.ok) {
+      return c.json({ error: "Failed to fetch tiles" }, 400);
     }
-    return c.json(countyResult.output);
+
+    // Parse static file
+    const tiles = await resp.json<NewMapTile>();
+
+    // Replace api key placeholder with actual api key
+    tiles.glyphs = tiles.glyphs.replace("key={key}", `key=${apiKey}`);
+
+    // Replace api key placeholder with actual api key
+    tiles.sources = Object.fromEntries(
+      Object.entries(tiles.sources ?? {}).map(([key, source]) => {
+        if (source.url) {
+          source.url = source.url.replace("key={key}", `key=${apiKey}`);
+        }
+        return [key, source];
+      }),
+    );
+
+    // Return static file with api keys
+    return c.json(tiles);
   })
   .get("/locations", async (c) => {
     const result: Location[] = await locations.all();
@@ -74,7 +51,7 @@ const mapRouter = new Hono()
   })
   .post(
     "/locations",
-    vValidator("json", locations.schema.insert, async (res, c) => {
+    vValidator("json", NewLocationSchema, async (res, c) => {
       if (!res.success) {
         return c.json(res.issues, 400);
       }

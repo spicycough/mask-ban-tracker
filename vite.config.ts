@@ -19,7 +19,7 @@ const root = resolve(__dirname, ".");
 export default defineConfig({
   plugins: [
     devServer({
-      entry: "src/server/index.ts",
+      entry: "src/server/app.ts",
       adapter,
 
       exclude: [
@@ -41,7 +41,7 @@ export default defineConfig({
     pages({
       server: {
         kind: "hono",
-        entry: "src/server/index.ts",
+        entry: "src/server/app.ts",
       },
     }),
   ],

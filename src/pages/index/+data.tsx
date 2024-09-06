@@ -1,27 +1,27 @@
-import tiles from "@/assets/geo/style-positron.json";
-import counties from "@/assets/geo/us-counties.json";
-// import { hc } from "@/lib/hono";
-// import { createDehydratedState } from "@/lib/ssr";
+import { createHonoClientSSR } from "@/lib/hono";
+import { createDehydratedState } from "@/lib/ssr";
 
 import type { PageContext } from "vike/types";
 
 export type Data = Awaited<ReturnType<typeof data>>;
 
 export async function data(pageContext: PageContext) {
-  return { tiles, counties };
-}
+  const hc = createHonoClientSSR(
+    pageContext.request.header(),
+    pageContext.response.headers,
+  );
 
-// const prefetchQueries: Parameters<typeof createDehydratedState>["0"] = [
-//   {
-//     queryKey: ["tiles"],
-//     queryFn: async () => hc.map.tiles.$get(),
-//   },
-//   {
-//     queryKey: ["counties"],
-//     queryFn: async () => hc.map.counties.$get(),
-//   },
-// ];
-//
-// return {
-//   dehydratedState: await createDehydratedState(prefetchQueries),
-// };
+  const prefetchQueries: Parameters<typeof createDehydratedState>["0"] = [
+    {
+      queryKey: ["map", "tiles"],
+      queryFn: async () => {
+        const res = await hc.map.tiles.$get();
+        return res.json();
+      },
+    },
+  ];
+
+  return {
+    dehydratedState: await createDehydratedState(prefetchQueries),
+  };
+}

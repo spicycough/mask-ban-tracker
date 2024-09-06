@@ -54,27 +54,25 @@ export const MapLayer = (props: BannedLayerProps) => {
 
   if (local.sourceId === undefined) {
     console.warn(
-      "Attempting to render a CustomMapLayer with a poi that has no layer.sourceId",
+      "Attempting to render a CustomMapLayer with a location that has no layer.sourceId",
     );
   }
 
   return (
     <Show when={local.sourceId}>
-      {(sourceId) => (
-        <Layer
-          visible
-          sourceId={sourceId()}
-          filter={["all", local.filter]}
-          style={{
-            type: "fill",
-            paint: {
-              color: getColor(local.status),
-            },
-            ...local.style,
-          }}
-          {...rest}
-        />
-      )}
+      <Layer
+        visible
+        sourceId={local.sourceId}
+        filter={["all", local.filter]}
+        style={{
+          type: "fill",
+          paint: {
+            color: getColor(local.status),
+          },
+          ...local.style,
+        }}
+        {...rest}
+      />
     </Show>
   );
 };

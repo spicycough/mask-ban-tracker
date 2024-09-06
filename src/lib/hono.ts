@@ -1,5 +1,8 @@
+import { publicConfig } from "@/config.public";
 import type { ApiRouter } from "@/server/app";
 import { type ClientRequestOptions, hc as honoClient } from "hono/client";
+
+const host = publicConfig.PUBLIC_ENV__BASE_URL ?? "http://localhost:3000";
 
 /**
  * Creates a Hono client for the API.
@@ -11,7 +14,6 @@ import { type ClientRequestOptions, hc as honoClient } from "hono/client";
 const createHonoClient = <T extends ApiRouter = ApiRouter>(
   options?: ClientRequestOptions,
 ) => {
-  const host = process.env.PUBLIC_ENV__BASE_URL ?? "http://localhost:3000";
   return honoClient<T>(`${host}/api`, options);
 };
 

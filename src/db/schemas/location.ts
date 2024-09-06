@@ -1,25 +1,13 @@
 import { db } from "@/db";
-import { nanoid } from "@/lib/nanoid";
-import { numeric, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import * as v from "valibot";
 import {
-  createInsertSchema,
-  createSelectSchema,
-} from "../drizzle-valibot-patch";
+  type Location,
+  LocationSchema,
+  type NewLocation,
+  NewLocationSchema,
+  locations,
+} from "../schema";
 
-export const locations = sqliteTable("locations", {
-  id: text("id").primaryKey().$defaultFn(nanoid),
-  name: text("name").notNull(),
-  status: text("status").notNull(),
-});
-
-export const NewLocationSchema = createInsertSchema(locations, {
-  id: v.never(),
-});
-export const LocationSchema = createSelectSchema<typeof locations>(locations);
-export type NewLocation = v.InferOutput<typeof NewLocationSchema>;
-export type Location = v.InferOutput<typeof LocationSchema>;
-export type LocationId = Location["id"];
+type LocationId = Location["id"];
 
 export default {
   // Database table

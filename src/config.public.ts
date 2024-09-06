@@ -28,5 +28,3 @@ declare global {
 //   import.meta.env || process.env,
 // );
 //
-
-export default {};

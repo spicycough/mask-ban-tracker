@@ -31,14 +31,10 @@ declare global {
   interface ImportMetaEnv extends PrivateConfig {}
 }
 
-console.log(`Parsing env vars: ${JSON.stringify(import.meta.env)}`);
-
 // export const privateConfig = parseEnv(
 //   PrivateConfigSchema,
 //   import.meta.env || process.env,
 // );
-
-export default {};
 
 export const privateConfig = {
   /** Port of the app (in dev). */

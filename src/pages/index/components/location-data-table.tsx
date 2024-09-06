@@ -9,11 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { hc } from "@/lib/hono";
-import {
-  createMutation,
-  createQuery,
-  useQueryClient,
-} from "@tanstack/solid-query";
+import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import type { RowData, Table as SolidTable } from "@tanstack/solid-table";
 import {
   createSolidTable,
@@ -23,16 +19,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
 } from "@tanstack/solid-table";
-import { CrossIcon, PlusIcon, PlusSquareIcon } from "lucide-solid";
-import {
-  type Accessor,
-  For,
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  on,
-} from "solid-js";
+import { CrossIcon, PlusIcon } from "lucide-solid";
+import { type Accessor, For, Show, createSignal } from "solid-js";
 import { toast } from "solid-sonner";
 
 import type {
@@ -43,11 +31,19 @@ import type {
 } from "@tanstack/solid-table";
 
 import type { Location, NewLocation } from "@/db/schema";
+import { EditableCell } from "./editable-row";
+import {
+  SelectedRowsCellCheckbox,
+  SelectedRowsHeaderCheckbox,
+} from "./select-column-def";
 
 export const columns: ColumnDef<Location>[] = [
   {
-    accessorKey: "id",
-    header: "Id",
+    id: "select",
+    header: (props) => <SelectedRowsHeaderCheckbox {...props} />,
+    cell: (props) => <SelectedRowsCellCheckbox {...props} />,
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "name",
@@ -70,39 +66,9 @@ declare module "@tanstack/solid-table" {
   }
 }
 
-// Give our default column cell renderer editing superpowers!
-const defaultColumn: Partial<ColumnDef<Location>> = {
-  cell: (props) => {
-    // We need to keep and update the state of the cell normally
-    const [value, setValue] = createSignal(props.getValue());
-
-    // If the initialValue is changed external, sync it up with our state
-    createEffect(
-      on(
-        () => props.getValue(),
-        (value) => {
-          setValue(value);
-        },
-      ),
-    );
-
-    return (
-      <input
-        value={value() as string}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={() => {
-          props.table.options.meta?.updateData(
-            props.row.index,
-            props.column.id,
-            value,
-          );
-        }}
-      />
-    );
-  },
-};
-
 export const LocationDataTable = (props: LocationDataTableProps) => {
+  const [data, setData] = createSignal<Location[]>(props.data() ?? []);
+
   const [sorting, setSorting] = createSignal<SortingState>([]);
   const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>(
     [],
@@ -111,7 +77,10 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
     {},
   );
   const [rowSelection, setRowSelection] = createSignal({});
-  const [pendingRow, setPendingRow] = createSignal<Location>();
+
+  const addPendingRow = () => {
+    setData((data) => [...data, { id: "", name: "", status: "" }]);
+  };
 
   const queryClient = useQueryClient();
 
@@ -134,9 +103,12 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
 
   const table = createSolidTable({
     get data() {
-      return props.data() ?? [];
+      return data();
     },
     columns,
+    defaultColumn: {
+      cell: (props) => <EditableCell {...props} />,
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -158,24 +130,26 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
         return sorting();
       },
     },
-    // meta: {
-    //   updateData: (rowIndex, _, value) => {
-    //     // const previousTodo = queryClient.getQueryData(['todos', newTodo.id])
-    //     if (rowIndex === data().length - 1) {
-    //       setNewLocationRow((old) => {
-    //         return {
-    //           ...old,
-    //           value,
-    //         };
-    //       });
-    //     }
-    //   },
-    // },
+    meta: {
+      updateData: (rowIndex, columnId, value) => {
+        setData((prev) => {
+          return prev.map((row, index) => {
+            if (index !== rowIndex) {
+              return row;
+            }
+            return {
+              ...prev[rowIndex],
+              [columnId]: value,
+            };
+          });
+        });
+      },
+    },
   });
 
   return (
     <div class="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} addRow={addPendingRow} />
       <div class="rounded-md border">
         <Table>
           <TableHeader>
@@ -227,30 +201,36 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
                   </TableRow>
                 )}
               </For>
+              {/*
               <Show when={pendingRow()}>
                 {(row) => (
                   <TableRow data-state>
-                    <For
-                      each={table.getCoreRowModel().rows[0].getVisibleCells()}
-                    >
-                      {(cell) => (
-                        <TableCell>
-                          <Input
-                            value={cell.getValue() as string}
-                            onChange={(event) => {
-                              setPendingRow((prev) => ({
-                                ...prev,
-                                ...event.target.value,
-                              }));
-                            }}
-                            class="h-8 w-[150px] lg:w-[250px]"
-                          />
-                        </TableCell>
-                      )}
+                    <For each={Object.entries(row())}>
+                      {([id, cell]) => {
+                        const getValue = () => {
+                          if (id === "id") {
+                            return pendingRow()?.id ?? "";
+                          }
+                          if (id === "name") {
+                            return pendingRow()?.name ?? "";
+                          }
+                          if (id === "status") {
+                            return pendingRow()?.status ?? "";
+                          }
+                          return "";
+                        };
+
+                        return (
+                          <TableCell>
+                              <EditableCell 
+                          </TableCell>
+                        );
+                      }}
                     </For>
                   </TableRow>
                 )}
               </Show>
+              */}
             </Show>
           </TableBody>
         </Table>
@@ -261,16 +241,17 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
 
 interface DataTableToolbarProps<TData> {
   table: SolidTable<TData>;
+  addRow: () => void;
 }
 
-export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData>) {
+export function DataTableToolbar(props: DataTableToolbarProps<Location>) {
   const isFiltered = () => props.table.getState().columnFilters.length > 0;
 
   return (
     <div class="flex items-center justify-between">
       <div class="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
+          placeholder="Filter locations..."
           value={
             (props.table.getColumn("name")?.getFilterValue() as string) ?? ""
           }
@@ -290,7 +271,7 @@ export function DataTableToolbar<TData>(props: DataTableToolbarProps<TData>) {
           </Button>
         )}
       </div>
-      <Button variant="outline" class="h-8 px-2 lg:px-3">
+      <Button variant="outline" class="h-8 px-2 lg:px-3" onClick={props.addRow}>
         <PlusIcon class="mr-2 h-4 w-4" />
         Add
       </Button>

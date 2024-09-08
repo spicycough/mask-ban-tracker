@@ -11,6 +11,7 @@ import type { ComponentProps } from "solid-js";
 import type { Data } from "../+data";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import useTailwind from "@/hooks/useTailwind";
 import countiesData from "./us-counties.geojson";
 import statesData from "./us-states.geojson";
 
@@ -33,6 +34,8 @@ export function CustomMap(props: CustomMapProps) {
   const queryClient = useQueryClient();
 
   hydrate(queryClient, data.dehydratedState);
+
+  const { colors } = useTailwind();
 
   return (
     <SolidMapGL
@@ -62,6 +65,13 @@ export function CustomMap(props: CustomMapProps) {
               color: "#F88",
             },
           }}
+        />
+        <Layer
+          style={{
+            type: "line",
+            paint: { "line-color": colors.gray[700] },
+          }}
+          beforeType="line"
         />
       </Source>
       <Source

@@ -1,117 +1,87 @@
 import fs from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { description } from "valibot";
+import { type HTMLElement, parse } from "node-html-parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = resolve(__dirname, ".");
 
-const fetchMaskBanData = async () => {};
-
-const NO_BANS_TEXT = "No known state laws or bills.";
+const NO_BANS_TEXT = [
+  "No known state laws or bills.",
+  "No current state laws.",
+];
 
 interface MaskBan {
-  enactedYear: number;
-  description: string;
-  url: string;
-}
-
-interface MaskBanData {
-  state: string;
-  bans: MaskBan[] | null;
+  locationValue: string;
+  locationType: "state" | "city" | "county" | "other";
   notes: string[];
+  text: string;
+  punishment?: string;
+  when?: number;
+  url?: string;
 }
 
-const prepareHtml = (html: string) => {
-  // Remove all class attributes
-  const cleanHtml = html
-    .replaceAll(/ class=".*?"/g, "") // Remove all class attributes
-    .replaceAll(/ style=".*?"/g, ""); // Remove all style attributes
+function cleanDescription(text: string): string {
+  return text
+    .replace(/\s+/g, " ") // Replace multiple whitespace characters with a single space
+    .replace(/\n/g, " ") // Replace newline characters with a space
+    .replace(/^\s+|\s+$/g, "") // Trim leading and trailing whitespace
+    .replace(/\s+([.,!?])/g, "$1") // Remove spaces before punctuation
+    .replace(/([.,!?])\s+/g, "$1 "); // Ensure one space after punctuation
+}
 
-  return cleanHtml;
-};
+const parseHtml = async (html: string) => {
+  const root = parse(html);
+  const headers = root.querySelectorAll("h2");
 
-const extractInsideTag = (html: string, tag: string) => {
-  const regex = new RegExp(`<${tag}.*?>(.*?)<\/${tag}>`, "g");
-  const matches = html.match(regex);
-  if (!matches) {
-    return [];
-  }
-  return matches;
-};
+  const bans: MaskBan[] = [];
+  const ban = {} as MaskBan;
 
-// Go until next occurrence of <h2>
-const splitByTag = (html: string, tag: string) => {
-  const sections: string[][] = [];
-  const lines = html.split("\n");
+  headers.forEach((header, _) => {
+    let currentNode = header.nextElementSibling;
 
-  let section = [lines[0]];
-  for (let i = 1; i < lines.length - 1; i++) {
-    const line = lines[i];
-    section.push(line);
+    const state = header.innerText.trim();
+    ban.locationValue = state;
+    ban.locationType = "state";
 
-    if (line.includes(`<${tag}`)) {
-      section = [];
-      sections.push(section);
-    }
-  }
+    while (currentNode) {
+      const text = currentNode.innerText.trim();
 
-  return sections;
-};
+      if (text.startsWith("Current law")) {
+        const description = text.replace("Current law", "").trim();
+        bans.push({
+          text: cleanDescription(description),
+          type: "law",
+        });
+      } else if (text.startsWith("Sentence")) {
+        const sentence = text.replace("Sentence:", "").trim();
+        ban.sentence = cleanDescription(sentence);
+      } else if (text.startsWith("Note:")) {
+        const note = text.replace("Note:", "").trim();
+        notes.push(cleanDescription(note));
+      }
+      const anchor = currentNode.querySelector("a");
+      ban.url = anchor?.getAttribute("href") || undefined;
 
-// const REGEX = /<\/h2>\s*([^<]*(?:<(?!h2)[^<]*)*?)\s*(?:<h2|$)/g;
+      const matches = text.match(/(enacted in )(\d{4})/);
+      ban.enactedYear = matches ? Number.parseInt(matches[2]) : undefined;
 
-async function parseHtmlFile(filename: string): Promise<MaskBanData[]> {
-  const htmlContent = await fs.readFile(`${root}/${filename}`, "utf-8");
-
-  const html = prepareHtml(htmlContent);
-  // Split by h2 tags on line
-  const sections = splitByTag(html, "h2");
-  console.log(`Number of sections: ${sections.length}`);
-
-  const banData: MaskBanData[] = [];
-  sections.map((sectionGroup) => {
-    const section = sectionGroup.join("\n");
-    const state = section.match(/<h2.*?>(.*?)<\/h2>/)?.[1];
-    // if (!state) {
-    //   console.warn("State not found in section");
-    // }
-
-    // check if no bans text is present
-    if (section.includes(NO_BANS_TEXT)) {
-      return {
-        state,
-        bans: null,
-        notes: [],
-      };
+      currentNode = currentNode.nextElementSibling;
     }
 
-    const bans = splitByTag(section, "p").map((p) => {
-      const text = p.join("\n");
-      const url = extractInsideTag(text, "a")[0];
-
-      return {
-        description: text.replace(url, "").trim(),
-        url,
-        enactedYear: Number.parseInt(
-          text.match(/(enacted in )(\d{4})/)?.[2] ?? "",
-        ),
-      };
-    });
-    // if (!bans) {
-    //   console.warn("State not found in section");
-    // }
-
-    banData.push({
-      state: state?.trim() ?? "",
-      bans: bans ?? [],
-      notes: [],
+    data.push({
+      state: header.innerText.trim(),
+      bans,
+      notes,
     });
   });
 
-  return banData;
-}
+  return data;
+};
 
-const data = await parseHtmlFile("example-ban-data.html");
+// const data = await parseHtmlFile("example-ban-data.html");
+const filename = "example-ban-data.html";
+const htmlContent = await fs.readFile(`${root}/${filename}`, "utf-8");
+const data = await parseHtml(htmlContent);
 console.log(JSON.stringify(data, null, 2));

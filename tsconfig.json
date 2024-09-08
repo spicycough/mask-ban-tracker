@@ -39,7 +39,8 @@
   },
   "include": [
     "src",
-    "public/static"
+    "public/static",
+    "scripts"
   ],
   "exclude": [
     "dist"

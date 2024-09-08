@@ -13,7 +13,7 @@ import * as v from "valibot";
 import { usStates } from "./schema";
 
 import countiesData from "@static/us-counties.json";
-import statesData from "@static/us-states.json";
+import statesData from "@static/us-states-lookup.json";
 
 const CountiesSchema = v.object({
   ...GeoJsonFeatureCollectionSchema.entries,

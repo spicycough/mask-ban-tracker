@@ -1,11 +1,23 @@
-import { type VoidProps, mergeProps } from "solid-js";
+import { cn } from "@/lib/utils";
+import {
+  type ComponentProps,
+  type ValidComponent,
+  type VoidProps,
+  splitProps,
+} from "solid-js";
 
-type VerticalFooterProps = {};
+type VerticalFooterProps<T extends ValidComponent = "footer"> =
+  ComponentProps<T>;
 
 export default function VerticalFooter(props: VoidProps<VerticalFooterProps>) {
+  const [local, rest] = splitProps(props, ["class"]);
+
   return (
-    <footer class="flex h-32 items-center justify-center">
-      Carlo Taleon © All Rights Reserved.
+    <footer
+      class={cn("flex h-32 items-center justify-center", local.class)}
+      {...rest}
+    >
+      Mask Ban Tracker
     </footer>
   );
 }

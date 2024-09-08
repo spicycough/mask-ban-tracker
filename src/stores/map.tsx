@@ -6,7 +6,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import { createStore, reconcile } from "solid-js/store";
+import { createStore, produce, reconcile } from "solid-js/store";
 import {
   type Viewport,
   useMapContext as useSolidMapContext,
@@ -41,7 +41,14 @@ const buildMapContext = (initialState?: MapState) => {
   };
 
   const flyTo = (vp: Viewport) => {
-    return setViewport(vp);
+    return setState(
+      produce((state) => {
+        state.viewport = {
+          ...state.viewport,
+          ...vp,
+        };
+      }),
+    );
   };
 
   const resetViewport = () => {

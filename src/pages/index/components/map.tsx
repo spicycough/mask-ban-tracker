@@ -11,6 +11,8 @@ import type { ComponentProps } from "solid-js";
 import type { Data } from "../+data";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import countiesData from "./us-counties.geojson";
+import statesData from "./us-states.geojson";
 
 export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {
   locations: Location[];
@@ -48,11 +50,29 @@ export function CustomMap(props: CustomMapProps) {
         id="counties"
         source={{
           type: "geojson",
-          data: "/static/us-counties.json",
+          data: countiesData,
         }}
       >
         <Layer
           sourceId="counties"
+          filter={["==", "STATEFP", "48"]}
+          style={{
+            type: "fill",
+            paint: {
+              color: "#F88",
+            },
+          }}
+        />
+      </Source>
+      <Source
+        id="states"
+        source={{
+          type: "geojson",
+          data: statesData,
+        }}
+      >
+        <Layer
+          sourceId="states"
           style={{
             type: "line",
             layout: {
@@ -60,7 +80,7 @@ export function CustomMap(props: CustomMapProps) {
               "line-cap": "round",
             },
             paint: {
-              "line-color": "#F88",
+              "line-color": "#00F880",
               "line-width": 2,
             },
           }}

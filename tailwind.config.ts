@@ -1,5 +1,9 @@
+import { default as kobaltePlugin } from "@kobalte/tailwindcss";
+import { default as animatePlugin } from "tailwindcss-animate";
+
+import theme from "tailwindcss/defaultTheme.js";
+
 import type { Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ["class", '[data-kb-theme="dark"]'],
@@ -54,7 +58,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter Variable", ...fontFamily.sans],
+        sans: ["Inter Variable", ...theme.fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -82,5 +86,5 @@ export default {
       },
     },
   },
-  plugins: [require("@kobalte/tailwindcss"), require("tailwindcss-animate")],
+  plugins: [kobaltePlugin, animatePlugin],
 } satisfies Config;

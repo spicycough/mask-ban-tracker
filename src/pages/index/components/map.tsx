@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useMapContext } from "@/stores/map";
 import { splitProps } from "solid-js";
 import { default as SolidMapGL } from "solid-map-gl";
-import { MapLayer, MapSource } from "./states-layer";
+import { MapLayer, MapSource } from "./map-layer";
 
 import * as maplibre from "maplibre-gl";
 

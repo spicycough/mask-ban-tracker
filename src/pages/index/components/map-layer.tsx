@@ -1,4 +1,4 @@
-import { type ComponentProps, Show, splitProps } from "solid-js";
+import { type ComponentProps, Show, mergeProps, splitProps } from "solid-js";
 import { Layer, type Viewport } from "solid-map-gl";
 
 export const BanStatus = {
@@ -21,7 +21,7 @@ export interface Location {
 
 type HexColor = `#${string}`;
 
-const getColor = (status: BanStatus): HexColor => {
+const getColor = (status?: BanStatus): HexColor => {
   let color: HexColor = "#2A4E86";
   switch (status) {
     case BanStatus.FLOATED:
@@ -36,6 +36,8 @@ const getColor = (status: BanStatus): HexColor => {
     case BanStatus.UNKNOWN:
       color = "#2A4E86";
       break;
+    default:
+      color = "#2A4E86";
   }
   return color;
 };
@@ -44,8 +46,24 @@ interface BannedLayerProps extends ComponentProps<typeof Layer> {
   status: BanStatus;
 }
 
+type LayerProps = ComponentProps<typeof Layer>;
+
 export const MapLayer = (props: BannedLayerProps) => {
-  const [local, rest] = splitProps(props, [
+  const defaultProps = {
+    style: {
+      type: "line",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": getColor(),
+        "line-width": 2,
+      },
+    },
+  } satisfies LayerProps;
+
+  const [local, rest] = splitProps(mergeProps(defaultProps, props), [
     "filter",
     "sourceId",
     "status",
@@ -54,7 +72,7 @@ export const MapLayer = (props: BannedLayerProps) => {
 
   if (local.sourceId === undefined) {
     console.warn(
-      "Attempting to render a CustomMapLayer with a location that has no layer.sourceId",
+      "Attempting to render a MapLayer that has no layer.sourceId. This is likely a bug.",
     );
   }
 

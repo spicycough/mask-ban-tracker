@@ -20,14 +20,13 @@ export interface HudCardProps extends ComponentProps<typeof Card> {
 export const HudCard = (props: HudCardProps) => {
   const [, rest] = splitProps(props, ["class"]);
 
-  const { state } = useMapContext();
+  const { currentLocation } = useMapContext();
 
   return (
-    <Show when={state.currentLocation}>
+    <Show when={currentLocation()}>
       {(location) => {
         return (
           <Card
-            data-arrived={!state.viewport.inTransit}
             class={cn(
               "flex h-full w-72 flex-col justify-between gap-y-4 border-2 border-black opacity-0 shadow-lg backdrop-blur-sm",
               "transition-opacity ease-in data-[arrived=true]:opacity-85",

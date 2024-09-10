@@ -8,8 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { hc } from "@/lib/hono";
-import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import { useQueryClient } from "@tanstack/solid-query";
 import type { RowData, Table as SolidTable } from "@tanstack/solid-table";
 import {
   createSolidTable,
@@ -21,7 +20,6 @@ import {
 } from "@tanstack/solid-table";
 import { CrossIcon, PlusIcon } from "lucide-solid";
 import { type Accessor, For, Show, createSignal } from "solid-js";
-import { toast } from "solid-sonner";
 
 import type {
   ColumnDef,
@@ -30,7 +28,7 @@ import type {
   VisibilityState,
 } from "@tanstack/solid-table";
 
-import type { Location, NewLocation } from "@/db/schema";
+import type { Location } from "@/db/schema";
 import { EditableCell } from "./editable-row";
 import {
   SelectedRowsCellCheckbox,
@@ -84,22 +82,22 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
 
   const queryClient = useQueryClient();
 
-  const mutation = createMutation(() => ({
-    mutationKey: ["map", "locations"],
-    mutationFn: async (data: NewLocation) => {
-      const locations = await hc.map.locations.$post({ json: data });
-      if (!locations.ok) {
-        const { status, statusText } = locations;
-        toast.error(`${status} ${statusText}`);
-      }
-      return (await locations.json()) as Location[];
-    },
-    onSettled: async () => {
-      return await queryClient.invalidateQueries({
-        queryKey: ["map", "locations"],
-      });
-    },
-  }));
+  // const mutation = createMutation(() => ({
+  //   mutationKey: ["map", "locations"],
+  //   mutationFn: async (data: NewLocation) => {
+  //     const locations = await hc.map.locations.$post({ json: data });
+  //     if (!locations.ok) {
+  //       const { status, statusText } = locations;
+  //       toast.error(`${status} ${statusText}`);
+  //     }
+  //     return (await locations.json()) as Location[];
+  //   },
+  //   onSettled: async () => {
+  //     return await queryClient.invalidateQueries({
+  //       queryKey: ["map", "locations"],
+  //     });
+  //   },
+  // }));
 
   const table = createSolidTable({
     get data() {

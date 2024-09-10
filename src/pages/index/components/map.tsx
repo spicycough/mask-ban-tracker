@@ -1,39 +1,25 @@
+import useTailwind from "@/hooks/useTailwind";
 import { cn } from "@/lib/utils";
 import { useMapContext } from "@/stores/map";
-import { hydrate, useQueryClient } from "@tanstack/solid-query";
-import * as maplibre from "maplibre-gl";
 import { splitProps } from "solid-js";
-import { Layer, default as SolidMapGL, Source } from "solid-map-gl";
-import { useData } from "vike-solid/useData";
+import { default as SolidMapGL } from "solid-map-gl";
+import { MapLayer, MapSource } from "./states-layer";
 
-import type { Location } from "@/db/schema";
+import * as maplibre from "maplibre-gl";
+
 import type { ComponentProps } from "solid-js";
-import type { Data } from "../+data";
+
+import countiesData from "@/constants/us-counties.geojson";
+import statesData from "@/constants/us-states.geojson";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import useTailwind from "@/hooks/useTailwind";
-import countiesData from "./us-counties.geojson";
-import statesData from "./us-states.geojson";
 
-export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {
-  locations: Location[];
-}
+export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 
 export function CustomMap(props: CustomMapProps) {
-  const [local, rest] = splitProps(props, [
-    "class",
-    "children",
-    "locations",
-    "options",
-  ]);
+  const [local, rest] = splitProps(props, ["class", "children", "options"]);
 
   const { viewport, setViewport } = useMapContext();
-
-  const data = useData<Data>();
-
-  const queryClient = useQueryClient();
-
-  hydrate(queryClient, data.dehydratedState);
 
   const { colors } = useTailwind();
 
@@ -49,53 +35,31 @@ export function CustomMap(props: CustomMapProps) {
       }}
       {...rest}
     >
-      <Source
-        id="counties"
-        source={{
-          type: "geojson",
-          data: countiesData,
-        }}
-      >
-        <Layer
+      <MapSource id="counties" source={{ data: countiesData }}>
+        <MapLayer
           sourceId="counties"
-          filter={["==", "STATEFP", "48"]}
+          filter={["==", "NAME", "Nassau"]}
           style={{
             type: "fill",
             paint: {
-              color: "#F88",
+              "fill-color": colors.blue[300],
             },
-          }}
-        />
-        <Layer
-          style={{
-            type: "line",
-            paint: { "line-color": colors.gray[700] },
           }}
           beforeType="line"
         />
-      </Source>
-      <Source
-        id="states"
-        source={{
-          type: "geojson",
-          data: statesData,
-        }}
-      >
-        <Layer
+      </MapSource>
+      <MapSource id="states" source={{ data: statesData }}>
+        <MapLayer
           sourceId="states"
           style={{
             type: "line",
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
             paint: {
-              "line-color": "#00F880",
-              "line-width": 2,
+              "line-color": colors.gray[700],
             },
           }}
+          beforeType="line"
         />
-      </Source>
+      </MapSource>
       {local.children}
     </SolidMapGL>
   );

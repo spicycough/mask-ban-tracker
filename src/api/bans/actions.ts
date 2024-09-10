@@ -1,25 +1,12 @@
 import { db } from "@/db";
 import {
   type Location,
-  LocationSchema,
+  type LocationId,
   type NewLocation,
-  NewLocationSchema,
   locations,
-} from "../schema";
+} from "./schema";
 
-type LocationId = Location["id"];
-
-export default {
-  // Database table
-  table: locations,
-  // Schemas
-  schema: {
-    insert: NewLocationSchema,
-    select: LocationSchema,
-  },
-  // Database querier
-  query: db.query.locations,
-  // Methods
+export const queries = {
   all: async (): Promise<Location[]> => {
     return db.select().from(locations).all();
   },
@@ -33,6 +20,9 @@ export default {
       where: ({ id: locationId }, { inArray }) => inArray(locationId, ids),
     });
   },
+};
+
+export const mutations = {
   create: async (newLocation: NewLocation): Promise<LocationId> => {
     const [{ id }] = await db
       .insert(locations)

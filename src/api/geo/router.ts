@@ -1,14 +1,11 @@
 import { privateConfig } from "@/config.private";
 import { publicConfig } from "@/config.public";
-import locations from "@/db/schemas/location";
-import { vValidator } from "@hono/valibot-validator";
 import { Hono } from "hono";
 
-import { NewLocationSchema, type NewMapTile } from "@/db/schema";
-import type { Location, LocationId } from "@/db/schema";
+import type { NewMapTile } from "./schema";
 
-const mapRouter = new Hono()
-  .basePath("/")
+export const mapRouter = new Hono()
+  // TODO: add auth
   .get("/tiles", async (c) => {
     // Ensure API key is loaded
     const apiKey = privateConfig.MAPTILER_API_KEY;
@@ -31,8 +28,6 @@ const mapRouter = new Hono()
 
     // Replace api key placeholder with actual api key
     tiles.glyphs = tiles.glyphs.replace("key={key}", `key=${apiKey}`);
-
-    // Replace api key placeholder with actual api key
     tiles.sources = Object.fromEntries(
       Object.entries(tiles.sources ?? {}).map(([key, source]) => {
         if (source.url) {
@@ -44,29 +39,4 @@ const mapRouter = new Hono()
 
     // Return static file with api keys
     return c.json(tiles);
-  })
-  .get("/locations", async (c) => {
-    const result: Location[] = await locations.all();
-    return c.json(result, 200);
-  })
-  .post(
-    "/locations",
-    vValidator("json", NewLocationSchema, async (res, c) => {
-      if (!res.success) {
-        return c.json(res.issues, 400);
-      }
-      const result: LocationId = await locations.create(res.output);
-      return c.json({ id: result }, 201);
-    }),
-  )
-  .get("/locations/:id", async (c) => {
-    const ids: LocationId[] = c.req.param("id")?.split(",");
-    if (!ids) {
-      return c.json({ error: "No IDs found" }, 400);
-    }
-
-    const result: Location[] = await locations.findByIds(ids);
-    return c.json(result, 200);
   });
-
-export { mapRouter };

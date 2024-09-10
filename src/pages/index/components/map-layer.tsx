@@ -1,9 +1,8 @@
 import { Layer, Source } from "solid-map-gl";
 
 import useTailwind from "@/hooks/useTailwind";
-import { Show, createUniqueId, mergeProps, splitProps } from "solid-js";
+import { Show, mergeProps, splitProps } from "solid-js";
 
-import type { StyleSpecification } from "mapbox-gl";
 import type {
   BackgroundLayerSpecification,
   CircleLayerSpecification,
@@ -18,8 +17,8 @@ import type {
 } from "maplibre-gl";
 import type { ComponentProps } from "solid-js";
 
+import type { BanStatus } from "@/api/bans";
 import "@/styles/globals.css";
-import type { BanStatus } from "@/db/schema";
 
 export type MapSourceProps = ComponentProps<typeof Source>;
 

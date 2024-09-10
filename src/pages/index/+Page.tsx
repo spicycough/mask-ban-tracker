@@ -10,7 +10,7 @@ import { ViewportInfo } from "./components/viewport-info";
 import statesData from "@/constants/us-states.geojson";
 
 export default function Page() {
-  const { map, flyTo, resetViewport, currentLocation, setCurrentLocation } =
+  const { resetViewport, currentLocation, setCurrentLocation } =
     useMapContext();
 
   onMount(() => {

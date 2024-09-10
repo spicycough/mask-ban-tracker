@@ -1,7 +1,5 @@
-import type { Location } from "@/db/schema";
-import { area as turfArea } from "@turf/area";
+import type { Location } from "@/api/bans";
 import { bbox as turfBbox } from "@turf/bbox";
-import { centerOfMass as turfCenterOfMass } from "@turf/center-of-mass";
 import {
   type FlowComponent,
   createContext,
@@ -30,6 +28,8 @@ export type MapState = {
   viewport: Viewport;
 };
 
+type CurrentLocation = Pick<Location, "kind" | "name">;
+
 const buildMapContext = (initialState?: MapState) => {
   const initialViewport = {
     zoom: 4,
@@ -44,9 +44,8 @@ const buildMapContext = (initialState?: MapState) => {
     },
   });
 
-  const [currentLocation, setCurrentLocation] = createSignal<Location | null>(
-    null,
-  );
+  const [currentLocation, setCurrentLocation] =
+    createSignal<CurrentLocation | null>(null);
 
   const viewport = createMemo(() => {
     return state.viewport;
@@ -104,7 +103,7 @@ const buildMapContext = (initialState?: MapState) => {
           console.warn(`Could not find ${location.kind} ${location.name}`);
           return location;
         }
-        ctx.map.fitBounds(turfBbox(feature), { padding: 60 });
+        ctx.map.fitBounds(turfBbox(feature), { padding: 60, pitch: 225 });
         return location;
       },
     ),

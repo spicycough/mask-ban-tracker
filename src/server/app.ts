@@ -1,9 +1,10 @@
+import { banRouter } from "@/api/bans";
+import { mapRouter } from "@/api/geo";
 import { Hono } from "hono";
 import { serveStatic } from "hono/cloudflare-pages";
 import { csrf } from "hono/csrf";
 import { renderPage } from "vike/server";
 import { privateConfig } from "../config.private";
-import { mapRouter } from "./routers";
 
 /**
  * API router. Includes all routes from `@/server/api/*`
@@ -12,6 +13,7 @@ export const apiRouter = new Hono()
   .basePath("/")
   .use(csrf())
   .get("/health", async (c) => c.json({ status: "ok" }))
+  .route("/ban", banRouter)
   .route("/map", mapRouter);
 
 export type ApiRouter = typeof apiRouter;

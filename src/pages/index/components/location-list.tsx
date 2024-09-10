@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import type { Location } from "@/db/schema";
+import type { BanData } from "@/constants/bans.json";
 import { cn } from "@/lib/utils";
 import { SearchIcon } from "lucide-solid";
 import { type ComponentProps, type ParentProps, splitProps } from "solid-js";
@@ -32,7 +32,8 @@ export const LocationList = (props: LocationListProps) => {
 
 interface LocationListItemProps extends ParentProps {
   class?: string;
-  location: Location;
+  name: keyof BanData;
+  ban: BanData[keyof BanData]["laws"][number];
   isSelected?: boolean;
   onClick?: () => void;
 }
@@ -48,9 +49,9 @@ export const LocationListItem = (props: LocationListItemProps) => {
       onClick={props.onClick}
     >
       <div class="mb-2 flex items-center justify-between">
-        <span class="font-semibold">{props.location.name}</span>
+        <span class="font-semibold">{props.name}</span>
         <Badge variant={props.isSelected ? "secondary" : "default"}>
-          {props.location.status}
+          {props.ban.status}
         </Badge>
       </div>
     </button>

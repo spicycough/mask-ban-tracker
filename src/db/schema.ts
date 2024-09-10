@@ -14,8 +14,11 @@ import {
   createSelectSchema,
 } from "./drizzle-valibot-patch";
 
+/* LOCATIONS */
+
 export const locations = sqliteTable("locations", {
   id: text("id").primaryKey().$defaultFn(nanoid),
+  kind: text("kind", { enum: ["county", "city", "state"] }).notNull(),
   name: text("name").notNull(),
   status: text("status").notNull(),
 });
@@ -25,6 +28,32 @@ export const LocationSchema = createSelectSchema<typeof locations>(locations);
 export type NewLocation = v.InferOutput<typeof NewLocationSchema>;
 export type Location = v.InferOutput<typeof LocationSchema>;
 export type LocationId = Location["id"];
+export type LocationKind = Location["kind"];
+
+/* BANS */
+
+const banStatuses = ["Active", "Proposed", "Repealed"] as const;
+
+export const bans = sqliteTable("bans", {
+  id: text("id").primaryKey().$defaultFn(nanoid),
+  locationId: text("location_id"),
+  locationKind: text("location_kind"),
+  status: text("status", {
+    enum: banStatuses,
+  }).notNull(),
+  description: text("description").notNull(),
+  condition: text("condition").notNull(),
+  penalty: text("penalty", { mode: "json" }).notNull(),
+});
+
+export const NewBanSchema = createInsertSchema(bans);
+export const BanSchema = createSelectSchema<typeof bans>(bans);
+export type NewBan = v.InferOutput<typeof NewBanSchema>;
+export type Ban = v.InferOutput<typeof BanSchema>;
+export type BanId = Ban["id"];
+export type BanStatus = Ban["status"];
+
+/* MAP TILES */
 
 export const mapTiles = sqliteTable("map_tiles", {
   id: text("id").primaryKey().$defaultFn(nanoid),
@@ -42,6 +71,8 @@ export const NewMapTileSchema = createInsertSchema(mapTiles);
 export const MapTileSchema = createSelectSchema<typeof mapTiles>(mapTiles);
 export type NewMapTile = v.InferOutput<typeof NewMapTileSchema>;
 export type MapTile = v.InferOutput<typeof MapTileSchema>;
+
+/* GEO FEATURES */
 
 export const geoFeatures = sqliteTable("geo_features", {
   /** Database identifier */
@@ -72,6 +103,8 @@ export const GeoFeatureSchema =
   createSelectSchema<typeof geoFeatures>(geoFeatures);
 export type NewGeoFeature = v.InferOutput<typeof NewGeoFeatureSchema>;
 export type GeoFeature = v.InferOutput<typeof GeoFeatureSchema>;
+
+/* GEO FEATURE DATA */
 
 export const geoFeatureData = sqliteTable(
   "geo_feature_data",
@@ -141,6 +174,8 @@ export const GeoFeatureDataSchema =
   createSelectSchema<typeof geoFeatureData>(geoFeatureData);
 export type NewGeoFeatureData = v.InferOutput<typeof NewGeoFeatureDataSchema>;
 export type GeoFeatureData = v.InferOutput<typeof GeoFeatureDataSchema>;
+
+/* US STATES */
 
 export const usStates = sqliteTable("us_states", {
   /** Database identifier */

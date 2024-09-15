@@ -1,8 +1,14 @@
 import { publicConfig } from "@/config.public";
 import type { ApiRouter } from "@/server/app";
+import { Hono as DefaultHono } from "hono";
 import { type ClientRequestOptions, hc as honoClient } from "hono/client";
+import type { EventContext } from "hono/cloudflare-pages";
 
 const host = publicConfig.PUBLIC_ENV__BASE_URL ?? "http://localhost:3000";
+
+export const Hono = DefaultHono<{
+  Bindings: Env & { eventContext: EventContext };
+}>;
 
 /**
  * Creates a Hono client for the API.

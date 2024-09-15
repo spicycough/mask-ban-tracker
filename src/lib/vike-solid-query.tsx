@@ -15,7 +15,9 @@ export interface QueryBoundaryProps<T = unknown> {
   /**
    * Triggered when the query results in an error.
    */
-  errorFallback?: JSX.Element | ((err: any, reset: () => void) => JSX.Element);
+  errorFallback?:
+    | JSX.Element
+    | ((err: Error, reset: () => void) => JSX.Element);
   /**
    * Triggered when fetching is complete, and the returned data is not falsey.
    */
@@ -73,7 +75,9 @@ export function QueryBoundary<T>(props: QueryBoundaryProps<T>): JSX.Element {
           </Match>
 
           <Match when={props.query.data}>
-            {props.children(props.query.data)}
+            {(data) =>
+              props.children(data() as Exclude<T, false | null | undefined>)
+            }
           </Match>
         </Switch>
       </Suspense>

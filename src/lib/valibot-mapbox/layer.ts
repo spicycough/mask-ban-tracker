@@ -1,4 +1,16 @@
-import type { FillLayerSpecification } from "maplibre-gl";
+import type {
+  BackgroundLayerSpecification,
+  CircleLayerSpecification,
+  FillExtrusionLayerSpecification,
+  FillLayerSpecification,
+  HeatmapLayerSpecification,
+  HillshadeLayerSpecification,
+  LayerSpecification,
+  LineLayerSpecification,
+  RasterLayerSpecification,
+  SymbolLayerSpecification,
+} from "maplibre-gl";
+
 import * as v from "valibot";
 
 const FilterSpecificationSchema = v.any();
@@ -66,3 +78,32 @@ const FillLayerSpecificationSchema = v.object({
     "fill-pattern": v.optional(DataDrivenPropertyValueSpecificationSchema), // ResolvedImageSpecification;
   }),
 }) satisfies v.GenericSchema<FillLayerSpecification>;
+
+// Type guards for specific LayerSpecification
+const isFillLayer = (
+  layer: LayerSpecification,
+): layer is FillLayerSpecification => layer.type === "fill";
+const isLineLayer = (
+  layer: LayerSpecification,
+): layer is LineLayerSpecification => layer.type === "line";
+const isSymbolLayer = (
+  layer: LayerSpecification,
+): layer is SymbolLayerSpecification => layer.type === "symbol";
+const isRasterLayer = (
+  layer: LayerSpecification,
+): layer is RasterLayerSpecification => layer.type === "raster";
+const isBackgroundLayer = (
+  layer: LayerSpecification,
+): layer is BackgroundLayerSpecification => layer.type === "background";
+const isCircleLayer = (
+  layer: LayerSpecification,
+): layer is CircleLayerSpecification => layer.type === "circle";
+const isFillExtrusionLayer = (
+  layer: LayerSpecification,
+): layer is FillExtrusionLayerSpecification => layer.type === "fill-extrusion";
+const isHeatmapLayer = (
+  layer: LayerSpecification,
+): layer is HeatmapLayerSpecification => layer.type === "heatmap";
+const isHillshadeLayer = (
+  layer: LayerSpecification,
+): layer is HillshadeLayerSpecification => layer.type === "hillshade";

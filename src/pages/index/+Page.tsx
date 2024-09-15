@@ -1,48 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import statesData from "@/constants/us-states.geojson";
 import { useMapContext } from "@/stores/map";
-import { ArrowUpRightIcon } from "lucide-solid";
+import { ArrowUpRightIcon, SearchIcon } from "lucide-solid";
 import { For, onMount } from "solid-js";
-import { LocationList } from "./components/location-list";
+import { HudCard } from "./components/hud-card";
 import { CustomMap } from "./components/map";
+import { ResetViewportButton } from "./components/reset-viewport-button";
 import { ViewportInfo } from "./components/viewport-info";
 
-import statesData from "@/constants/us-states.geojson";
-
 export default function Page() {
-  const { resetViewport, currentLocation, setCurrentLocation } =
-    useMapContext();
+  const { resetViewport, setCurrentLocation } = useMapContext();
 
   onMount(() => {
     resetViewport();
   });
 
   return (
-    <div class="flex h-screen w-full bg-gray-100 dark:bg-gray-800">
-      <div class="flex flex-1">
-        <div class="flex-1 space-y-4 p-4">
-          <div class="flex items-center justify-between">
-            <h1 class="font-bold text-2xl">{currentLocation()?.name}</h1>
-            <Button variant="outline" class="text-gray-500">
-              <ArrowUpRightIcon class="mr-2 h-4 w-4" />
-              Share
-            </Button>
+    <div class="h-screen bg-gray-100 dark:bg-gray-800">
+      <CustomMap class="h-full" disableResize>
+        <div class="h-full w-1/4 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <h1 class="mb-4 font-bold text-2xl">Mask Bans</h1>
+          <div class="relative mb-4">
+            <SearchIcon class="absolute top-2.5 left-3 h-4 w-4" />
+            <Input placeholder="Search Locations" class="pl-10" />
           </div>
 
-          <CustomMap class="flex h-1/2 items-center justify-center rounded-lg border border-border bg-gray-200 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300" />
+          <Separator />
 
-          {/* <div class="flex-1 space-y-4 bg-blue-400 p-4"> */}
-          {/*   <h1 class="font-bold text-2xl">View locations</h1> */}
-          {/*   <LocationDataTable data={() => data} /> */}
-          {/* </div> */}
-        </div>
-
-        <LocationList>
-          <div class="space-y-2">
+          <div class="space-y-2 overflow-y-scroll">
             <For each={statesData.features}>
               {(feature) => {
-                // const center = turfCenterOfMass(feature);
-                // const bbox = feature.bbox?.at(0);
                 return (
                   <Card
                     class="aria-selected:bg-blue-300"
@@ -51,22 +41,19 @@ export default function Page() {
                         kind: "state",
                         name: feature.properties?.name,
                       });
-                      // flyTo({
-                      //   pitch: 225,
-                      //   center: center.geometry.coordinates,
-                      // });
                     }}
                   >
-                    <CardHeader class="py-3">
+                    <CardHeader class="py-4">
                       <span class="flex w-full items-center justify-between">
-                        <CardTitle>{feature.properties?.name}</CardTitle>
+                        <CardTitle class="text-base">
+                          {feature.properties?.name}
+                        </CardTitle>
                         <Button
                           variant="ghost"
                           size="icon"
-                          class="text-gray-500"
-                        >
-                          <ArrowUpRightIcon class="h-4 w-4" />
-                        </Button>
+                          class="size-4 text-gray-300"
+                          as={ArrowUpRightIcon}
+                        />
                       </span>
                     </CardHeader>
                   </Card>
@@ -74,9 +61,13 @@ export default function Page() {
               }}
             </For>
           </div>
-        </LocationList>
-      </div>
-      <ViewportInfo />
+        </div>
+        <div class="absolute top-0 right-0 p-10">
+          <HudCard />
+        </div>
+        <ResetViewportButton />
+        <ViewportInfo />
+      </CustomMap>
     </div>
   );
 }

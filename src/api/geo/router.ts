@@ -1,7 +1,8 @@
 import { privateConfig } from "@/config.private";
 import { publicConfig } from "@/config.public";
-import { Hono } from "hono";
-
+import { CF_BUCKET } from "@/constants/cloudflare";
+import { Hono } from "@/lib/hono";
+import { stream } from "hono/streaming";
 import type { NewMapTile } from "./schema";
 
 export const mapRouter = new Hono()
@@ -39,4 +40,23 @@ export const mapRouter = new Hono()
 
     // Return static file with api keys
     return c.json(tiles);
+  })
+  .get("/counties", async (c) => {
+    const countiesData = await c.env.BUCKET_SOURCEDATA.get(
+      CF_BUCKET.COUNTIES_DATA,
+    );
+    if (!countiesData) {
+      return c.json({ error: "No counties data found" }, 400);
+    }
+
+    return stream(c, async (stream) => {
+      // Write a process to be executed when aborted.
+      stream.onAbort(() => {
+        console.log("Aborted!");
+      });
+      // Create a new Uint8Array.
+      countiesData.arrayBuffer().then(async (buffer) => {
+        await stream.write(new Uint8Array(buffer));
+      });
+    });
   });

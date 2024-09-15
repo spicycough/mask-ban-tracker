@@ -1,149 +1,167 @@
+import { createTableWithMetadata } from "@/lib/drizzle";
 import {
   createInsertSchema,
   createSelectSchema,
 } from "@/lib/drizzle-valibot-patch";
-import { nanoid } from "@/lib/nanoid";
-import { sql } from "drizzle-orm";
-import {
-  index,
-  integer,
-  numeric,
-  sqliteTable,
-  text,
-  unique,
-} from "drizzle-orm/sqlite-core";
-import * as v from "valibot";
+import { relations } from "drizzle-orm";
+import { integer, numeric, text } from "drizzle-orm/sqlite-core";
+import type { Geometry as GeoJsonGeometry, GeoJsonTypes } from "geojson";
+import type * as v from "valibot";
+import type { CountyProperties, StateProperties } from "./validators";
+
+/* TYPES */
+
+type GeoJsonGeometryTypes = Omit<GeoJsonTypes, "Feature" | "FeatureCollection">;
+
+type Geometry = Omit<GeoJsonGeometry, "GeometryCollection">;
+type Properties = CountyProperties | StateProperties;
+
+/* ENUMS */
+
+const GeometryType = {
+  GEOMETRY_COLLECTION: "GeometryCollection",
+  LINE_STRING: "LineString",
+  MULTI_LINE_STRING: "MultiLineString",
+  MULTI_POINT: "MultiPoint",
+  MULTI_POLYGON: "MultiPolygon",
+  POINT: "Point",
+  POLYGON: "Polygon",
+} as const satisfies Record<string, GeoJsonGeometryTypes>;
+
+export const GeoJsonType = {
+  ...GeometryType,
+  FEATURE: "Feature",
+  FEATURE_COLLECTION: "FeatureCollection",
+} as const satisfies Record<string, GeoJsonTypes>;
+
+/* TABLES */
+
+/* Feature Collections */
+
+export const featureCollections = createTableWithMetadata(
+  "geo_feature_collections",
+  {
+    /** Type of geographical data */
+    type: text("type", { enum: ["FeatureCollection"] }).notNull(),
+    /** Name of the feature collection */
+    name: text("name").notNull(),
+  },
+);
+
+export const NewFeatureCollectionSchema =
+  createInsertSchema<typeof featureCollections>(featureCollections);
+export const FeatureCollectionSchema =
+  createSelectSchema<typeof featureCollections>(featureCollections);
+
+export type NewFeatureCollection = v.InferOutput<
+  typeof NewFeatureCollectionSchema
+>;
+export type FeatureCollection = v.InferOutput<typeof FeatureCollectionSchema>;
+export type FeatureCollectionId = FeatureCollection["id"];
+
+export const features = createTableWithMetadata("geo_features", {
+  /** Type of geographical data */
+  type: text("type", { enum: ["Feature"] })
+    .$type()
+    .notNull(),
+  /** Foreign key to its feature collection */
+  featureCollectionId: integer("feature_collection_id").references(
+    () => featureCollections.id,
+    { onDelete: "cascade" },
+  ),
+  /** Name of feature */
+  name: text("name").notNull(),
+  /** Properties of feature stored as unstructured JSON */
+  properties: text("properties", { mode: "json" })
+    .$type<Properties>()
+    .notNull(),
+  /** Geometry of feature stored as unstructured JSON */
+  geometry: text("geometry", { mode: "json" }).$type<Geometry>().notNull(),
+});
+
+export const NewFeatureSchema = createInsertSchema<typeof features>(features);
+export const FeatureSchema = createSelectSchema<typeof features>(features);
+
+export type NewFeature = v.InferOutput<typeof NewFeatureSchema>;
+export type Feature = v.InferOutput<typeof FeatureSchema>;
+export type FeatureId = Feature["id"];
+
+/* Relations */
+
+export const featureCollectionsRelations = relations(
+  featureCollections,
+  ({ many }) => ({
+    features: many(features),
+  }),
+);
+
+export const featuresRelations = relations(features, ({ one }) => ({
+  featureCollection: one(featureCollections, {
+    fields: [features.featureCollectionId],
+    references: [featureCollections.id],
+  }),
+}));
 
 /* MAP TILES */
 
-export const mapTiles = sqliteTable("map_tiles", {
-  id: text("id").primaryKey().$defaultFn(nanoid),
+export const mapTiles = createTableWithMetadata("map_tiles", {
   externalId: text("external_id").notNull(),
   version: numeric("version").notNull(),
   name: text("name").notNull(),
+  glyphs: text("glyphs").notNull(),
+  sprite: text("sprite").notNull(),
   metadata: text("metadata", { mode: "json" }).notNull(),
   sources: text("sources", { mode: "json" }).notNull(),
-  sprite: text("sprite").notNull(),
-  glyphs: text("glyphs").notNull(),
   layers: text("layers", { mode: "json" }).notNull(),
 });
 
-export const NewMapTileSchema = createInsertSchema(mapTiles);
+export const NewMapTileSchema = createInsertSchema<typeof mapTiles>(mapTiles);
 export const MapTileSchema = createSelectSchema<typeof mapTiles>(mapTiles);
 export type NewMapTile = v.InferOutput<typeof NewMapTileSchema>;
 export type MapTile = v.InferOutput<typeof MapTileSchema>;
 export type MapTileId = MapTile["id"];
 
-/* GEO FEATURES */
-
-export const geoFeatures = sqliteTable("geo_features", {
-  /** Database identifier */
-  id: text("id").primaryKey().$defaultFn(nanoid),
-  /** Type of geographical data */
-  type: text("type", { enum: ["FeatureCollection"] }).notNull(),
-  /** Name of the feature collection */
-  name: text("name").notNull(),
-  /** CRS: Coordinate Reference System */
-  crsType: text("crs_type", { enum: ["name"] }).notNull(),
-  /** CRS: Coordinate Reference System */
-  crsName: text("crs_name").notNull(),
-  /** ETL: Created Date */
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .$type<Date>()
-    .default(sql`(strftime('%s', 'now'))`)
-    .notNull(),
-  /** ETL: Updated Date */
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .$type<Date>()
-    .default(sql`(strftime('%s', 'now'))`)
-    .$onUpdateFn(() => sql`(strftime('%s', 'now'))`)
-    .notNull(),
-});
-
-export const NewGeoFeatureSchema = createInsertSchema(geoFeatures);
-export const GeoFeatureSchema =
-  createSelectSchema<typeof geoFeatures>(geoFeatures);
-export type NewGeoFeature = v.InferOutput<typeof NewGeoFeatureSchema>;
-export type GeoFeature = v.InferOutput<typeof GeoFeatureSchema>;
-export type GeoFeatureId = GeoFeature["id"];
-
-/* GEO FEATURE DATA */
-
-export const geoFeatureData = sqliteTable(
-  "geo_feature_data",
-  {
-    /** Main identifier code for the geographic entity */
-    geoId: text("geoid", { length: 5 }).primaryKey().notNull(),
-    /** Type of geographical data */
-    type: text("type", { enum: ["Feature"] }).notNull(),
-    /** Name of the geographic entity */
-    name: text("name").notNull(),
-    /** Foreign key to its parent geographic entity */
-    collectionId: text("collection_id")
-      .references(() => geoFeatures.id, { onDelete: "cascade" })
-      .notNull(),
-    /** County FIPS code */
-    countyFp: text("county_fp", { length: 3 }).notNull(),
-    /** County ??? */
-    countyNs: text("county_ns", { length: 8 }).notNull(),
-    /** State FIPS code */
-    stateFp: text("state_fp", { length: 2 }).notNull(),
-    /** Legal/Statistical Area Description */
-    lsad: text("lsad", { length: 2 }).notNull(),
-    /** Land Area */
-    aLand: integer("aland").notNull(),
-    /** Water Area */
-    aWater: integer("awater").notNull(),
-    /** Geographic entity type */
-    geoType: text("geo_type", {
-      enum: [
-        "Polygon",
-        "MultiPolygon",
-        "LineString",
-        "MultiLineString",
-        "MultiPoint",
-        "Point",
-        "GeometryCollection",
-      ],
-    }),
-    /** Coordinates of geographical data */
-    geoCoordinates: text("geo_coordinates", { mode: "json" }).notNull(),
-    /** ETL: Created Date */
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .$type<Date>()
-      .default(sql`(strftime('%s', 'now'))`)
-      .notNull(),
-    /** ETL: Updated Date */
-    updatedAt: integer("updated_at", { mode: "timestamp" })
-      .$type<Date>()
-      .default(sql`(strftime('%s', 'now'))`)
-      .$onUpdateFn(() => sql`(strftime('%s', 'now'))`)
-      .notNull(),
-  },
-  (table) => ({
-    /** Index for geoId */
-    geoIdIdx: index("published_date_idx").on(table.geoId),
-    /** Unique index for geoId */
-    unqGeoId: unique("unq_geoid").on(table.geoId),
-  }),
-);
-
-export const NewGeoFeatureDataSchema = createInsertSchema(geoFeatureData, {
-  name: v.string(),
-  aLand: v.number(),
-  aWater: v.number(),
-});
-export const GeoFeatureDataSchema =
-  createSelectSchema<typeof geoFeatureData>(geoFeatureData);
-export type NewGeoFeatureData = v.InferOutput<typeof NewGeoFeatureDataSchema>;
-export type GeoFeatureData = v.InferOutput<typeof GeoFeatureDataSchema>;
-export type GeoFeatureDataId = GeoFeatureData["geoId"];
-
-/* US STATES */
-
-export const usStates = sqliteTable("us_states", {
-  /** Database identifier */
-  code: text("code", { length: 2 }).primaryKey().notNull(),
-  /** State FIPS code */
-  name: text("name", { length: 2 }).notNull(),
-});
+// function createFeatureTable<T extends Record<string, SQLiteColumnBuilderBase>>(
+//   name: string,
+//   fields: T,
+// ) {
+//   return createTableWithMetadata(`geo_features_${name}`, {
+//     /** Type of geographical data */
+//     type: text("type", { enum: ["Feature"] }).notNull(),
+//     /** Foreign key to its feature collection */
+//     featureCollectionId: text("feature_collection_id").references(
+//       () => featureCollections.id,
+//       { onDelete: "cascade" },
+//     ),
+//     /** Foreign key to its geometry */
+//     geometryId: text("geometry_id").references(() => geoGeometries.id, {
+//       onDelete: "cascade",
+//     }),
+//     /** Property: Identifier code for the geographic entity */
+//     geoId: text("geoid", { length: 5 }).primaryKey().notNull(),
+//     /** Property: Name of the geographic entity */
+//     name: text("name").notNull(),
+//     ...fields,
+//   });
+// }
+//
+// const geoPropertiesCounties = createTableWithMetadata(
+//   "geo_properties_counties",
+//   {
+//     geoId: text("geoid", { length: 5 }).primaryKey().notNull(),
+//     name: text("name").notNull(),
+//     stateFp: text("state_fp", { length: 2 }).notNull(),
+//     countyFp: text("county_fp", { length: 3 }).notNull(),
+//     countyNs: text("county_ns", { length: 8 }).notNull(),
+//     lsad: text("lsad", { length: 2 }).notNull(),
+//     aLand: integer("aland").notNull(),
+//     aWater: integer("awater").notNull(),
+//   },
+// );
+//
+// const geoPropertiesStates = createTableWithMetadata("geo_properties_states", {
+//   /** Property: Identifier code for the geographic entity */
+//   geoId: text("geoid", { length: 5 }).primaryKey().notNull(),
+//   name: text("name").notNull(),
+//   density: real("density").notNull(),
+// });

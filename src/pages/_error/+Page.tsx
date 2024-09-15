@@ -11,13 +11,13 @@ export default function Page() {
         <>
           <h1>500 Internal Server Error</h1>
           <p>Something went wrong. Boop</p>
-          <p>{content.data}</p>
+          <p>{`${content.data}`}</p>
         </>
       }
     >
       <h1>404 Page Not Found</h1>
       <p>This page could not be found.</p>
-      <p>{content.data}</p>
+      <p>{`${content.data}`}</p>
     </Show>
   );
 }

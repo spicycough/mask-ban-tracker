@@ -17,7 +17,7 @@ import type {
 } from "maplibre-gl";
 import type { ComponentProps } from "solid-js";
 
-import type { BanStatus } from "@/api/bans";
+import type { BanStatusType } from "@/api/bans";
 import "@/styles/globals.css";
 
 export type MapSourceProps = ComponentProps<typeof Source>;
@@ -44,16 +44,16 @@ export const MapSource = (props: MapSourceProps) => {
 
 type HexColor = `#${string}`;
 
-const getColor = (status?: BanStatus): HexColor => {
+const getColor = (status?: BanStatusType): HexColor => {
   let color: HexColor = "#2A4E86";
   switch (status) {
-    case "Active":
+    case "enacted":
       color = "#F18F01";
       break;
-    case "Proposed":
+    case "proposed":
       color = "#C63E1C";
       break;
-    case "Repealed":
+    case "repealed":
       color = "#3B202B";
       break;
     default:
@@ -62,35 +62,6 @@ const getColor = (status?: BanStatus): HexColor => {
   }
   return color;
 };
-
-// Type guards for specific LayerSpecification
-const isFillLayer = (
-  layer: LayerSpecification,
-): layer is FillLayerSpecification => layer.type === "fill";
-const isLineLayer = (
-  layer: LayerSpecification,
-): layer is LineLayerSpecification => layer.type === "line";
-const isSymbolLayer = (
-  layer: LayerSpecification,
-): layer is SymbolLayerSpecification => layer.type === "symbol";
-const isRasterLayer = (
-  layer: LayerSpecification,
-): layer is RasterLayerSpecification => layer.type === "raster";
-const isBackgroundLayer = (
-  layer: LayerSpecification,
-): layer is BackgroundLayerSpecification => layer.type === "background";
-const isCircleLayer = (
-  layer: LayerSpecification,
-): layer is CircleLayerSpecification => layer.type === "circle";
-const isFillExtrusionLayer = (
-  layer: LayerSpecification,
-): layer is FillExtrusionLayerSpecification => layer.type === "fill-extrusion";
-const isHeatmapLayer = (
-  layer: LayerSpecification,
-): layer is HeatmapLayerSpecification => layer.type === "heatmap";
-const isHillshadeLayer = (
-  layer: LayerSpecification,
-): layer is HillshadeLayerSpecification => layer.type === "hillshade";
 
 type LayerSpec<
   T extends LayerSpecification["type"] = LayerSpecification["type"],
@@ -151,7 +122,7 @@ export const MapLayer = <T extends LayerType = LayerType>(
 };
 
 interface MapFillLayerProps extends ComponentProps<typeof Layer> {
-  status: BanStatus;
+  status: BanStatusType;
 }
 
 export const MapFillLayer = (props: MapFillLayerProps) => {

@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useQueryClient } from "@tanstack/solid-query";
+// import { useQueryClient } from "@tanstack/solid-query";
 import type { RowData, Table as SolidTable } from "@tanstack/solid-table";
 import {
   createSolidTable,
@@ -18,17 +18,14 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
 } from "@tanstack/solid-table";
-import { CrossIcon, PlusIcon } from "lucide-solid";
-import { type Accessor, For, Show, createSignal } from "solid-js";
-
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from "@tanstack/solid-table";
-
-import type { Location } from "@/db/schema";
+import { CrossIcon, PlusIcon } from "lucide-solid";
+import { type Accessor, For, Show, createSignal } from "solid-js";
 import { EditableCell } from "./editable-row";
 import {
   SelectedRowsCellCheckbox,
@@ -68,19 +65,21 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
   const [data, setData] = createSignal<Location[]>(props.data() ?? []);
 
   const [sorting, setSorting] = createSignal<SortingState>([]);
-  const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>(
-    [],
-  );
+  // const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>(
+  //   [],
+  // );
   const [columnVisibility, setColumnVisibility] = createSignal<VisibilityState>(
     {},
   );
   const [rowSelection, setRowSelection] = createSignal({});
 
   const addPendingRow = () => {
-    setData((data) => [...data, { id: "", name: "", status: "" }]);
+    setData((data) => {
+      return { ...data, id: "", name: "", status: "" };
+    });
   };
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // const mutation = createMutation(() => ({
   //   mutationKey: ["map", "locations"],
@@ -115,9 +114,9 @@ export const LocationDataTable = (props: LocationDataTableProps) => {
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     state: {
-      get columnFilters() {
-        return columnFilters();
-      },
+      // get columnFilters() {
+      //   return columnFilters();
+      // },
       get columnVisibility() {
         return columnVisibility();
       },

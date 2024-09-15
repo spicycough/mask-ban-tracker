@@ -1,15 +1,9 @@
+import type { Location } from "@/api/bans/schema";
 import type { CellContext, RowData } from "@tanstack/solid-table";
 import { createEffect, createSignal, on } from "solid-js";
 
 export interface EditableCellProps<TData extends RowData>
-  extends CellContext<
-    {
-      id: string;
-      name: string;
-      status: string;
-    },
-    unknown
-  > {}
+  extends CellContext<TData, unknown> {}
 
 export const EditableCell = (props: EditableCellProps<Location>) => {
   const [value, setValue] = createSignal(props.getValue());

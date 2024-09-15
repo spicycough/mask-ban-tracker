@@ -3,16 +3,13 @@ import useTailwind from "@/hooks/useTailwind";
 import { cn } from "@/lib/utils";
 import { useMapContext } from "@/stores/map";
 import { createMemo, splitProps } from "solid-js";
-import { default as SolidMapGL } from "solid-map-gl";
+import { default as SolidMapGL, type Viewport } from "solid-map-gl";
 import { match } from "ts-pattern";
 import { MapLayer, MapSource } from "./map-layer";
 
 import * as maplibre from "maplibre-gl";
 
 import type { ComponentProps } from "solid-js";
-
-import countiesData from "@/constants/us-counties.geojson";
-import statesData from "@/constants/us-states.geojson";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -21,9 +18,24 @@ export interface CustomMapProps extends ComponentProps<typeof SolidMapGL> {}
 export function CustomMap(props: CustomMapProps) {
   const [local, rest] = splitProps(props, ["class", "children", "options"]);
 
-  const { viewport, setViewport } = useMapContext();
-
   const { colors } = useTailwind();
+
+  const {
+    viewport,
+    setViewport,
+    isResettingViewport,
+    setIsResettingViewport,
+    setCanResetViewport,
+  } = useMapContext();
+
+  const handleViewportChange = (viewport?: Viewport) => {
+    if (isResettingViewport()) {
+      setIsResettingViewport(false);
+      setCanResetViewport(false);
+    } else {
+      setCanResetViewport(true);
+    }
+  };
 
   const stateLayerFilter = createMemo(() => {
     const activeBans: string[][] = [];
@@ -37,13 +49,13 @@ export function CustomMap(props: CustomMapProps) {
     for (const [state, data] of Object.entries(banData)) {
       for (const law of data.laws) {
         match(law)
-          .with({ status: "Active" }, () => {
+          .with({ status: "enacted" }, () => {
             activeBans.push(toFilter(state));
           })
-          .with({ status: "Proposed" }, () => {
+          .with({ status: "proposed" }, () => {
             proposedBans.push(toFilter(state));
           })
-          .with({ status: "Repealed" }, () => {
+          .with({ status: "repealed" }, () => {
             repealedBans.push(toFilter(state));
           })
           .otherwise(() => null);
@@ -61,7 +73,10 @@ export function CustomMap(props: CustomMapProps) {
     <SolidMapGL
       class={cn("", props.class)}
       viewport={viewport()}
-      onViewportChange={setViewport}
+      onViewportChange={(vp) => {
+        setViewport(vp);
+        handleViewportChange(vp);
+      }}
       transitionType="flyTo"
       mapLib={maplibre}
       options={{
@@ -69,7 +84,12 @@ export function CustomMap(props: CustomMapProps) {
       }}
       {...rest}
     >
-      <MapSource id="counties" source={{ data: countiesData }}>
+      <MapSource
+        id="counties"
+        source={{
+          data: "/static/us-counties.geojson",
+        }}
+      >
         <MapLayer
           sourceId="counties"
           filter={["==", "NAME", "Nassau"]}
@@ -91,7 +111,12 @@ export function CustomMap(props: CustomMapProps) {
           }}
         />
       </MapSource>
-      <MapSource id="states" source={{ data: statesData }}>
+      <MapSource
+        id="states"
+        source={{
+          data: "/static/us-states.geojson",
+        }}
+      >
         <MapLayer
           sourceId="states"
           filter={stateLayerFilter().activeBans}

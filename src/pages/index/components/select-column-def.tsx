@@ -1,5 +1,4 @@
 import { Checkbox, CheckboxControl } from "@/components/ui/checkbox";
-import type { Location } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import type {
   CellContext,

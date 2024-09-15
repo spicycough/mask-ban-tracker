@@ -16,16 +16,20 @@ import {
   useMapContext as useSolidMapContext,
 } from "solid-map-gl";
 
+import countiesData from "../constants/us-counties.geojson";
+import statesData from "../constants/us-states.geojson";
+
+import type { CountyData } from "@/types/county-data";
+import type { StateData } from "@/types/state-data";
 import type { Feature } from "geojson";
 
-import countiesData from "@/constants/us-counties.geojson";
-import statesData from "@/constants/us-states.geojson";
-
-import type { CountyData } from "@/constants/us-counties.geojson";
-import type { StateData } from "@/constants/us-states.geojson";
+// import type { CountyData } from "@/constants/us-counties.geojson";
+// import type { StateData } from "@/constants/us-states.geojson";
 
 export type MapState = {
   viewport: Viewport;
+  canResetViewport: boolean;
+  isResettingViewport: boolean;
 };
 
 type CurrentLocation = Pick<Location, "kind" | "name">;
@@ -42,6 +46,8 @@ const buildMapContext = (initialState?: MapState) => {
       zoom: 4,
       center: { lat: 37.0902, lon: -95.7129 },
     },
+    canResetViewport: false,
+    isResettingViewport: false,
   });
 
   const [currentLocation, setCurrentLocation] =
@@ -52,10 +58,6 @@ const buildMapContext = (initialState?: MapState) => {
   });
 
   const setViewport = (vp: Viewport) => {
-    return setState("viewport", vp);
-  };
-
-  const flyTo = (vp: Viewport) => {
     return setState(
       produce((state) => {
         state.viewport = {
@@ -67,8 +69,21 @@ const buildMapContext = (initialState?: MapState) => {
   };
 
   const resetViewport = () => {
-    return flyTo(initialViewport);
+    if (currentLocation()) {
+      setCurrentLocation(null);
+    }
+    return setViewport(initialViewport);
   };
+
+  const [isResettingViewport, setIsResettingViewport] = [
+    () => state.isResettingViewport,
+    (value: boolean) => setState("isResettingViewport", value),
+  ];
+
+  const [canResetViewport, setCanResetViewport] = [
+    () => state.canResetViewport,
+    (value: boolean) => setState("canResetViewport", value),
+  ];
 
   const [ctx] = useSolidMapContext();
 
@@ -81,7 +96,8 @@ const buildMapContext = (initialState?: MapState) => {
           return null;
         }
         if (!location) {
-          return resetViewport();
+          resetViewport();
+          return;
         }
         const findFeature = <TData extends CountyData | StateData>(
           data: TData,
@@ -89,7 +105,10 @@ const buildMapContext = (initialState?: MapState) => {
             ? keyof CountyData["features"][number]["properties"]
             : keyof StateData["features"][number]["properties"],
           value: string,
-        ) => data.features.find((feature) => feature.properties[key] === value);
+        ) =>
+          data.features.find((feature) => {
+            return feature.properties[key] === value;
+          });
 
         let feature: Feature | undefined;
         if (location.kind === "county") {
@@ -118,12 +137,14 @@ const buildMapContext = (initialState?: MapState) => {
     // Viewport
     viewport,
     setViewport,
+    resetViewport,
+    isResettingViewport,
+    setIsResettingViewport,
+    canResetViewport,
+    setCanResetViewport,
     // Current location
     currentLocation,
     setCurrentLocation,
-    // Viewport methods
-    flyTo,
-    resetViewport,
   };
 };
 

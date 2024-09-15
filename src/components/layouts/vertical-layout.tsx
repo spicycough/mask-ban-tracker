@@ -1,14 +1,23 @@
-import type { FlowProps } from "solid-js";
+import { cn } from "@/lib/utils";
+import {
+  type ComponentProps,
+  type FlowProps,
+  type ValidComponent,
+  splitProps,
+} from "solid-js";
 import VerticalFooter from "./vertical-footer";
 import VerticalNav from "./vertical-nav";
 
-type VerticalLayoutProps = {};
+export type VerticalLayoutProps<T extends ValidComponent = "div"> =
+  ComponentProps<T>;
 
 export default function VerticalLayout(props: FlowProps<VerticalLayoutProps>) {
+  const [local, rest] = splitProps(props as VerticalLayoutProps, ["class"]);
+
   return (
-    <div class="flex min-h-screen flex-col">
+    <div class={cn("flex min-h-screen flex-col", local.class)} {...rest}>
       <VerticalNav />
-      <main class="flex flex-1 flex-col">{props.children}</main>
+      <main class="relative flex-1">{props.children}</main>
       <VerticalFooter />
     </div>
   );

@@ -6,20 +6,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { routes } from "@/constants/routes";
-import { useAuthContext } from "@/stores/auth";
+import { cn } from "@/lib/utils";
 import { DropdownMenu } from "@kobalte/core/dropdown-menu";
-import { Show, type VoidProps } from "solid-js";
+import {
+  type ComponentProps,
+  Show,
+  type VoidProps,
+  splitProps,
+} from "solid-js";
 import { toast } from "solid-sonner";
 
-type HorizontalSidebarProps = {};
+interface HorizontalSidebarProps extends ComponentProps<"div"> {}
 
 export default function HorizontalSidebar(
   props: VoidProps<HorizontalSidebarProps>,
 ) {
-  const { user, loading, logout } = useAuthContext();
+  const [local, rest] = splitProps(props, ["class"]);
+
+  const user = () => true;
+  const logout = () => {};
 
   return (
-    <div class="flex h-full w-56 flex-shrink-0 flex-col border-r px-8 py-8">
+    <div
+      class={cn(
+        "flex h-full w-56 flex-shrink-0 flex-col border-r px-8 py-8",
+        local.class,
+      )}
+      {...rest}
+    >
       <div class="flex items-center gap-x-3">
         <a href={routes.Home} class="text-4xl text-gray-500">
           {"<"}

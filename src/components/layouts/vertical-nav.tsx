@@ -7,31 +7,44 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Route, routes } from "@/constants/routes";
+import { cn } from "@/lib/utils";
 import { For, Show, type VoidProps, createMemo } from "solid-js";
+import { type ComponentProps, type ValidComponent, splitProps } from "solid-js";
 import { toast } from "solid-sonner";
 
-type VerticalNavProps = {};
+export type VerticalNavProps<T extends ValidComponent = "nav"> =
+  ComponentProps<T>;
+
+interface NavLink {
+  name: string;
+  href: Route;
+  visible: boolean;
+}
 
 export default function VerticalNav(props: VoidProps<VerticalNavProps>) {
-  const navLinks = createMemo<
-    { name: string; href: Route; visible: boolean }[]
-  >(() => {
-    return [
-      {
-        name: "Home",
-        href: routes.Home,
-        visible: true,
-      },
-      {
-        name: "About",
-        href: routes.About,
-        visible: true,
-      },
-    ];
-  });
+  const navLinks = createMemo<NavLink[]>(() => [
+    {
+      name: "Home",
+      href: routes.Home,
+      visible: true,
+    },
+    {
+      name: "About",
+      href: routes.About,
+      visible: true,
+    },
+  ]);
+
+  const [local, rest] = splitProps(props as VerticalNavProps, ["class"]);
 
   return (
-    <nav class="flex h-20 items-center justify-between gap-x-5 px-8">
+    <nav
+      class={cn(
+        "flex h-20 items-center justify-between gap-x-5 px-8",
+        local.class,
+      )}
+      {...rest}
+    >
       <a class="flex items-center gap-x-2" href={routes.Home}>
         <span>Solid Launch</span>
       </a>

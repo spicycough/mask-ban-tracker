@@ -1,27 +1,27 @@
 import { cn } from "@/lib/utils";
 import type {
-  DialogContentProps,
-  DialogDescriptionProps,
-  DialogTitleProps,
+  DialogContentProps as KobalteDialogContentProps,
+  DialogDescriptionProps as KobalteDialogDescriptionProps,
+  DialogTitleProps as KobalteDialogTitleProps,
 } from "@kobalte/core/dialog";
 import { Dialog as DialogPrimitive } from "@kobalte/core/dialog";
-import type { PolymorphicProps } from "@kobalte/core/polymorphic";
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import type { ComponentProps, ParentProps, ValidComponent } from "solid-js";
 import { splitProps } from "solid-js";
 
 export const Dialog = DialogPrimitive;
 export const DialogTrigger = DialogPrimitive.Trigger;
 
-type dialogContentProps<T extends ValidComponent = "div"> = ParentProps<
-  DialogContentProps<T> & {
+export type DialogContentProps<T extends ValidComponent = "div"> = ParentProps<
+  KobalteDialogContentProps<T> & {
     class?: string;
   }
 >;
 
 export const DialogContent = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, dialogContentProps<T>>,
+  props: PolymorphicProps<T, DialogContentProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as dialogContentProps, [
+  const [local, rest] = splitProps(props as DialogContentProps, [
     "class",
     "children",
   ]);
@@ -64,14 +64,15 @@ export const DialogContent = <T extends ValidComponent = "div">(
   );
 };
 
-type dialogTitleProps<T extends ValidComponent = "h2"> = DialogTitleProps<T> & {
-  class?: string;
-};
+export type DialogTitleProps<T extends ValidComponent = "h2"> =
+  KobalteDialogTitleProps<T> & {
+    class?: string;
+  };
 
 export const DialogTitle = <T extends ValidComponent = "h2">(
-  props: PolymorphicProps<T, dialogTitleProps<T>>,
+  props: PolymorphicProps<T, DialogTitleProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as dialogTitleProps, ["class"]);
+  const [local, rest] = splitProps(props as DialogTitleProps, ["class"]);
 
   return (
     <DialogPrimitive.Title
@@ -81,15 +82,15 @@ export const DialogTitle = <T extends ValidComponent = "h2">(
   );
 };
 
-type dialogDescriptionProps<T extends ValidComponent = "p"> =
-  DialogDescriptionProps<T> & {
+export type DialogDescriptionProps<T extends ValidComponent = "p"> =
+  KobalteDialogDescriptionProps<T> & {
     class?: string;
   };
 
 export const DialogDescription = <T extends ValidComponent = "p">(
-  props: PolymorphicProps<T, dialogDescriptionProps<T>>,
+  props: PolymorphicProps<T, DialogDescriptionProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as dialogDescriptionProps, ["class"]);
+  const [local, rest] = splitProps(props as DialogDescriptionProps, ["class"]);
 
   return (
     <DialogPrimitive.Description
@@ -99,11 +100,17 @@ export const DialogDescription = <T extends ValidComponent = "p">(
   );
 };
 
-export const DialogHeader = (props: ComponentProps<"div">) => {
+export type DialogHeaderProps<T extends ValidComponent = "div"> =
+  ComponentProps<T> & { class?: string };
+
+export const DialogHeader = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DialogHeaderProps<T>>,
+) => {
   const [local, rest] = splitProps(props, ["class"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(
         "flex flex-col space-y-2 text-center sm:text-left",
         local.class,
@@ -113,11 +120,17 @@ export const DialogHeader = (props: ComponentProps<"div">) => {
   );
 };
 
-export const DialogFooter = (props: ComponentProps<"div">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type DialogFooterProps<T extends ValidComponent = "div"> =
+  ComponentProps<T> & { class?: string };
+
+export const DialogFooter = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DialogFooterProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as DialogFooterProps, ["class"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(
         "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
         local.class,

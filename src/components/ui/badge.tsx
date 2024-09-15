@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { type ComponentProps, splitProps } from "solid-js";
+import { type ComponentProps, type ValidComponent, splitProps } from "solid-js";
 
 export const badgeVariants = cva(
   "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-shadow focus-visible:outline-none focus-visible:ring-[1.5px] focus-visible:ring-ring",
@@ -23,13 +24,19 @@ export const badgeVariants = cva(
   },
 );
 
-export const Badge = (
-  props: ComponentProps<"div"> & VariantProps<typeof badgeVariants>,
+export type BadgeProps<T extends ValidComponent = "div"> = ComponentProps<T> &
+  VariantProps<typeof badgeVariants> & {
+    class?: string;
+  };
+
+export const Badge = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, BadgeProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props, ["class", "variant"]);
+  const [local, rest] = splitProps(props as BadgeProps, ["class", "variant"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(
         badgeVariants({
           variant: local.variant,

@@ -6,6 +6,7 @@ import type {
   LabelProps,
 } from "@corvu/drawer";
 import DrawerPrimitive from "@corvu/drawer";
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import type { ComponentProps, ParentProps, ValidComponent } from "solid-js";
 import { splitProps } from "solid-js";
 
@@ -13,16 +14,16 @@ export const Drawer = DrawerPrimitive;
 export const DrawerTrigger = DrawerPrimitive.Trigger;
 export const DrawerClose = DrawerPrimitive.Close;
 
-type drawerContentProps<T extends ValidComponent = "div"> = ParentProps<
+export type DrawerContentProps<T extends ValidComponent = "div"> = ParentProps<
   ContentProps<T> & {
     class?: string;
   }
 >;
 
 export const DrawerContent = <T extends ValidComponent = "div">(
-  props: DynamicProps<T, drawerContentProps<T>>,
+  props: DynamicProps<T, DrawerContentProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as drawerContentProps, [
+  const [local, rest] = splitProps(props as DrawerContentProps, [
     "class",
     "children",
   ]);
@@ -50,28 +51,46 @@ export const DrawerContent = <T extends ValidComponent = "div">(
   );
 };
 
-export const DrawerHeader = (props: ComponentProps<"div">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+type DrawerHeaderProps<T extends ValidComponent = "div"> = ComponentProps<T> & {
+  class?: string;
+};
+
+export const DrawerHeader = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DrawerHeaderProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as DrawerHeaderProps, ["class"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn("grid gap-1.5 p-4 text-center sm:text-left", local.class)}
       {...rest}
     />
   );
 };
 
-export const DrawerFooter = (props: ComponentProps<"div">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+type DrawerFooterProps<T extends ValidComponent = "div"> = ComponentProps<T> & {
+  class?: string;
+};
+
+export const DrawerFooter = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DrawerHeaderProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as DrawerFooterProps, ["class"]);
 
   return (
-    <div class={cn("mt-auto flex flex-col gap-2 p-4", local.class)} {...rest} />
+    <Polymorphic
+      as="div"
+      class={cn("mt-auto flex flex-col gap-2 p-4", local.class)}
+      {...rest}
+    />
   );
 };
 
-type DrawerLabelProps = LabelProps & {
-  class?: string;
-};
+export type DrawerLabelProps<T extends ValidComponent = "h2"> =
+  LabelProps<T> & {
+    class?: string;
+  };
 
 export const DrawerLabel = <T extends ValidComponent = "h2">(
   props: DynamicProps<T, DrawerLabelProps>,
@@ -89,9 +108,10 @@ export const DrawerLabel = <T extends ValidComponent = "h2">(
   );
 };
 
-type DrawerDescriptionProps = DescriptionProps & {
-  class?: string;
-};
+export type DrawerDescriptionProps<T extends ValidComponent = "p"> =
+  DescriptionProps<T> & {
+    class?: string;
+  };
 
 export const DrawerDescription = <T extends ValidComponent = "p">(
   props: DynamicProps<T, DrawerDescriptionProps>,

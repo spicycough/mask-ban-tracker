@@ -1,12 +1,22 @@
 import { cn } from "@/lib/utils";
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import { type ComponentProps, splitProps } from "solid-js";
+import type { ValidComponent } from "solid-js";
 
-export const Table = (props: ComponentProps<"table">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableProps<T extends ValidComponent = "table"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const Table = <T extends ValidComponent = "table">(
+  props: PolymorphicProps<T, TableProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableProps, ["class"]);
 
   return (
-    <div class="w-full overflow-auto">
-      <table
+    <div class="relative w-full overflow-auto">
+      <Polymorphic
+        as="table"
         class={cn("w-full caption-bottom text-sm", local.class)}
         {...rest}
       />
@@ -14,36 +24,76 @@ export const Table = (props: ComponentProps<"table">) => {
   );
 };
 
-export const TableHeader = (props: ComponentProps<"thead">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableHeaderProps<T extends ValidComponent = "thead"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
 
-  return <thead class={cn("[&_tr]:border-b", local.class)} {...rest} />;
-};
-
-export const TableBody = (props: ComponentProps<"tbody">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export const TableHeader = <T extends ValidComponent = "thead">(
+  props: PolymorphicProps<T, TableHeaderProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableHeaderProps, ["class"]);
 
   return (
-    <tbody class={cn("[&_tr:last-child]:border-0", local.class)} {...rest} />
+    <Polymorphic
+      as="thead"
+      class={cn("[&_tr]:border-b", local.class)}
+      {...rest}
+    />
   );
 };
 
-export const TableFooter = (props: ComponentProps<"tfoot">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableBodyProps<T extends ValidComponent = "tbody"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableBody = <T extends ValidComponent = "tbody">(
+  props: PolymorphicProps<T, TableBodyProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableBodyProps, ["class"]);
 
   return (
-    <tbody
+    <Polymorphic
+      as="tbody"
+      class={cn("[&_tr:last-child]:border-0", local.class)}
+      {...rest}
+    />
+  );
+};
+
+export type TableFooterProps<T extends ValidComponent = "tfoot"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableFooter = <T extends ValidComponent = "tfoot">(
+  props: PolymorphicProps<T, TableFooterProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableFooterProps, ["class"]);
+
+  return (
+    <Polymorphic
+      as="tfoot"
       class={cn("bg-primary font-medium text-primary-foreground", local.class)}
       {...rest}
     />
   );
 };
 
-export const TableRow = (props: ComponentProps<"tr">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableRowProps<T extends ValidComponent = "tr"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableRow = <T extends ValidComponent = "tr">(
+  props: PolymorphicProps<T, TableRowProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableRowProps, ["class"]);
 
   return (
-    <tr
+    <Polymorphic
+      as="tr"
       class={cn(
         "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
         local.class,
@@ -53,11 +103,19 @@ export const TableRow = (props: ComponentProps<"tr">) => {
   );
 };
 
-export const TableHead = (props: ComponentProps<"th">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableHeadProps<T extends ValidComponent = "th"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableHead = <T extends ValidComponent = "th">(
+  props: PolymorphicProps<T, TableHeadProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableHeadProps, ["class"]);
 
   return (
-    <th
+    <Polymorphic
+      as="th"
       class={cn(
         "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         local.class,
@@ -67,11 +125,19 @@ export const TableHead = (props: ComponentProps<"th">) => {
   );
 };
 
-export const TableCell = (props: ComponentProps<"td">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableCellProps<T extends ValidComponent = "td"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableCell = <T extends ValidComponent = "td">(
+  props: PolymorphicProps<T, TableCellProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableCellProps, ["class"]);
 
   return (
-    <td
+    <Polymorphic
+      as="td"
       class={cn(
         "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         local.class,
@@ -81,11 +147,19 @@ export const TableCell = (props: ComponentProps<"td">) => {
   );
 };
 
-export const TableCaption = (props: ComponentProps<"caption">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type TableCaptionProps<T extends ValidComponent = "caption"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const TableCaption = <T extends ValidComponent = "caption">(
+  props: PolymorphicProps<T, TableCaptionProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as TableCaptionProps, ["class"]);
 
   return (
-    <caption
+    <Polymorphic
+      as="caption"
       class={cn("mt-4 text-muted-foreground text-sm", local.class)}
       {...rest}
     />

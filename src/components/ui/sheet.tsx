@@ -5,7 +5,7 @@ import type {
   DialogTitleProps,
 } from "@kobalte/core/dialog";
 import { Dialog as DialogPrimitive } from "@kobalte/core/dialog";
-import type { PolymorphicProps } from "@kobalte/core/polymorphic";
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { ComponentProps, ParentProps, ValidComponent } from "solid-js";
@@ -33,7 +33,7 @@ export const sheetVariants = cva(
   },
 );
 
-type sheetContentProps<T extends ValidComponent = "div"> = ParentProps<
+export type SheetContentProps<T extends ValidComponent = "div"> = ParentProps<
   DialogContentProps<T> &
     VariantProps<typeof sheetVariants> & {
       class?: string;
@@ -41,10 +41,10 @@ type sheetContentProps<T extends ValidComponent = "div"> = ParentProps<
 >;
 
 export const SheetContent = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, sheetContentProps<T>>,
+  props: PolymorphicProps<T, SheetContentProps<T>>,
 ) => {
-  const merge = mergeProps<sheetContentProps<T>[]>({ side: "right" }, props);
-  const [local, rest] = splitProps(merge as sheetContentProps, [
+  const merged = mergeProps<SheetContentProps<T>[]>({ side: "right" }, props);
+  const [local, rest] = splitProps(merged as SheetContentProps, [
     "class",
     "children",
     "side",
@@ -84,14 +84,15 @@ export const SheetContent = <T extends ValidComponent = "div">(
   );
 };
 
-type sheetTitleProps<T extends ValidComponent = "h2"> = DialogTitleProps<T> & {
-  class?: string;
-};
+export type SheetTitleProps<T extends ValidComponent = "h2"> =
+  DialogTitleProps<T> & {
+    class?: string;
+  };
 
 export const SheetTitle = <T extends ValidComponent = "h2">(
-  props: PolymorphicProps<T, sheetTitleProps<T>>,
+  props: PolymorphicProps<T, SheetTitleProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as sheetTitleProps, ["class"]);
+  const [local, rest] = splitProps(props as SheetTitleProps, ["class"]);
 
   return (
     <DialogPrimitive.Title
@@ -101,15 +102,15 @@ export const SheetTitle = <T extends ValidComponent = "h2">(
   );
 };
 
-type sheetDescriptionProps<T extends ValidComponent = "p"> =
+export type SheetDescriptionProps<T extends ValidComponent = "p"> =
   DialogDescriptionProps<T> & {
     class?: string;
   };
 
 export const SheetDescription = <T extends ValidComponent = "p">(
-  props: PolymorphicProps<T, sheetDescriptionProps<T>>,
+  props: PolymorphicProps<T, SheetDescriptionProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as sheetDescriptionProps, ["class"]);
+  const [local, rest] = splitProps(props as SheetDescriptionProps, ["class"]);
 
   return (
     <DialogPrimitive.Description
@@ -119,11 +120,19 @@ export const SheetDescription = <T extends ValidComponent = "p">(
   );
 };
 
-export const SheetHeader = (props: ComponentProps<"div">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type SheetHeaderProps<T extends ValidComponent = "div"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const SheetHeader = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, SheetHeaderProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as SheetHeaderProps, ["class"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(
         "flex flex-col space-y-2 text-center sm:text-left",
         local.class,
@@ -133,11 +142,19 @@ export const SheetHeader = (props: ComponentProps<"div">) => {
   );
 };
 
-export const SheetFooter = (props: ComponentProps<"div">) => {
-  const [local, rest] = splitProps(props, ["class"]);
+export type SheetFooterProps<T extends ValidComponent = "div"> =
+  ComponentProps<T> & {
+    class?: string;
+  };
+
+export const SheetFooter = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, SheetFooterProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as SheetFooterProps, ["class"]);
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(
         "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
         local.class,

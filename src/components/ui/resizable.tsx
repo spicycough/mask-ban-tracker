@@ -6,21 +6,21 @@ import { Show, splitProps } from "solid-js";
 
 export const ResizablePanel = ResizablePrimitive.Panel;
 
-type resizableProps<T extends ValidComponent = "div"> = RootProps<T> & {
+export type ResizableProps<T extends ValidComponent = "div"> = RootProps<T> & {
   class?: string;
 };
 
 export const Resizable = <T extends ValidComponent = "div">(
-  props: DynamicProps<T, resizableProps<T>>,
+  props: DynamicProps<T, ResizableProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as resizableProps, ["class"]);
+  const [local, rest] = splitProps(props as ResizableProps, ["class"]);
 
   return <ResizablePrimitive class={cn("size-full", local.class)} {...rest} />;
 };
 
-export const resizableContext = ResizablePrimitive.useContext;
+export const ResizableContext = ResizablePrimitive.useContext;
 
-type resizableHandleProps<T extends ValidComponent = "button"> = VoidProps<
+type ResizableHandleProps<T extends ValidComponent = "button"> = VoidProps<
   HandleProps<T> & {
     class?: string;
     withHandle?: boolean;
@@ -28,9 +28,9 @@ type resizableHandleProps<T extends ValidComponent = "button"> = VoidProps<
 >;
 
 export const ResizableHandle = <T extends ValidComponent = "button">(
-  props: DynamicProps<T, resizableHandleProps<T>>,
+  props: DynamicProps<T, ResizableHandleProps<T>>,
 ) => {
-  const [local, rest] = splitProps(props as resizableHandleProps, [
+  const [local, rest] = splitProps(props as ResizableHandleProps, [
     "class",
     "withHandle",
   ]);

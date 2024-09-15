@@ -1,6 +1,6 @@
 import { banRouter } from "@/api/bans";
 import { mapRouter } from "@/api/geo";
-import { Hono } from "hono";
+import { Hono } from "@/lib/hono";
 import { serveStatic } from "hono/cloudflare-pages";
 import { csrf } from "hono/csrf";
 import { renderPage } from "vike/server";
@@ -13,7 +13,7 @@ export const apiRouter = new Hono()
   .basePath("/")
   .use(csrf())
   .get("/health", async (c) => c.json({ status: "ok" }))
-  .route("/ban", banRouter)
+  .route("/bans", banRouter)
   .route("/map", mapRouter);
 
 export type ApiRouter = typeof apiRouter;

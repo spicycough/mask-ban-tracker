@@ -39,10 +39,12 @@
   },
   "include": [
     "src",
-    "public/static",
-    "scripts"
+    "public/static"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "public/static",
+    "src/lib/valibot-**",
+    "scripts"
   ]
 }

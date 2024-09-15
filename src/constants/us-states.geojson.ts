@@ -1,6 +1,3 @@
-import { center as getCenter } from "@turf/center";
-import type { FeatureCollection, GeoJsonProperties } from "geojson";
-
 const statesData = {
   type: "FeatureCollection",
   features: [
@@ -4542,11 +4539,6 @@ const statesData = {
       },
     },
   ],
-} as const satisfies FeatureCollection;
-
-type StateGeometry = (typeof statesData)["features"][number]["geometry"];
-type StateProperties = (typeof statesData)["features"][number]["properties"];
-
-export type StateData = FeatureCollection<StateGeometry, StateProperties>;
+};
 
 export default statesData;

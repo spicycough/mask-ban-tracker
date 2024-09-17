@@ -8,6 +8,7 @@ import {
   type BanId,
   type BanPenaltyId,
   type BanRegionId,
+  BanSchema,
   type BanStatusId,
   NewBanPenaltySchema,
   NewBanRegionSchema,
@@ -28,32 +29,21 @@ export const banRouter = new Hono()
     vValidator(
       "param",
       v.object({
-        id: v.pipe(
-          v.string(),
-          v.transform((value) => Number.parseInt(value)),
-          v.number(),
-        ),
+        id: v.pipe(v.string(), v.transform(Number.parseInt), v.number()),
       }),
-      async (res, c) => {
-        if (res.success) {
-          const result = await queries.findById(res.output.id);
-          return c.json(result);
-        }
-
-        return c.json(res.issues, 400);
-      },
     ),
+    async (c) => {
+      const param = c.req.valid("param");
+      const entry = await queries.findById(param.id);
+      return c.json(entry, 200);
+    },
   )
   .delete(
     "/:id",
     vValidator(
       "param",
       v.object({
-        id: v.pipe(
-          v.string(),
-          v.transform((value) => Number.parseInt(value)),
-          v.number(),
-        ),
+        id: v.pipe(v.string(), v.transform(Number.parseInt), v.number()),
       }),
       async (res, c) => {
         if (!res.success) {

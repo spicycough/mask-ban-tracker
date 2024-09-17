@@ -16,7 +16,9 @@ export const SelectDescription = SelectPrimitive.Description;
 export const SelectErrorMessage = SelectPrimitive.ErrorMessage;
 export const SelectItemDescription = SelectPrimitive.ItemDescription;
 export const SelectHiddenSelect = SelectPrimitive.HiddenSelect;
+export const SelectLabel = SelectPrimitive.Label;
 export const SelectSection = SelectPrimitive.Section;
+export const SelectIcon = SelectPrimitive.Icon;
 
 export type SelectTriggerProps<T extends ValidComponent = "button"> =
   ParentProps<KobalteSelectTriggerProps<T> & { class?: string }>;
@@ -98,5 +100,21 @@ export const SelectItem = <T extends ValidComponent = "li">(
       </SelectPrimitive.ItemIndicator>
       <SelectPrimitive.ItemLabel>{local.children}</SelectPrimitive.ItemLabel>
     </SelectPrimitive.Item>
+  );
+};
+
+export const Example = () => {
+  return (
+    <Select
+      options={["Apple", "Banana", "Blueberry", "Grapes", "Pineapple"]}
+      itemComponent={(props) => (
+        <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+      )}
+    >
+      <SelectTrigger>
+        <SelectValue<string>>{(state) => state.selectedOption()}</SelectValue>
+      </SelectTrigger>
+      <SelectContent />
+    </Select>
   );
 };

@@ -1,5 +1,4 @@
 import {
-  FormControlErrorMessage as ErrorMessagePrimitive,
   FormControlContext,
   FormControlLabel as LabelPrimitive,
 } from "@kobalte/core";
@@ -22,13 +21,12 @@ import {
   RadioGroup as RadioGroupPrimitive,
   type RadioGroupRootProps,
 } from "@kobalte/core/radio-group";
-import {
-  type SelectContentProps,
-  type SelectHiddenSelectProps,
-  type SelectMultipleSelectionOptions,
-  Select as SelectPrimitive,
-  type SelectRootProps,
-  type SelectTriggerProps,
+import type {
+  SelectContentProps,
+  SelectHiddenSelectProps,
+  SelectMultipleSelectionOptions,
+  SelectRootProps,
+  SelectTriggerProps,
 } from "@kobalte/core/select";
 import {
   type TextFieldInputProps,
@@ -36,11 +34,7 @@ import {
   type TextFieldRootProps,
   type TextFieldTextAreaProps,
 } from "@kobalte/core/text-field";
-import type {
-  FieldValues,
-  FormStore,
-  ResponseData,
-} from "@modular-forms/solid";
+import type { FieldValues, FormStore } from "@modular-forms/solid";
 import { type VariantProps, cva } from "class-variance-authority";
 import { CheckIcon, Loader2Icon } from "lucide-solid";
 import {
@@ -56,6 +50,16 @@ import {
 } from "solid-js";
 import { buttonVariants } from "./button";
 import { labelVariants } from "./label";
+import {
+  Select,
+  SelectContent,
+  SelectErrorMessage,
+  SelectHiddenSelect,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
 
 type SplitProps<T> = Array<keyof T>;
 
@@ -98,7 +102,13 @@ export function FormTextField(props: FormTextFieldProps) {
   const [rootProps, inputProps, rest] = splitProps(
     props as FormTextFieldProps,
     // Root
-    ["name", "value", "required", "disabled"] as SplitProps<TextFieldRootProps>,
+    [
+      "name",
+      "value",
+      "required",
+      "disabled",
+      "class",
+    ] as SplitProps<TextFieldRootProps>,
     // Input
     ["placeholder", "ref", "onInput", "onChange", "onBlur"] as SplitProps<
       Omit<FormTextFieldInputProps, "multiline">
@@ -138,31 +148,30 @@ export function FormTextField(props: FormTextFieldProps) {
   );
 }
 
-type SelectRootSingleProps = Exclude<
-  SelectRootProps<Option>,
-  SelectMultipleSelectionOptions<Option>
+type SelectRootSingleProps<TOption extends Option> = Exclude<
+  SelectRootProps<TOption>,
+  SelectMultipleSelectionOptions<TOption>
 >;
 
-export type FormSelectProps = SelectRootSingleProps & {
-  options: Option[];
-} & SelectHiddenSelectProps &
-  SelectTriggerProps &
-  SelectContentProps & {
-    label?: string | undefined;
-    error: string;
-  };
+export type FormSelectProps<TOption extends Option> =
+  SelectRootSingleProps<TOption> & {
+    options: TOption[];
+  } & SelectHiddenSelectProps &
+    SelectTriggerProps &
+    SelectContentProps & {
+      label?: string | undefined;
+      error: string;
+    };
 
-export function FormSelect(props: FormSelectProps) {
+export function FormSelect<TOption extends Option>(
+  props: FormSelectProps<TOption>,
+) {
   const [rootProps, selectProps, triggerProps, contentProps, rest] = splitProps(
-    props as FormSelectProps,
+    props as FormSelectProps<TOption>,
     // Root
-    [
-      "name",
-      "placeholder",
-      "options",
-      "required",
-      "disabled",
-    ] as SplitProps<SelectRootSingleProps>,
+    ["name", "placeholder", "options", "required", "disabled"] as SplitProps<
+      SelectRootSingleProps<TOption>
+    >,
     // Select
     [
       "ref",
@@ -182,59 +191,46 @@ export function FormSelect(props: FormSelectProps) {
     ] as SplitProps<SelectContentProps>,
   );
 
-  const [getValue, setValue] = createSignal<Option>();
+  const [getValue, setValue] = createSignal<TOption>();
 
   createEffect(
     on(
       () => props.value,
-      (next) => {
-        const newValue = rootProps.options.find(
-          (option) => option.value === next?.value,
-        );
-        setValue(newValue);
+      (newValue) => {
+        return setValue(() => {
+          return props.options.find((option) => option.value === newValue);
+        });
       },
     ),
+    props.value,
   );
 
   return (
-    <SelectPrimitive
+    <Select<TOption>
       {...rootProps}
       multiple={false}
       value={getValue()}
       onChange={setValue}
       optionValue="value"
       optionTextValue="label"
-      validationState={rest.error ? "invalid" : "valid"}
+      // optionTextValue={(option) => toTitlecase(option?.label)}
       itemComponent={(props) => (
-        <SelectPrimitive.Item {...props}>
-          <SelectPrimitive.ItemLabel>
-            {props.item.textValue}
-          </SelectPrimitive.ItemLabel>
-          <SelectPrimitive.ItemIndicator>
-            <CheckIcon class="size-4">
-              <title>Checked</title>
-            </CheckIcon>
-          </SelectPrimitive.ItemIndicator>
-        </SelectPrimitive.Item>
+        <SelectItem {...props}>{props.item.textValue}</SelectItem>
       )}
+      validationState={rest.error ? "invalid" : "valid"}
     >
       <Show when={rest.label}>
-        <SelectPrimitive.Label>{rest.label}</SelectPrimitive.Label>
+        <SelectLabel class={labelVariants()}>{rest.label}</SelectLabel>
       </Show>
-      <SelectPrimitive.HiddenSelect {...selectProps} />
-      <SelectPrimitive.Trigger {...triggerProps}>
-        <SelectPrimitive.Value<Option>>
+      <SelectHiddenSelect {...selectProps} />
+      <SelectTrigger {...triggerProps}>
+        <SelectValue<TOption>>
           {(state) => state.selectedOption().label}
-        </SelectPrimitive.Value>
-        <SelectPrimitive.Icon />
-      </SelectPrimitive.Trigger>
-      <SelectPrimitive.Portal>
-        <SelectPrimitive.Content {...contentProps}>
-          <SelectPrimitive.Listbox />
-        </SelectPrimitive.Content>
-      </SelectPrimitive.Portal>
-      <SelectPrimitive.ErrorMessage>{props.error}</SelectPrimitive.ErrorMessage>
-    </SelectPrimitive>
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent {...contentProps} />
+      <SelectErrorMessage>{props.error}</SelectErrorMessage>
+    </Select>
   );
 }
 

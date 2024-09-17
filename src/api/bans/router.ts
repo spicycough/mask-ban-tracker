@@ -5,11 +5,9 @@ import { inArray } from "drizzle-orm";
 import * as v from "valibot";
 import { mutations, queries } from "./actions";
 import {
-  type Ban,
   type BanId,
   type BanPenaltyId,
   type BanRegionId,
-  BanSchema,
   type BanStatusId,
   NewBanPenaltySchema,
   NewBanRegionSchema,
@@ -25,15 +23,27 @@ export const banRouter = new Hono()
     const result = await queries.all();
     return c.json(result, 200);
   })
-  .get("/:id", vValidator("param", v.pick(BanSchema, ["id"])), async (c) => {
-    const ids: BanId[] = c.req.param("id")?.split(",").map(Number.parseInt);
-    if (!ids) {
-      return c.json({ error: "No IDs found" }, 400);
-    }
+  .get(
+    "/:id",
+    vValidator(
+      "param",
+      v.object({
+        id: v.pipe(
+          v.string(),
+          v.transform((value) => Number.parseInt(value)),
+          v.number(),
+        ),
+      }),
+      async (res, c) => {
+        if (res.success) {
+          const result = await queries.findById(res.output.id);
+          return c.json(result);
+        }
 
-    const result: Ban[] = await queries.findByIds(ids);
-    return c.json(result, 200);
-  })
+        return c.json(res.issues, 400);
+      },
+    ),
+  )
   .delete(
     "/:id",
     vValidator(

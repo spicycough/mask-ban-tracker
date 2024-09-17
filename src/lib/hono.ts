@@ -1,5 +1,5 @@
 import { publicConfig } from "@/config.public";
-import type { ApiRouter } from "@/server/app";
+import type { apiRouter } from "@/server/app";
 import { Hono as DefaultHono } from "hono";
 import { type ClientRequestOptions, hc as honoClient } from "hono/client";
 import type { EventContext } from "hono/cloudflare-pages";
@@ -17,10 +17,9 @@ export const Hono = DefaultHono<{
  * @param options - Options for the client.
  * @returns A client for the API.
  */
-const createHonoClient = <T extends ApiRouter = ApiRouter>(
-  options?: ClientRequestOptions,
-) => {
-  return honoClient<T>(`${host}/api`, options);
+const createHonoClient = (options?: ClientRequestOptions) => {
+  const client = honoClient<typeof apiRouter>(`${host}/api`, options);
+  return client as typeof client;
 };
 
 /**
@@ -30,11 +29,11 @@ const createHonoClient = <T extends ApiRouter = ApiRouter>(
  * @param responseHeaders - Response headers to be sent back to the browser.
  * @returns A client for the API.
  */
-export const createHonoClientSSR = <T extends ApiRouter = ApiRouter>(
+export const createHonoClientSSR = (
   requestHeaders: Record<string, string>,
   responseHeaders: Headers,
 ) => {
-  return createHonoClient<T>({
+  return createHonoClient({
     // Proxy Request headers from the browser -> server.
     headers: () => requestHeaders ?? {},
     // Proxy Response headers from the server -> browser.

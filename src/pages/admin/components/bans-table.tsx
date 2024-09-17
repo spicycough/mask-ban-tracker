@@ -1,4 +1,11 @@
 import {
+  PaginationFirstPageButton,
+  PaginationLastPageButton,
+  PaginationNextPageButton,
+  PaginationPrevPageButton,
+} from "@/components/ui/data-table-pagination";
+import { DataTableSummaryText } from "@/components/ui/data-table-summary-text";
+import {
   Table,
   TableBody,
   TableCell,
@@ -6,8 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TextField, TextFieldRoot } from "@/components/ui/textfield";
 import type { hc } from "@/lib/hono";
-// import { useQueryClient } from "@tanstack/solid-query";
 import type { SortingState, VisibilityState } from "@tanstack/solid-table";
 import {
   createSolidTable,
@@ -18,7 +25,7 @@ import {
   getSortedRowModel,
 } from "@tanstack/solid-table";
 import type { InferResponseType } from "hono";
-import { For, Show, createEffect, createSignal } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import { columns } from "./columns";
 
 export type BansDataTableProps = {
@@ -29,38 +36,10 @@ export const BansDataTable = (props: BansDataTableProps) => {
   const [data, setData] = createSignal(props.data ?? []);
 
   const [sorting, setSorting] = createSignal<SortingState>([]);
-  // const [columnFilters, setColumnFilters] = createSignal<ColumnFiltersState>(
-  //   [],
-  // );
   const [columnVisibility, setColumnVisibility] = createSignal<VisibilityState>(
     {},
   );
   const [rowSelection, setRowSelection] = createSignal({});
-
-  const addPendingRow = () => {
-    setData((data) => {
-      return { ...data, id: "", name: "", status: "" };
-    });
-  };
-
-  // const queryClient = useQueryClient();
-
-  // const mutation = createMutation(() => ({
-  //   mutationKey: ["map", "locations"],
-  //   mutationFn: async (data: NewLocation) => {
-  //     const locations = await hc.map.locations.$post({ json: data });
-  //     if (!locations.ok) {
-  //       const { status, statusText } = locations;
-  //       toast.error(`${status} ${statusText}`);
-  //     }
-  //     return (await locations.json()) as Location[];
-  //   },
-  //   onSettled: async () => {
-  //     return await queryClient.invalidateQueries({
-  //       queryKey: ["map", "locations"],
-  //     });
-  //   },
-  // }));
 
   const table = createSolidTable({
     get data() {
@@ -75,9 +54,6 @@ export const BansDataTable = (props: BansDataTableProps) => {
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     state: {
-      // get columnFilters() {
-      //   return columnFilters();
-      // },
       get columnVisibility() {
         return columnVisibility();
       },
@@ -88,78 +64,91 @@ export const BansDataTable = (props: BansDataTableProps) => {
         return sorting();
       },
     },
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        setData((prev) => {
-          return prev.map((row, index) => {
-            if (index !== rowIndex) {
-              return row;
-            }
-            return {
-              ...prev[rowIndex],
-              [columnId]: value,
-            };
-          });
-        });
-      },
-    },
   });
 
   return (
-    <div class="rounded-md border">
-      <Table>
-        <TableHeader>
-          <For each={table.getHeaderGroups()}>
-            {(headerGroup) => (
-              <TableRow>
-                <For each={headerGroup.headers}>
-                  {(header) => {
-                    return (
-                      <TableHead>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  }}
-                </For>
-              </TableRow>
-            )}
-          </For>
-        </TableHeader>
-        <TableBody>
-          <Show
-            when={table.getRowModel().rows?.length}
-            fallback={
-              <TableRow>
-                <TableCell colSpan={columns.length} class="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center py-4">
+        <TextFieldRoot>
+          <TextField
+            type="text"
+            class="h-8"
+            placeholder="Filter locations..."
+            value={
+              (table.getColumn("regionName")?.getFilterValue() as string) ?? ""
             }
-          >
-            <For each={table.getRowModel().rows}>
-              {(row) => (
-                <TableRow data-state={row.getIsSelected() && "selected"}>
-                  <For each={row.getVisibleCells()}>
-                    {(cell) => (
-                      <TableCell>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    )}
+            onInput={(e) =>
+              table
+                .getColumn("regionName")
+                ?.setFilterValue(e.currentTarget.value)
+            }
+          />
+        </TextFieldRoot>
+      </div>
+      <div class="rounded-md border">
+        <Table>
+          <TableHeader>
+            <For each={table.getHeaderGroups()}>
+              {(headerGroup) => (
+                <TableRow>
+                  <For each={headerGroup.headers}>
+                    {(header) => {
+                      return (
+                        <TableHead>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    }}
                   </For>
                 </TableRow>
               )}
             </For>
-          </Show>
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            <Show
+              when={table.getRowModel().rows?.length}
+              fallback={
+                <TableRow>
+                  <TableCell colSpan={columns.length} class="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              }
+            >
+              <For each={table.getRowModel().rows}>
+                {(row) => (
+                  <TableRow data-state={row.getIsSelected() && "selected"}>
+                    <For each={row.getVisibleCells()}>
+                      {(cell) => (
+                        <TableCell>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      )}
+                    </For>
+                  </TableRow>
+                )}
+              </For>
+            </Show>
+          </TableBody>
+        </Table>
+      </div>
+      <div class="flex items-center justify-between p-2">
+        <DataTableSummaryText table={table} />
+        <div class="flex items-center space-x-2">
+          <PaginationFirstPageButton table={table} />
+          <PaginationPrevPageButton table={table} />
+          <PaginationNextPageButton table={table} />
+          <PaginationLastPageButton table={table} />
+        </div>
+      </div>
     </div>
   );
 };

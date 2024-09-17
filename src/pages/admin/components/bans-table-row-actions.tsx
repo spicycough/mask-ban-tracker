@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { hc } from "@/lib/hono";
-import type {
-  DropdownMenuTriggerOptions,
-  DropdownMenuTriggerRenderProps,
-} from "@kobalte/core/dropdown-menu";
-import type { PolymorphicCallbackProps } from "@kobalte/core/polymorphic";
 import type { InferResponseType } from "hono";
 import {
   CheckCircleIcon,
@@ -29,21 +24,16 @@ interface BansTableRowActionsProps {
 
 export const BansTableRowActions = (props: BansTableRowActionsProps) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu placement="right">
       <DropdownMenuTrigger
-        as={(
-          props: PolymorphicCallbackProps<
-            ButtonProps,
-            DropdownMenuTriggerOptions,
-            DropdownMenuTriggerRenderProps
-          >,
-        ) => (
-          <Button variant="ghost" class="h-8 w-8 p-0" {...props}>
-            <span class="sr-only">Open menu</span>
-            <MoreHorizontalIcon class="h-4 w-4" />
-          </Button>
-        )}
-      />
+        as={Button}
+        variant="ghost"
+        class="h-8 w-8 p-0"
+        {...props}
+      >
+        <span class="sr-only">Open menu</span>
+        <MoreHorizontalIcon class="h-4 w-4" />
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuGroupLabel>Actions</DropdownMenuGroupLabel>

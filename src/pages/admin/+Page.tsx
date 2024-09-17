@@ -23,9 +23,6 @@ export default function Page() {
                 View, create, edit, and delete bans.
               </p>
             </div>
-            {/* <div class="flex items-center space-x-2"> */}
-            {/*   <UserNav /> */}
-            {/* </div> */}
           </div>
           <BansDataTable data={data} />
         </div>

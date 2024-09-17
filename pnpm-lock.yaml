@@ -23,6 +23,9 @@ importers:
       '@libsql/client':
         specifier: ^0.9.0
         version: 0.9.0
+      '@lukemorales/query-key-factory':
+        specifier: ^1.3.4
+        version: 1.3.4(@tanstack/query-core@5.54.1)(@tanstack/react-query@5.56.2(react@18.3.1))
       '@modular-forms/solid':
         specifier: ^0.23.0
         version: 0.23.0(solid-js@1.8.22)(typescript@5.5.4)
@@ -1296,6 +1299,13 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@lukemorales/query-key-factory@1.3.4':
+    resolution: {integrity: sha512-A3frRDdkmaNNQi6mxIshsDk4chRXWoXa05US8fBo4kci/H+lVmujS6QrwQLLGIkNIRFGjMqp2uKjC4XsLdydRw==, tarball: https://registry.npmjs.org/@lukemorales/query-key-factory/-/query-key-factory-1.3.4.tgz}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@tanstack/query-core': '>= 4.0.0'
+      '@tanstack/react-query': '>= 4.0.0'
+
   '@mapbox/geojson-rewind@0.5.2':
     resolution: {integrity: sha512-tJaT+RbYGJYStt7wI3cq4Nl4SXxG8W7JDG5DMJu97V25RnbNg3QtQtf+KD+VLjNpWKYsRvXDNmNrBgEETr1ifA==, tarball: https://registry.npmjs.org/@mapbox/geojson-rewind/-/geojson-rewind-0.5.2.tgz}
     hasBin: true
@@ -1553,8 +1563,16 @@ packages:
   '@tanstack/query-core@5.54.1':
     resolution: {integrity: sha512-hKS+WRpT5zBFip21pB6Jx1C0hranWQrbv5EJ7qPoiV5MYI3C8rTCqWC9DdBseiPT1JgQWh8Y55YthuYZNiw3Xw==, tarball: https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.54.1.tgz}
 
+  '@tanstack/query-core@5.56.2':
+    resolution: {integrity: sha512-gor0RI3/R5rVV3gXfddh1MM+hgl0Z4G7tj6Xxpq6p2I03NGPaJ8dITY9Gz05zYYb/EJq9vPas/T4wn9EaDPd4Q==, tarball: https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.56.2.tgz}
+
   '@tanstack/query-devtools@5.54.0':
     resolution: {integrity: sha512-B8Sa6mh7/4m2fyk2/YnUXeOZ1/us7G/C/i1It8YcCbieXc8vf1AdSYjR+mZIoJeKOKLqA741hZqfj8d4F1NCVg==, tarball: https://registry.npmjs.org/@tanstack/query-devtools/-/query-devtools-5.54.0.tgz}
+
+  '@tanstack/react-query@5.56.2':
+    resolution: {integrity: sha512-SR0GzHVo6yzhN72pnRhkEFRAHMsUo5ZPzAxfTMvUxFIDVS6W9LYUp6nXW3fcHVdg0ZJl8opSH85jqahvm6DSVg==, tarball: https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.56.2.tgz}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/solid-query-devtools@5.54.2':
     resolution: {integrity: sha512-WJeF5ZliSUqO8TFh0VlrRfqIS8SJJgAtd6ceSIGVmuqxZRcENY8+1gfz5Llj18mojcPb53TGwEVcq6V6mxTaUA==, tarball: https://registry.npmjs.org/@tanstack/solid-query-devtools/-/solid-query-devtools-5.54.2.tgz}
@@ -3848,6 +3866,11 @@ snapshots:
   '@libsql/win32-x64-msvc@0.4.1':
     optional: true
 
+  '@lukemorales/query-key-factory@1.3.4(@tanstack/query-core@5.54.1)(@tanstack/react-query@5.56.2(react@18.3.1))':
+    dependencies:
+      '@tanstack/query-core': 5.54.1
+      '@tanstack/react-query': 5.56.2(react@18.3.1)
+
   '@mapbox/geojson-rewind@0.5.2':
     dependencies:
       get-stream: 6.0.1
@@ -4100,7 +4123,14 @@ snapshots:
 
   '@tanstack/query-core@5.54.1': {}
 
+  '@tanstack/query-core@5.56.2': {}
+
   '@tanstack/query-devtools@5.54.0': {}
+
+  '@tanstack/react-query@5.56.2(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.56.2
+      react: 18.3.1
 
   '@tanstack/solid-query-devtools@5.54.2(@tanstack/solid-query@5.54.2(solid-js@1.8.22))(solid-js@1.8.22)':
     dependencies:
@@ -4877,7 +4907,6 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
-    optional: true
 
   lru-cache@10.4.3: {}
 
@@ -5150,7 +5179,6 @@ snapshots:
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
-    optional: true
 
   read-cache@1.0.0:
     dependencies:

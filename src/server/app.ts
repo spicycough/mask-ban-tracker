@@ -21,46 +21,41 @@ export type ApiRouter = typeof apiRouter;
 /**
  * Base router
  **/
-const app = new Hono();
+const app = new Hono()
+  // Health checks
+  .get("/up", async (c) => {
+    return c.newResponse("🟢 UP", { status: 200 });
+  })
+  // For the Backend APIs
+  .route("/api", apiRouter)
+  // For static files
+  .use("/public/*", serveStatic())
+  // For the Frontend + SSR
+  .get("*", async (c, next) => {
+    const pageContextInit = {
+      urlOriginal: c.req.url,
+      request: c.req,
+      response: c.res,
+    };
+    const pageContext = await renderPage(pageContextInit);
+    const { httpResponse } = pageContext;
+    if (!httpResponse) {
+      return next();
+    }
+    const { body, statusCode, headers } = httpResponse;
+    for (const [name, value] of headers) {
+      c.header(name, value);
+    }
+    c.status(statusCode);
 
-// Health checks
-app.get("/up", async (c) => {
-  return c.newResponse("🟢 UP", { status: 200 });
-});
-
-// For the Backend APIs
-app.route("/api", apiRouter);
-
-// For static files
-app.use("/public/*", serveStatic());
-
-// For the Frontend + SSR
-app.get("*", async (c, next) => {
-  const pageContextInit = {
-    urlOriginal: c.req.url,
-    request: c.req,
-    response: c.res,
-  };
-  const pageContext = await renderPage(pageContextInit);
-  const { httpResponse } = pageContext;
-  if (!httpResponse) {
-    return next();
-  }
-  const { body, statusCode, headers } = httpResponse;
-  for (const [name, value] of headers) {
-    c.header(name, value);
-  }
-  c.status(statusCode);
-
-  return c.body(body);
-});
-
-// Returning errors.
-app.onError((err, c) => {
-  console.error(err.message);
-  const message = c.error?.message ?? err.message ?? "Something went wrong.";
-  return c.json({ error: { message } }, 500);
-});
+    return c.body(body);
+  })
+  // Returning errors.
+  .onError((err, c) => {
+    console.error(err.message);
+    const message = c.error?.message ?? err.message ?? "Something went wrong.";
+    return c.json({ error: { message } }, 500);
+  });
 
 console.log(`App running at http://localhost:${privateConfig.PORT}`);
 

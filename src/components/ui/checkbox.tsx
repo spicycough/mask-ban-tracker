@@ -1,18 +1,22 @@
 import { cn } from "@/lib/utils";
-import type { CheckboxControlProps as KobalteCheckboxControlProps } from "@kobalte/core/checkbox";
+import type {
+  CheckboxRootProps,
+  CheckboxControlProps as KobalteCheckboxControlProps,
+} from "@kobalte/core/checkbox";
 import { Checkbox as CheckboxPrimitive } from "@kobalte/core/checkbox";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
-import { CheckIcon } from "lucide-solid";
+import { CheckIcon, MinusIcon } from "lucide-solid";
 import type { ValidComponent, VoidProps } from "solid-js";
 import { splitProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
+// export const Checkbox = CheckboxPrimitive;
 export const CheckboxLabel = CheckboxPrimitive.Label;
-export const Checkbox = CheckboxPrimitive;
 export const CheckboxErrorMessage = CheckboxPrimitive.ErrorMessage;
 export const CheckboxDescription = CheckboxPrimitive.Description;
 
 export type CheckboxControlProps<T extends ValidComponent = "div"> = VoidProps<
-  KobalteCheckboxControlProps<T> & { class?: string }
+  KobalteCheckboxControlProps<T> & { class?: string; indeterminate?: boolean }
 >;
 
 export const CheckboxControl = <T extends ValidComponent = "div">(
@@ -21,6 +25,7 @@ export const CheckboxControl = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(props as CheckboxControlProps, [
     "class",
     "children",
+    "indeterminate",
   ]);
 
   return (
@@ -33,10 +38,29 @@ export const CheckboxControl = <T extends ValidComponent = "div">(
         )}
         {...rest}
       >
-        <CheckboxPrimitive.Indicator class="flex items-center justify-center text-current">
-          <CheckIcon class="h-4 w-4" />
+        <CheckboxPrimitive.Indicator class="group flex items-center justify-center text-current">
+          <Dynamic
+            component={local.indeterminate ? MinusIcon : CheckIcon}
+            class="h-4 w-4"
+          />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Control>
     </>
+  );
+};
+
+type CheckboxProps<T extends ValidComponent = "div"> = CheckboxRootProps<T> & {
+  class?: string;
+};
+
+export const Checkbox = <T extends ValidComponent = "checkbox">(
+  props: PolymorphicProps<T, CheckboxProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as CheckboxProps, ["class"]);
+
+  return (
+    <CheckboxPrimitive class={cn("", local.class)} {...rest}>
+      <CheckboxControl />
+    </CheckboxPrimitive>
   );
 };

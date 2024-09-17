@@ -1,9 +1,6 @@
 import { Checkbox, CheckboxControl } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
-import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
 import type { CellContext, HeaderContext } from "@tanstack/solid-table";
-import { type ComponentProps, type ValidComponent, splitProps } from "solid-js";
-import { useDataTable } from "./data-table";
+import { type ComponentProps, splitProps } from "solid-js";
 
 export type SelectAllCheckboxProps<TData, TValue> = HeaderContext<
   TData,
@@ -30,7 +27,7 @@ export const SelectAllCheckbox = <TData, TValue>(
       aria-label="Select all"
       {...rest}
     >
-      <CheckboxControl />
+      <CheckboxControl indeterminate={props.table.getIsSomeRowsSelected()} />
     </Checkbox>
   );
 };
@@ -58,29 +55,5 @@ export const SelectRowCheckbox = <TData, TValue>(
     >
       <CheckboxControl />
     </Checkbox>
-  );
-};
-
-type SelectSummaryProps<T extends ValidComponent = "div"> =
-  ComponentProps<T> & {
-    class?: string;
-  };
-
-export const SelectSummaryText = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, SelectSummaryProps<T>>,
-) => {
-  const [local, rest] = splitProps(props, ["class"]);
-
-  const { table } = useDataTable();
-
-  return (
-    <Polymorphic
-      as="div"
-      class={cn("flex-1 text-muted-foreground text-sm", local.class)}
-      {...rest}
-    >
-      {table.getFilteredSelectedRowModel().rows.length} of{" "}
-      {table.getFilteredRowModel().rows.length} row(s) selected.
-    </Polymorphic>
   );
 };

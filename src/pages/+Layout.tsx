@@ -6,6 +6,7 @@ import { Toaster } from "solid-sonner";
 import type { FlowProps, ParentProps } from "solid-js";
 
 import "@/styles/globals.css";
+import { FloatingNavbar } from "@/components/floating-navbar";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ export default function RootLayout(props: FlowProps) {
     <>
       <QueryClientProvider client={queryClient}>
         <SolidQueryDevtools initialIsOpen={false} />
+        <FloatingNavbar />
         {props.children}
       </QueryClientProvider>
       <Toaster />

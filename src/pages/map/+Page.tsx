@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import statesData from "@/constants/us-states.geojson";
 import { useMapContext } from "@/stores/map";
 import { ArrowUpRightIcon, SearchIcon } from "lucide-solid";
-import { For, onMount } from "solid-js";
+import { For } from "solid-js";
 import { HudCard } from "./components/hud-card";
 import { CustomMap } from "./components/map";
 import { ResetViewportButton } from "./components/reset-viewport-button";
@@ -13,10 +13,6 @@ import { ViewportInfo } from "./components/viewport-info";
 
 export default function Page() {
   const { resetViewport, setCurrentLocation } = useMapContext();
-
-  onMount(() => {
-    resetViewport();
-  });
 
   return (
     <div class="h-screen bg-gray-100 dark:bg-gray-800">
@@ -38,7 +34,7 @@ export default function Page() {
                     class="aria-selected:bg-blue-300"
                     onClick={() => {
                       setCurrentLocation({
-                        kind: "state",
+                        type: "state",
                         name: feature.properties?.name,
                       });
                     }}

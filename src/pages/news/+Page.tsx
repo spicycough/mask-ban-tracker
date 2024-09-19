@@ -82,47 +82,45 @@ export default function Page() {
   ];
 
   return (
-    <div class="h-screen bg-gray-100 dark:bg-gray-800">
-      <div class="h-[600px] w-full rounded-md border p-4">
-        <h1 class="mb-6 font-bold text-3xl">Changelog</h1>
-        <div class="space-y-6">
-          <For each={changelogData}>
-            {(item) => (
-              <Card class="flex flex-col md:flex-row">
-                <div class="w-full bg-muted p-6 md:w-1/3">
-                  <div class="space-y-4">
-                    <For each={Object.values(item.metadata)}>
-                      {(meta) => (
-                        <div class="flex items-center space-x-2">
-                          {meta.icon}
-                          <span class="text-muted-foreground text-sm">
-                            {meta.value}
-                          </span>
-                        </div>
-                      )}
+    <div class="h-[600px] w-full rounded-md border p-4">
+      <h1 class="mb-6 font-bold text-3xl">Changelog</h1>
+      <div class="space-y-6">
+        <For each={changelogData}>
+          {(item) => (
+            <Card class="flex flex-col md:flex-row">
+              <div class="w-full bg-muted p-6 md:w-1/3">
+                <div class="space-y-4">
+                  <For each={Object.values(item.metadata)}>
+                    {(meta) => (
+                      <div class="flex items-center space-x-2">
+                        {meta.icon}
+                        <span class="text-muted-foreground text-sm">
+                          {meta.value}
+                        </span>
+                      </div>
+                    )}
+                  </For>
+                </div>
+              </div>
+              <div class="flex-1">
+                <CardHeader>
+                  <CardTitle>{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p class="mb-4">{item.content}</p>
+                </CardContent>
+                <CardFooter class="flex flex-wrap items-center justify-between text-muted-foreground text-sm">
+                  <span>{item.author}</span>
+                  <div class="mt-2 flex flex-wrap gap-2 sm:mt-0">
+                    <For each={item.tags}>
+                      {(tag) => <Badge variant="secondary">{tag}</Badge>}
                     </For>
                   </div>
-                </div>
-                <div class="flex-1">
-                  <CardHeader>
-                    <CardTitle>{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p class="mb-4">{item.content}</p>
-                  </CardContent>
-                  <CardFooter class="flex flex-wrap items-center justify-between text-muted-foreground text-sm">
-                    <span>{item.author}</span>
-                    <div class="mt-2 flex flex-wrap gap-2 sm:mt-0">
-                      <For each={item.tags}>
-                        {(tag) => <Badge variant="secondary">{tag}</Badge>}
-                      </For>
-                    </div>
-                  </CardFooter>
-                </div>
-              </Card>
-            )}
-          </For>
-        </div>
+                </CardFooter>
+              </div>
+            </Card>
+          )}
+        </For>
       </div>
     </div>
   );

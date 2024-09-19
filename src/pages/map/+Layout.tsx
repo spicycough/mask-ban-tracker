@@ -1,6 +1,3 @@
-import { MapProvider } from "@/stores/map";
-import type { FlowProps } from "solid-js";
+import { FullWidth } from "@/components/layouts/vertical-layout";
 
-export default function Layout(props: FlowProps) {
-  return <MapProvider>{props.children}</MapProvider>;
-}
+export default FullWidth;

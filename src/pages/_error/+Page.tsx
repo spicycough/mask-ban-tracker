@@ -7,29 +7,21 @@ export default function Page() {
   const { is404 } = usePageContext();
 
   return (
-    <div class="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
-      <main class="space-y-6 p-4 text-center">
-        <Show
-          when={is404}
-          fallback={
-            <Status
-              header="500"
-              subheader="Internal server error"
-              content="Something went wrong. Boop"
-            />
-          }
-        >
-          <Status
-            header="404"
-            subheader="Page not found"
-            content="The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
-          />
-        </Show>
-        <Button as="a" href="/" variant="default" class="mt-4">
-          <ArrowLeftIcon class="mr-2 h-4 w-4" />
-          Go to home
-        </Button>
-      </main>
+    <div class="flex h-full flex-col items-center justify-center space-y-6 p-4 text-center">
+      <Show
+        when={is404}
+        fallback={<Status header="500" content="Something went wrong. Boop" />}
+      >
+        <Status
+          header="404"
+          subheader="Page not found"
+          content="The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
+        />
+      </Show>
+      <Button as="a" href="/" variant="default" class="mt-4">
+        <ArrowLeftIcon class="mr-2 h-4 w-4" />
+        Go to home
+      </Button>
     </div>
   );
 }

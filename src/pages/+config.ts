@@ -14,7 +14,6 @@ export default {
       },
     },
   },
-
   title: "Track Mask Bans",
   passToClient: ["routeParams"],
   // stream: true,

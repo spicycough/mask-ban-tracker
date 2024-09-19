@@ -1,4 +1,4 @@
-import type { Location } from "@/api/bans";
+import type { BanRegion } from "@/api/bans";
 import { bbox as turfBbox } from "@turf/bbox";
 import {
   type FlowComponent,
@@ -16,15 +16,8 @@ import {
   useMapContext as useSolidMapContext,
 } from "solid-map-gl";
 
-import countiesData from "../constants/us-counties.geojson";
-import statesData from "../constants/us-states.geojson";
-
-import type { CountyData } from "@/types/county-data";
-import type { StateData } from "@/types/state-data";
-import type { Feature } from "geojson";
-
-// import type { CountyData } from "@/constants/us-counties.geojson";
-// import type { StateData } from "@/constants/us-states.geojson";
+import countiesData from "@/constants/us-counties.geojson";
+import statesData from "@/constants/us-states.geojson";
 
 export type MapState = {
   viewport: Viewport;
@@ -32,7 +25,25 @@ export type MapState = {
   isResettingViewport: boolean;
 };
 
-type CurrentLocation = Pick<Location, "kind" | "name">;
+type CurrentLocation = Pick<BanRegion, "type" | "name">;
+
+type LocationData = {
+  type: BanRegion["type"];
+  name: string;
+};
+
+const findFeature = (props: LocationData) => {
+  switch (props.type) {
+    case "county":
+      return countiesData.features.find(
+        (feature) => feature.properties.NAME === props.name,
+      );
+    case "state":
+      return statesData.features.find(
+        (feature) => feature.properties.name === props.name,
+      );
+  }
+};
 
 const buildMapContext = (initialState?: MapState) => {
   const initialViewport = {
@@ -99,27 +110,13 @@ const buildMapContext = (initialState?: MapState) => {
           resetViewport();
           return;
         }
-        const findFeature = <TData extends CountyData | StateData>(
-          data: TData,
-          key: TData extends CountyData
-            ? keyof CountyData["features"][number]["properties"]
-            : keyof StateData["features"][number]["properties"],
-          value: string,
-        ) =>
-          data.features.find((feature) => {
-            return feature.properties[key] === value;
-          });
-
-        let feature: Feature | undefined;
-        if (location.kind === "county") {
-          feature = findFeature(countiesData, "NAME", location.name);
-        }
-        if (location.kind === "state") {
-          feature = findFeature(statesData, "name", location.name);
-        }
+        const feature = findFeature({
+          type: location.type,
+          name: location.name,
+        });
 
         if (!feature) {
-          console.warn(`Could not find ${location.kind} ${location.name}`);
+          console.warn(`Could not find ${location.type} ${location.name}`);
           return location;
         }
         ctx.map.fitBounds(turfBbox(feature), { padding: 60, pitch: 225 });
@@ -172,63 +169,3 @@ export const MapProvider: FlowComponent = (props) => {
     <MapContext.Provider value={context}>{props.children}</MapContext.Provider>
   );
 };
-
-// const toViewport = (location: Location): Viewport | null => {
-//   if (location.kind === "county") {
-//     const feature: Feature | undefined = countiesData.features.find(
-//       (feat) => feat.properties.NAME === location.name,
-//     );
-//
-//     if (!feature) {
-//       return null;
-//     }
-//
-//     const center = turfCenterOfMass(feature);
-//     const ratio = turfArea(feature) / turfArea(countiesData);
-//
-//     const viewport: Viewport = {
-//       zoom: 20 * ratio,
-//       center,
-//     };
-//
-//     return viewport;
-//   }
-//   if (location.kind === "state") {
-//     const feature: Feature | undefined = statesData.features.find(
-//       (feat) => feat.properties.name === location.name,
-//     );
-//
-//     if (!feature) {
-//       return null;
-//     }
-//
-//     const center = turfCenterOfMass(feature);
-//     const ratio = turfArea(feature) / turfArea(statesData);
-//
-//     const viewport: Viewport = {
-//       zoom: 20 * ratio,
-//       center: center.geometry.coordinates,
-//     };
-//
-//     return viewport;
-//   }
-//
-//   return null;
-// };
-//
-// createEffect(
-//   on(
-//     () => currentLocation(),
-//     (location) => {
-//       if (!location) {
-//         resetViewport();
-//         return;
-//       }
-//       const viewport = toViewport(location);
-//       if (!viewport) {
-//         return;
-//       }
-//       flyTo(viewport);
-//     },
-//   ),
-// );

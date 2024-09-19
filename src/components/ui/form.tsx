@@ -58,7 +58,6 @@ import {
   type SliderThumbProps,
   SliderTrack,
   type SliderTrackProps,
-  SliderValueLabel,
 } from "./slider";
 import {
   TextField,

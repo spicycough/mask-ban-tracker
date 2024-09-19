@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
+import type { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link as LinkPrimitive } from "@kobalte/core/link";
 import { createMemo, splitProps } from "solid-js";
@@ -39,13 +39,7 @@ export function Link<T extends ValidComponent = "a">(
   return (
     <LinkPrimitive
       href={local.href}
-      class={cn(
-        buttonVariants({
-          size: local.size,
-          variant: local?.variant ?? "link",
-        }),
-        local.class,
-      )}
+      class={cn(local.class)}
       data-active={isActive() ? "" : undefined}
       {...rest}
     />

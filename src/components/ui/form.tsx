@@ -1,65 +1,73 @@
-import {
-  FormControlContext,
-  FormControlLabel as LabelPrimitive,
-} from "@kobalte/core";
-import {
-  Button as ButtonPrimitive,
-  type ButtonRootProps,
-} from "@kobalte/core/button";
-import {
-  type CheckboxControlProps,
-  type CheckboxInputProps,
-  type CheckboxLabelProps,
-  Checkbox as CheckboxPrimitive,
-  type CheckboxRootProps,
-} from "@kobalte/core/checkbox";
-import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic";
-import {
-  type RadioGroupItemControlProps,
-  type RadioGroupItemInputProps,
-  type RadioGroupItemLabelProps,
-  RadioGroup as RadioGroupPrimitive,
-  type RadioGroupRootProps,
-} from "@kobalte/core/radio-group";
-import type {
-  SelectContentProps,
-  SelectHiddenSelectProps,
-  SelectMultipleSelectionOptions,
-  SelectRootProps,
-  SelectTriggerProps,
-} from "@kobalte/core/select";
-import {
-  type TextFieldInputProps,
-  TextField as TextFieldPrimitive,
-  type TextFieldRootProps,
-  type TextFieldTextAreaProps,
-} from "@kobalte/core/text-field";
+import type { SelectMultipleSelectionOptions } from "@kobalte/core/select";
 import type { FieldValues, FormStore } from "@modular-forms/solid";
-import { type VariantProps, cva } from "class-variance-authority";
-import { CheckIcon, Loader2Icon } from "lucide-solid";
+import { Loader2Icon } from "lucide-solid";
 import {
   type ComponentProps,
   For,
   Show,
-  type ValidComponent,
   createEffect,
   createSignal,
-  mergeProps,
   on,
   splitProps,
 } from "solid-js";
-import { buttonVariants } from "./button";
-import { labelVariants } from "./label";
+import { Button, type ButtonProps } from "./button";
+import {
+  Checkbox,
+  CheckboxControl,
+  type CheckboxControlProps,
+  type CheckboxInputProps,
+  CheckboxLabel,
+  type CheckboxLabelProps,
+  type CheckboxProps,
+} from "./checkbox";
+import { Label, labelVariants } from "./label";
+import {
+  RadioGroup,
+  RadioGroupErrorMessage,
+  RadioGroupItem,
+  RadioGroupItemControl,
+  type RadioGroupItemControlProps,
+  RadioGroupItemInput,
+  type RadioGroupItemInputProps,
+  RadioGroupItemLabel,
+  type RadioGroupItemLabelProps,
+  RadioGroupLabel,
+  type RadioGroupProps,
+} from "./radio-group";
 import {
   Select,
   SelectContent,
+  type SelectContentProps,
   SelectErrorMessage,
   SelectHiddenSelect,
+  type SelectHiddenSelectProps,
   SelectItem,
   SelectLabel,
+  type SelectProps,
   SelectTrigger,
+  type SelectTriggerProps,
   SelectValue,
 } from "./select";
+import {
+  Slider,
+  SliderFill,
+  type SliderFillProps,
+  SliderLabel,
+  type SliderProps,
+  SliderThumb,
+  type SliderThumbProps,
+  SliderTrack,
+  type SliderTrackProps,
+  SliderValueLabel,
+} from "./slider";
+import {
+  TextField,
+  TextFieldErrorMessage,
+  TextFieldInput,
+  type TextFieldInputProps,
+  TextFieldLabel,
+  type TextFieldProps,
+} from "./textfield";
 
 type SplitProps<T> = Array<keyof T>;
 
@@ -68,30 +76,8 @@ type Option = {
   value: string;
 };
 
-type FormTextFieldInputProps<
-  T extends ValidComponent | HTMLElement = HTMLElement,
-> = {
-  multiline?: boolean;
-} & (
-  | ({
-      multiline: false;
-      ref: (element: T) => void;
-    } & TextFieldInputProps<T>)
-  | ({
-      multiline: true;
-      ref: (element: T) => void;
-    } & {} & TextFieldTextAreaProps<T>)
-);
-
-const inputVariants = cva(
-  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-);
-
-export type FormTextFieldProps = Omit<TextFieldRootProps, "type"> & {
-  type?: "text" | "email" | "tel" | "password" | "url" | "date";
-} & FormTextFieldInputProps &
-  VariantProps<typeof inputVariants> & {
-    placeholder?: string;
+export type FormTextFieldProps = TextFieldProps &
+  TextFieldInputProps & {
     // validation props
     error: string;
     // label props
@@ -108,48 +94,34 @@ export function FormTextField(props: FormTextFieldProps) {
       "required",
       "disabled",
       "class",
-    ] as SplitProps<TextFieldRootProps>,
+    ] as SplitProps<TextFieldProps>,
     // Input
-    ["placeholder", "ref", "onInput", "onChange", "onBlur"] as SplitProps<
-      Omit<FormTextFieldInputProps, "multiline">
-    >,
+    [
+      "multiline",
+      "placeholder",
+      "ref",
+      "onInput",
+      "onChange",
+      "onBlur",
+    ] as SplitProps<TextFieldInputProps>,
   );
 
   return (
-    <TextFieldPrimitive
+    <TextField
       {...rootProps}
       validationState={rest.error ? "invalid" : "valid"}
     >
       <Show when={rest.label}>
-        <TextFieldPrimitive.Label class={labelVariants()}>
-          {rest.label}
-        </TextFieldPrimitive.Label>
+        <TextFieldLabel class={labelVariants()}>{rest.label}</TextFieldLabel>
       </Show>
-      <Show
-        when={rest.multiline}
-        fallback={
-          <TextFieldPrimitive.Input
-            class={inputVariants()}
-            {...inputProps}
-            type={rest.type}
-          />
-        }
-      >
-        <TextFieldPrimitive.TextArea
-          class={inputVariants()}
-          {...inputProps}
-          autoResize
-        />
-      </Show>
-      <TextFieldPrimitive.ErrorMessage>
-        {rest.error}
-      </TextFieldPrimitive.ErrorMessage>
-    </TextFieldPrimitive>
+      <TextFieldInput {...inputProps} />
+      <TextFieldErrorMessage>{rest.error}</TextFieldErrorMessage>
+    </TextField>
   );
 }
 
 type SelectRootSingleProps<TOption extends Option> = Exclude<
-  SelectRootProps<TOption>,
+  SelectProps<TOption>,
   SelectMultipleSelectionOptions<TOption>
 >;
 
@@ -203,6 +175,7 @@ export function FormSelect<TOption extends Option>(
       },
     ),
     props.value,
+    { name: "FormSelect" },
   );
 
   return (
@@ -234,7 +207,7 @@ export function FormSelect<TOption extends Option>(
   );
 }
 
-export type FormCheckboxProps = CheckboxRootProps &
+export type FormCheckboxProps = CheckboxProps &
   CheckboxInputProps &
   CheckboxControlProps &
   CheckboxLabelProps & {
@@ -254,7 +227,7 @@ export function FormCheckbox(props: FormCheckboxProps) {
       "checked",
       "required",
       "disabled",
-    ] as SplitProps<CheckboxRootProps>,
+    ] as SplitProps<CheckboxProps>,
     // Input
     ["ref", "onInput", "onChange", "onBlur"] as SplitProps<CheckboxInputProps>,
     // Control
@@ -264,26 +237,14 @@ export function FormCheckbox(props: FormCheckboxProps) {
   );
 
   return (
-    <CheckboxPrimitive
-      {...rootProps}
-      validationState={rest.error ? "invalid" : "valid"}
-    >
-      <CheckboxPrimitive.Input {...inputProps} />
-      <CheckboxPrimitive.Control {...controlProps}>
-        <CheckboxPrimitive.Indicator>
-          <CheckIcon class="size-4">
-            <title>Checked</title>
-          </CheckIcon>
-        </CheckboxPrimitive.Indicator>
-      </CheckboxPrimitive.Control>
-      <CheckboxPrimitive.Label {...labelProps}>
-        {rest.label}
-      </CheckboxPrimitive.Label>
-    </CheckboxPrimitive>
+    <Checkbox {...rootProps} validationState={rest.error ? "invalid" : "valid"}>
+      <CheckboxControl {...inputProps} {...controlProps} />
+      <CheckboxLabel {...labelProps}>{rest.label}</CheckboxLabel>
+    </Checkbox>
   );
 }
 
-export type FormRadioGroupProps = RadioGroupRootProps & {
+export type FormRadioGroupProps = RadioGroupProps & {
   options: Option[];
 } & RadioGroupItemInputProps &
   RadioGroupItemControlProps &
@@ -299,12 +260,7 @@ export function FormRadioGroup(props: FormRadioGroupProps) {
     splitProps(
       props as FormRadioGroupProps,
       // Root
-      [
-        "name",
-        "value",
-        "required",
-        "disabled",
-      ] as SplitProps<RadioGroupRootProps>,
+      ["name", "value", "required", "disabled"] as SplitProps<RadioGroupProps>,
       // Item input
       [
         "ref",
@@ -319,46 +275,83 @@ export function FormRadioGroup(props: FormRadioGroupProps) {
     );
 
   return (
-    <RadioGroupPrimitive
+    <RadioGroup
       {...rootProps}
       validationState={rest.error ? "invalid" : "valid"}
     >
       <Show when={rest.label}>
-        <RadioGroupPrimitive.Label>{rest.label}</RadioGroupPrimitive.Label>
+        <RadioGroupLabel>{rest.label}</RadioGroupLabel>
       </Show>
       <div>
         <For each={rest.options}>
           {(option) => (
-            <RadioGroupPrimitive.Item value={option.value}>
-              <RadioGroupPrimitive.ItemInput {...itemInputProps} />
-              <RadioGroupPrimitive.ItemControl {...itemControlProps}>
-                <RadioGroupPrimitive.ItemIndicator />
-              </RadioGroupPrimitive.ItemControl>
-              <RadioGroupPrimitive.ItemLabel {...itemLabelProps}>
+            <RadioGroupItem value={option.value}>
+              <RadioGroupItemInput {...itemInputProps} />
+              <RadioGroupItemControl {...itemControlProps} />
+              <RadioGroupItemLabel {...itemLabelProps}>
                 {option.label}
-              </RadioGroupPrimitive.ItemLabel>
-            </RadioGroupPrimitive.Item>
+              </RadioGroupItemLabel>
+            </RadioGroupItem>
           )}
         </For>
       </div>
-      <RadioGroupPrimitive.ErrorMessage>
-        {rest.error}
-      </RadioGroupPrimitive.ErrorMessage>
-    </RadioGroupPrimitive>
+      <RadioGroupErrorMessage>{rest.error}</RadioGroupErrorMessage>
+    </RadioGroup>
   );
 }
 
-type FieldRootProps<T extends ValidComponent = "div"> = PolymorphicProps<
-  T,
-  ComponentProps<T>
->;
+export type FormSliderProps = SliderProps &
+  SliderFillProps &
+  SliderTrackProps &
+  SliderThumbProps & {
+    // validation props
+    error: string;
+    // label props
+    label: string;
+  };
+
+export function FormSlider(props: FormSliderProps) {
+  const [rootProps, trackProps, thumbProps, rest] = splitProps(
+    props as FormSliderProps,
+    // Root
+    [
+      "name",
+      "value",
+      "required",
+      "disabled",
+      "class",
+    ] as SplitProps<SliderProps>,
+    // Track
+    [
+      "onPointerUp",
+      "onPointerDown",
+      "onPointerMove",
+    ] as SplitProps<SliderTrackProps>,
+    // Thumb
+    ["onBlur", "onFocus", "onKeyDown"] as SplitProps<SliderThumbProps>,
+  );
+
+  return (
+    <Slider {...rootProps} validationState={rest.error ? "invalid" : "valid"}>
+      <Show when={rest.label}>
+        <SliderLabel>{rest.label}</SliderLabel>
+      </Show>
+      <SliderTrack {...trackProps}>
+        <SliderFill />
+        <For each={props.value}>
+          {(value) => <SliderThumb value={value} {...thumbProps} />}
+        </For>
+      </SliderTrack>
+      <div class="mt-2 flex w-full items-center justify-between">
+        <For each={props.value}>{(value, idx) => <Label>{value}</Label>}</For>
+      </div>
+    </Slider>
+  );
+}
 
 export type FormSubmitButtonProps<TFieldValues extends FieldValues> =
-  FieldRootProps &
-    Omit<ButtonRootProps, "type"> &
-    VariantProps<typeof buttonVariants> & {
-      type?: "submit" | "reset" | "button";
-    } & {
+  ComponentProps<"div"> &
+    ButtonProps & {
       form?: FormStore<TFieldValues>;
       // validation props
       error: string;
@@ -369,10 +362,10 @@ export type FormSubmitButtonProps<TFieldValues extends FieldValues> =
 export const FormSubmitButton = <TFieldValues extends FieldValues>(
   props: FormSubmitButtonProps<TFieldValues>,
 ) => {
-  const [rootProps, buttonProps, variantProps, rest] = splitProps(
+  const [rootProps, buttonProps, rest] = splitProps(
     props as FormSubmitButtonProps<TFieldValues>,
     // Root
-    ["class"] as SplitProps<FieldRootProps>,
+    ["class"] as SplitProps<ComponentProps<"div">>,
     // Button
     [
       "name",
@@ -380,42 +373,33 @@ export const FormSubmitButton = <TFieldValues extends FieldValues>(
       "required",
       "disabled",
       "type",
-    ] as SplitProps<ButtonRootProps>,
-    // Variant
-    ["variant", "size"] as SplitProps<VariantProps<typeof buttonVariants>>,
+      "variant",
+      "size",
+    ] as SplitProps<ButtonProps>,
   );
 
   return (
-    <FormControlContext.Provider value={FormControlContext.defaultValue}>
-      <Polymorphic as="div" {...rootProps}>
-        <Show when={rest.label}>
-          <LabelPrimitive>{rest.label}</LabelPrimitive>
+    <div {...rootProps}>
+      <Show when={rest.label}>
+        <Label>{rest.label}</Label>
+      </Show>
+      <Button
+        {...buttonProps}
+        disabled={buttonProps.disabled || rest.form?.submitting}
+        validationState={rest.error ? "invalid" : "valid"}
+      >
+        <span classList={{ "opacity-0": props.form?.submitting }}>
+          {props.children}
+        </span>
+        <Show when={props.form?.submitting}>
+          <div class="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2">
+            <Loader2Icon class="h-4 w-4 animate-spin" />
+          </div>
         </Show>
-        <ButtonPrimitive
-          {...buttonProps}
-          class={buttonVariants(
-            mergeProps({
-              size: variantProps.size ?? "sm",
-              variant: variantProps.variant ?? "outline",
-            }),
-          )}
-          disabled={buttonProps.disabled || rest.form?.submitting}
-          type={buttonProps.type}
-          validationState={rest.error ? "invalid" : "valid"}
-        >
-          <span classList={{ "opacity-0": props.form?.submitting }}>
-            {props.children}
-          </span>
-          <Show when={props.form?.submitting}>
-            <div class="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2">
-              <Loader2Icon class="h-4 w-4 animate-spin" />
-            </div>
-          </Show>
-        </ButtonPrimitive>
-        <Show when={props.form?.invalid}>
-          <div>{rest.error}</div>
-        </Show>
-      </Polymorphic>
-    </FormControlContext.Provider>
+      </Button>
+      <Show when={props.form?.invalid}>
+        <Label>{rest.error}</Label>
+      </Show>
+    </div>
   );
 };

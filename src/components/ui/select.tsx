@@ -2,8 +2,11 @@ import { cn } from "@/lib/utils";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
 import type {
   SelectContentProps as KobalteSelectContentProps,
+  SelectHiddenSelectProps as KobalteSelectHiddenSelectProps,
   SelectItemProps as KobalteSelectItemProps,
+  SelectRootProps as KobalteSelectProps,
   SelectTriggerProps as KobalteSelectTriggerProps,
+  SelectValueProps as KobalteSelectValueProps,
 } from "@kobalte/core/select";
 import { Select as SelectPrimitive } from "@kobalte/core/select";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-solid";
@@ -11,14 +14,62 @@ import type { ParentProps, ValidComponent } from "solid-js";
 import { splitProps } from "solid-js";
 
 export const Select = SelectPrimitive;
+export type SelectProps<
+  TOption,
+  TOptGroup = never,
+  T extends ValidComponent = "div",
+> = ParentProps<KobalteSelectProps<TOption, TOptGroup, T> & { class?: string }>;
+
 export const SelectValue = SelectPrimitive.Value;
-export const SelectDescription = SelectPrimitive.Description;
-export const SelectErrorMessage = SelectPrimitive.ErrorMessage;
-export const SelectItemDescription = SelectPrimitive.ItemDescription;
+export type SelectValueProps<
+  TOption,
+  T extends ValidComponent = "div",
+> = ParentProps<KobalteSelectValueProps<TOption, T> & { class?: string }>;
 export const SelectHiddenSelect = SelectPrimitive.HiddenSelect;
-export const SelectLabel = SelectPrimitive.Label;
-export const SelectSection = SelectPrimitive.Section;
+export type SelectHiddenSelectProps = ParentProps<
+  KobalteSelectHiddenSelectProps & { class?: string }
+>;
+
 export const SelectIcon = SelectPrimitive.Icon;
+export const SelectSection = SelectPrimitive.Section;
+
+// Item
+export const SelectItemDescription = SelectPrimitive.ItemDescription;
+
+// Form
+export const SelectDescription = SelectPrimitive.Description;
+export const SelectLabel = SelectPrimitive.Label;
+export const SelectErrorMessage = SelectPrimitive.ErrorMessage;
+
+export type SelectItemProps<T extends ValidComponent = "li"> = ParentProps<
+  KobalteSelectItemProps<T> & { class?: string }
+>;
+
+export const SelectItem = <T extends ValidComponent = "li">(
+  props: PolymorphicProps<T, SelectItemProps<T>>,
+) => {
+  const [local, rest] = splitProps(props as SelectItemProps, [
+    "class",
+    "children",
+  ]);
+
+  return (
+    <SelectPrimitive.Item
+      class={cn(
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        local.class,
+      )}
+      {...rest}
+    >
+      <SelectPrimitive.ItemIndicator class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+        <CheckIcon class="h-4 w-4">
+          <title>Checked</title>
+        </CheckIcon>
+      </SelectPrimitive.ItemIndicator>
+      <SelectPrimitive.ItemLabel>{local.children}</SelectPrimitive.ItemLabel>
+    </SelectPrimitive.Item>
+  );
+};
 
 export type SelectTriggerProps<T extends ValidComponent = "button"> =
   ParentProps<KobalteSelectTriggerProps<T> & { class?: string }>;
@@ -34,7 +85,7 @@ export const SelectTrigger = <T extends ValidComponent = "button">(
   return (
     <SelectPrimitive.Trigger
       class={cn(
-        "flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background transition-shadow placeholder:text-muted-foreground focus:outline-none focus-visible:ring-[1.5px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background transition-shadow placeholder:text-muted-foreground focus:outline-none focus-visible:ring-[1.5px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
         local.class,
       )}
       {...rest}
@@ -70,36 +121,6 @@ export const SelectContent = <T extends ValidComponent = "div">(
         <SelectPrimitive.Listbox class="p-1 focus-visible:outline-none" />
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
-  );
-};
-
-export type SelectItemProps<T extends ValidComponent = "li"> = ParentProps<
-  KobalteSelectItemProps<T> & { class?: string }
->;
-
-export const SelectItem = <T extends ValidComponent = "li">(
-  props: PolymorphicProps<T, SelectItemProps<T>>,
-) => {
-  const [local, rest] = splitProps(props as SelectItemProps, [
-    "class",
-    "children",
-  ]);
-
-  return (
-    <SelectPrimitive.Item
-      class={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        local.class,
-      )}
-      {...rest}
-    >
-      <SelectPrimitive.ItemIndicator class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-        <CheckIcon class="h-4 w-4">
-          <title>Checked</title>
-        </CheckIcon>
-      </SelectPrimitive.ItemIndicator>
-      <SelectPrimitive.ItemLabel>{local.children}</SelectPrimitive.ItemLabel>
-    </SelectPrimitive.Item>
   );
 };
 

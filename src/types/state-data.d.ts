@@ -2,7 +2,7 @@ import type { FeatureCollection, Geometry } from "geojson";
 
 type StateProperties = {
   name: string;
-  description: string;
+  density: number;
 };
 
 type StateData = FeatureCollection<Geometry, StateProperties>;

@@ -53,22 +53,31 @@ export const FloatingNavbar = (props: FloatingNavbarProps) => {
       {...rest}
     >
       <nav>
-        <ul class="flex items-center space-x-1 px-1 py-1">
+        <ul
+          class="group flex items-center gap-x-1 px-1 py-1"
+          style={{ filter: "url(#goo)" }}
+        >
           <For each={links}>
             {(link) => (
               <li>
                 <Link
                   href={link.href}
                   class={cn(
-                    "inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 font-medium text-sm ring-offset-background transition-colors",
+                    "peer",
+                    // Common
+                    "inline-flex h-10 w-20 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 ring-offset-background transition-colors",
+                    // Text
+                    "font-semibold text-base",
                     // Disabled
                     "disabled:pointer-events-none disabled:opacity-50",
                     // Focus-visible
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     // Inactive
-                    "hover:bg-accent hover:text-accent-foreground",
+                    "text-lime-950 hover:bg-accent hover:text-accent-foreground",
                     // Active
-                    "data-[active]:bg-primary data-[active]:text-primary-foreground",
+                    "data-[active]:bg-lime-400/50 data-[active]:text-lime-950",
+                    // Peer
+                    "group-hover:data-[active]:bg-lime-400/35",
                   )}
                 >
                   {link.label}
@@ -79,5 +88,34 @@ export const FloatingNavbar = (props: FloatingNavbarProps) => {
         </ul>
       </nav>
     </div>
+  );
+};
+
+export const GooeySvg = () => {
+  return (
+    <svg aria-hidden="true">
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur
+            id="blur"
+            result="blur"
+            in="SourceGraphic"
+            stdDeviation="20"
+          />
+          <feColorMatrix
+            id="matrix"
+            result="matrix"
+            in="blur"
+            values="
+        1 0 0 0 0                                      
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 15 -10"
+            type="matrix"
+          />
+          <feComposite id="comp" result="comp" in="matrix" operator="atop" />
+        </filter>
+      </defs>
+    </svg>
   );
 };

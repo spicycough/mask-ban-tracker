@@ -6,7 +6,10 @@ export default function DefaultHead() {
   return (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="description" content="Demo showcasing Vike" />
+      <meta
+        name="description"
+        content="Track the status of mask bans across the US."
+      />
       <link rel="icon" href={`${urlParsed.origin}/logo.svg`} />
     </>
   );

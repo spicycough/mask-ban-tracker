@@ -1,4 +1,6 @@
-const statesData = {
+import type { StateData } from "@/types/state-data";
+
+const statesData: StateData = {
   type: "FeatureCollection",
   features: [
     {

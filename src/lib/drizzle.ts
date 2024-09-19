@@ -26,10 +26,10 @@ export function createTableWithMetadata<
 
 export type Tuple<T extends string = string> = [T, ...T[]];
 
-export const asEnum = (
-  shape: Record<string, string>,
-): [string, ...string[]] => {
-  return Object.values(shape) as [string, ...string[]];
+export const asEnum = <Values extends string>(
+  shape: Record<string, Values>,
+): Tuple<Values> => {
+  return Object.values(shape) as [Values, ...Values[]];
 };
 
 // const idField = { id: integer("id").primaryKey({ autoIncrement: true }) };
